@@ -13,34 +13,34 @@ module.exports = (sequelize, DataTypes) => {
   }
   addresses.init(
     {
-    user_id: {
+      user_id: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
-        },
-        recipient_name: {
+      },
+      recipient_name: {
         type: DataTypes.STRING,
         allowNull: false
-        },
-        recipient_number: {
+      },
+      recipient_number: {
         type: DataTypes.STRING,
         allowNull: false
-        },
-        postal_code: {
+      },
+      postal_code: {
         type: DataTypes.STRING,
         allowNull: false
-        },
-        province: {
+      },
+      province: {
         type: DataTypes.STRING,
         allowNull: false
-        },
-        city: {
+      },
+      city: {
         type: DataTypes.STRING,
         allowNull: false
-        },
-        address: {
+      },
+      address: {
         type: DataTypes.TEXT,
         allowNull: false
-        },
+      }
     },
     {
       sequelize,
