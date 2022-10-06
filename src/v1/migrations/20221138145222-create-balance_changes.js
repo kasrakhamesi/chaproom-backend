@@ -10,36 +10,31 @@ module.exports = {
           type: Sequelize.BIGINT
         },
         userId: {
-          type: Sequelize.BIGINT,
+          type: Sequelize.BIGINT.UNSIGNED,
           references: { model: 'users', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: false
         },
         orderId: {
-          type: Sequelize.BIGINT,
+          type: Sequelize.BIGINT.UNSIGNED,
           references: { model: 'orders', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: true
         },
         adminId: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.INTEGER.UNSIGNED,
           references: { model: 'admins', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: true
         },
         type: {
-          type: Sequelize.ENUM(
-            'deposit',
-            'withdraw',
-            'increase_by_admin',
-            'decrease_by_admin'
-          ),
+          type: Sequelize.ENUM('deposit', 'withdrawal'),
           allowNull: false
         },
-        balance_before: {
+        balanceBefore: {
           type: Sequelize.STRING,
           allowNull: false
         },
@@ -47,7 +42,7 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false
         },
-        balance_after: {
+        balanceAfter: {
           type: Sequelize.STRING,
           allowNull: false
         },
@@ -56,10 +51,6 @@ module.exports = {
           allowNull: false
         },
         description: {
-          type: Sequelize.STRING,
-          allowNull: true
-        },
-        created_date: {
           type: Sequelize.STRING,
           allowNull: true
         },

@@ -1,0 +1,422 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ChapRoom API",
+    "description": "Chaproom Backend Restful-API",
+    "version": "1.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "Users Auth ( Login & Register )",
+      "name": "Users Addresses"
+    }
+  ],
+  "schemes": ["http", "https"],
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": ["Users Auth ( Login & Register )"],
+        "summary": "Register new user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersRegister" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "id": 1,
+                  "name": "KasraProgrammer",
+                  "phone": "09385667274"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "missing input",
+                  "message_locale": "اینپوت پیدا نشد"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "invalid input",
+                  "message_locale": "ورودی نا معتبر"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/addresses": {
+      "post": {
+        "tags": ["Users Addresses"],
+        "summary": "Add new address",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersAddresses" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "id": 1,
+                  "recipientName": "کسری تحویل میگیرم",
+                  "recipientPhoneNumber": "09385667274",
+                  "recipientPostalCode": "4675744151",
+                  "recipientDeliveryProvince": "مازندران",
+                  "recipientDeliveryCity": "ساری",
+                  "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "missing input",
+                  "message_locale": "اینپوت پیدا نشد"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "invalid input",
+                  "message_locale": "ورودی نا معتبر"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users Addresses"],
+        "summary": "Get All addresses",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": [
+                  {
+                    "id": 1,
+                    "recipientName": "کسری تحویل میگیرم",
+                    "recipientPhoneNumber": "09385667274",
+                    "recipientPostalCode": "4675744151",
+                    "recipientDeliveryProvince": "مازندران",
+                    "recipientDeliveryCity": "ساری",
+                    "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده"
+                  },
+                  {
+                    "id": 2,
+                    "recipientName": "رضا تحویل میگیرم",
+                    "recipientPhoneNumber": "09385667276",
+                    "recipientPostalCode": "4675744157",
+                    "recipientDeliveryProvince": "مازندران",
+                    "recipientDeliveryCity": "ساری",
+                    "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک یازده"
+                  }
+                ],
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "bad request",
+                  "message_locale": "مشکل در فراخوانی داده ها"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/addresses/id/{id}": {
+      "get": {
+        "tags": ["Users Addresses"],
+        "summary": "Get Single address",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "recipientName": "کسری تحویل میگیرم",
+                  "recipientPhoneNumber": "09385667274",
+                  "recipientPostalCode": "4675744151",
+                  "recipientDeliveryProvince": "مازندران",
+                  "recipientDeliveryCity": "ساری",
+                  "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "invalid input",
+                  "message_locale": "ورودی نا معتبر"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users Addresses"],
+        "summary": "Delete addresses",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "successfully deleted",
+                  "message_locale": "با موفقعیت پاک شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "invalid input",
+                  "message_locale": "ورودی نا معتبر"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users Addresses"],
+        "summary": "Update ( change ) address",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersAddresses" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "successfully updated",
+                  "message_locale": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "missing input",
+                  "message_locale": "اینپوت پیدا نشد"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "invalid input",
+                  "message_locale": "ورودی نا معتبر"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "UsersRegister": {
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string", "example": "09385667274" },
+        "name": { "type": "string", "example": "Programmer Kasra" },
+        "password": { "type": "string", "example": "This Is A Passowrd!" }
+      }
+    },
+    "UsersAddresses": {
+      "type": "object",
+      "properties": {
+        "recipientName": { "type": "string", "example": "کسری تحویل میگیره" },
+        "recipientPhoneNumber": {
+          "type": "string",
+          "example": "09385667274"
+        },
+        "recipientPostalCode": {
+          "type": "string",
+          "example": "4675744151"
+        },
+        "recipientDeliveryProvince": {
+          "type": "string",
+          "example": "مازندران"
+        },
+        "recipientDeliveryCity": {
+          "type": "string",
+          "example": "ساری"
+        },
+        "recipientDeliveryAddress": {
+          "type": "string",
+          "example": "خیابان لاله کوچه بهار پلاک دوازده"
+        }
+      }
+    }
+  }
+}

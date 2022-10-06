@@ -14,27 +14,22 @@ module.exports = (sequelize, DataTypes) => {
   balance_changes.init(
     {
       userId: {
-        type: DataTypes.BIGINT,
+        type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
       orderId: {
-        type: DataTypes.BIGINT,
+        type: DataTypes.BIGINT.UNSIGNED,
         allowNull: true
       },
       adminId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true
       },
       type: {
-        type: DataTypes.ENUM(
-          'deposit',
-          'withdraw',
-          'increase_by_admin',
-          'decrease_by_admin'
-        ),
+        type: DataTypes.ENUM('deposit', 'withdrawal'),
         allowNull: false
       },
-      balance_before: {
+      balanceBefore: {
         type: DataTypes.STRING,
         allowNull: false
       },
@@ -42,17 +37,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      balance_after: {
+      balanceAfter: {
         type: DataTypes.STRING,
         allowNull: false
       },
       amount: {
         type: DataTypes.STRING,
         allowNull: false
-      },
-      created_date: {
-        type: DataTypes.STRING,
-        allowNull: true
       },
       description: {
         type: DataTypes.STRING,

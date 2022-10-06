@@ -1,19 +1,23 @@
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('admins_permissions', {
+    await queryInterface.createTable('contact_us', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT.UNSIGNED
       },
-      role: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      perm_description: {
+      phone: {
         type: Sequelize.STRING,
+        allowNull: false
+      },
+      message: {
+        type: Sequelize.TEXT,
         allowNull: false
       },
       createdAt: {
@@ -27,6 +31,6 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('admins_permissions')
+    await queryInterface.dropTable('contact_us')
   }
 }

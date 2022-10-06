@@ -9,70 +9,12 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.BIGINT.UNSIGNED
         },
-        first_name: {
-          type: Sequelize.STRING(50),
-          allowNull: false
-        },
-        last_name: {
-          type: Sequelize.STRING(50),
-          allowNull: false
-        },
-        father_name: {
-          type: Sequelize.STRING(100),
-          allowNull: false
-        },
-        national_code: {
-          type: Sequelize.STRING(15),
-          allowNull: false
-        },
-        birthday_timestamp: {
+        name: {
           type: Sequelize.STRING,
-          allowNull: false
-        },
-        country: {
-          type: Sequelize.STRING(50),
-          allowNull: false
-        },
-        province: {
-          type: Sequelize.STRING(50),
-          allowNull: false
-        },
-        city: {
-          type: Sequelize.STRING(50),
-          allowNull: false
-        },
-        residence_address: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        postal_code: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        talan_address: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        referral_code: {
-          type: Sequelize.STRING(12),
-          allowNull: false
-        },
-        referralUserId: {
-          type: Sequelize.BIGINT,
-          references: { model: 'users', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
-          allowNull: true
-        },
-        userGroupId: {
-          type: Sequelize.INTEGER,
-          references: { model: 'users_groups', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
           allowNull: false
         },
         phone: {
-          type: Sequelize.STRING(11),
+          type: Sequelize.STRING,
           unique: {
             args: true,
             msg: 'This phone is already registered.'
@@ -82,21 +24,34 @@ module.exports = {
           },
           allowNull: false
         },
-        home_phone: {
-          type: Sequelize.STRING(15),
-          unique: {
-            args: true,
-            msg: 'This phone is already registered.'
-          },
+        password: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          set(value) {
+            this.setDataValue('password', hash(this.phone + value))
+          }
+        },
+        marketingCommission: {
+          type: Sequelize.FLOAT,
+          defaultValue: 10,
+          allowNull: false
+        },
+        reeferralUserId: {
+          type: Sequelize.BIGINT.UNSIGNED,
           allowNull: true
         },
-        status: {
-          type: Sequelize.ENUM('pending', 'rejected', 'approved'),
-          defaultValue: 'pending',
-          allowNull: true
+        marketingBalance: {
+          type: Sequelize.STRING,
+          defaultValue: 0,
+          allowNull: false
         },
         balance: {
           type: Sequelize.STRING,
+          defaultValue: 0,
+          allowNull: false
+        },
+        active: {
+          type: Sequelize.BOOLEAN,
           allowNull: true
         },
         createdAt: {

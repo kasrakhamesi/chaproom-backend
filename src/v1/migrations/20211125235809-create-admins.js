@@ -7,10 +7,10 @@ module.exports = {
           allowNull: false,
           autoIncrement: true,
           primaryKey: true,
-          type: Sequelize.INTEGER
+          type: Sequelize.INTEGER.UNSIGNED
         },
         roleId: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.INTEGER.UNSIGNED,
           references: { model: 'admins_roles', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
@@ -30,24 +30,14 @@ module.exports = {
         },
         password: {
           type: Sequelize.STRING,
-          allowNull: false
+          allowNull: false,
+          set(value) {
+            this.setDataValue('password', hash(this.username + value))
+          }
         },
-        last_login: {
-          type: Sequelize.STRING
-        },
-        email: {
+        lastLogin: {
           type: Sequelize.STRING,
-          unique: {
-            args: true,
-            msg: 'This email is already registered.'
-          },
-          validate: {
-            isEmail: {
-              args: true,
-              msg: 'invalid email'
-            }
-          },
-          allowNull: false
+          allowNull: true
         },
         phone: {
           type: Sequelize.STRING,
@@ -60,7 +50,7 @@ module.exports = {
           },
           allowNull: false
         },
-        activated: {
+        active: {
           type: Sequelize.BOOLEAN,
           defaultValue: true
         },
@@ -75,9 +65,6 @@ module.exports = {
       })
       .then(() =>
         queryInterface.addIndex('admins', ['phone'], { unique: true })
-      )
-      .then(() =>
-        queryInterface.addIndex('admins', ['email'], { unique: true })
       )
       .then(() =>
         queryInterface.addIndex('admins', ['username'], { unique: true })

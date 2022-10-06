@@ -1,12 +1,16 @@
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('orders', {
+    await queryInterface.createTable('files', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.BIGINT.UNSIGNED
+      },
+      fileUid: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       userId: {
         type: Sequelize.BIGINT.UNSIGNED,
@@ -15,8 +19,23 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false
       },
-      type: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+      orderId: {
+        type: Sequelize.BIGINT.UNSIGNED,
+        references: { model: 'orders', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: false
+      },
+      fileName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      fileUrl: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
+      pageCount: {
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       createdAt: {
@@ -30,6 +49,6 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('orders')
+    await queryInterface.dropTable('files')
   }
 }

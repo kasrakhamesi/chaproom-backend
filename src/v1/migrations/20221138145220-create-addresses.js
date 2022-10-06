@@ -9,34 +9,34 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.BIGINT.UNSIGNED
         },
-        user_id: {
+        userId: {
           type: Sequelize.BIGINT.UNSIGNED,
           references: { model: 'users', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: false
         },
-        recipient_name: {
+        recipientName: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        recipient_number: {
+        recipientPhoneNumber: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        postal_code: {
+        recipientPostalCode: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        province: {
+        recipientDeliveryProvince: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        city: {
+        recipientDeliveryCity: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        address: {
+        recipientDeliveryAddress: {
           type: Sequelize.TEXT,
           allowNull: false
         },
@@ -49,9 +49,12 @@ module.exports = {
           type: Sequelize.DATE
         }
       })
-      .then(() => queryInterface.addIndex('addresses', ['id'], { unique: true }))
       .then(() =>
-        queryInterface.addIndex('addresses', ['payment_token'], { unique: true })
+        queryInterface.addIndex(
+          'addresses',
+          ['userId', 'recipientPostalCode'],
+          { unique: true }
+        )
       )
   },
   down: async (queryInterface, Sequelize) => {
