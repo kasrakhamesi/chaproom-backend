@@ -52,7 +52,8 @@
                 "data": null,
                 "error": {
                   "message": "missing input",
-                  "message_locale": "اینپوت پیدا نشد"
+                  "message_locale": "اینپوت پیدا نشد",
+                  "details": [{ "phone": ["شماره تلفن وارد نشده است"] }]
                 }
               }
             }
@@ -65,7 +66,8 @@
                 "data": null,
                 "error": {
                   "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر"
+                  "message_locale": "ورودی نا معتبر",
+                  "details": [{ "phone": ["شماره تلفن نامعتبر است"] }]
                 }
               }
             }
@@ -121,7 +123,13 @@
                 "data": null,
                 "error": {
                   "message": "missing input",
-                  "message_locale": "اینپوت پیدا نشد"
+                  "message_locale": "اینپوت پیدا نشد",
+                  "details": [
+                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
+                    {
+                      "recipientDeliveryProvince": ["استان نامعتبر است"]
+                    }
+                  ]
                 }
               }
             }
@@ -134,7 +142,13 @@
                 "data": null,
                 "error": {
                   "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر"
+                  "message_locale": "ورودی نا معتبر",
+                  "details": [
+                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
+                    {
+                      "recipientDeliveryProvince": ["استان نامعتبر است"]
+                    }
+                  ]
                 }
               }
             }
@@ -193,7 +207,8 @@
                 "data": null,
                 "error": {
                   "message": "bad request",
-                  "message_locale": "مشکل در فراخوانی داده ها"
+                  "message_locale": "مشکل در فراخوانی داده ها",
+                  "details": []
                 }
               }
             }
@@ -240,19 +255,6 @@
                 "error": null
               }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "examples": {
-              "application/json": {
-                "statusCode": 400,
-                "data": null,
-                "error": {
-                  "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر"
-                }
-              }
-            }
           }
         }
       },
@@ -297,8 +299,9 @@
                 "statusCode": 400,
                 "data": null,
                 "error": {
-                  "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر"
+                  "message": "can not delete this record",
+                  "message_locale": "امکان پاک کردن این رکورد وجود ندارد",
+                  "details": []
                 }
               }
             }
@@ -353,7 +356,12 @@
                 "data": null,
                 "error": {
                   "message": "missing input",
-                  "message_locale": "اینپوت پیدا نشد"
+                  "message_locale": "اینپوت پیدا نشد",
+                  "details": [
+                    {
+                      "recipientDeliveryProvince": ["استان پیدا نشد است"]
+                    }
+                  ]
                 }
               }
             }
@@ -366,7 +374,13 @@
                 "data": null,
                 "error": {
                   "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر"
+                  "message_locale": "ورودی نا معتبر",
+                  "details": [
+                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
+                    {
+                      "recipientDeliveryProvince": ["استان نامعتبر است"]
+                    }
+                  ]
                 }
               }
             }
