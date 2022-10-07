@@ -1,8 +1,8 @@
 const { sequelize } = require('../models')
-const errors = require('../errors')
+//const errors = require('../errors')
 const _ = require('lodash')
 
-module.exports.check = (...permissions) => {
+const check = (...permissions) => {
   return async (req, res, next) => {
     try {
       const roleId = req?.user[0]?.role?.id
@@ -44,9 +44,11 @@ module.exports.check = (...permissions) => {
       }
       throw new Error('Forbidden')
     } catch (e) {
-      res
-        .status(errors.codes.errorsCode.forbidden.statusCode)
-        .send(errors.codes.errorsCode.forbidden)
+      //res
+      // .status(errors.codes.errorsCode.forbidden.statusCode)
+      //.send(errors.codes.errorsCode.forbidden)
     }
   }
 }
+
+module.exports = { check }

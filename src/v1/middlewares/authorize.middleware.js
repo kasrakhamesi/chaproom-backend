@@ -22,11 +22,11 @@ module.exports.adminJwt = ({
   )
 }
 
-module.exports.userJwt = ({ id: id, phone: phone }) => {
+const generateUserJwt = (id, phone) => {
   return jsonwebtoken.sign(
     {
-      id: id,
-      phone: phone,
+      id,
+      phone,
       isAdmin: false
     },
     userAccess,
@@ -34,21 +34,8 @@ module.exports.userJwt = ({ id: id, phone: phone }) => {
   )
 }
 
-module.exports.userRefreshToken = ({ id: id, phone: phone }) => {
-  return jsonwebtoken.sign(
-    {
-      id: id,
-      phone: phone,
-      isAdmin: false
-    },
-    userRefreshToken
-  )
-}
-
-module.exports.decodeRefreshToken = (encodedString) => {
-  return jsonwebtoken.decode(encodedString, userRefreshToken)
-}
-
-module.exports.decodeJwt = (encodedString, isAdmin = true) => {
+const decodeJwt = (encodedString, isAdmin = true) => {
   return jsonwebtoken.decode(encodedString, isAdmin ? adminAccess : userAccess)
 }
+
+module.exports = { generateUserJwt, decodeJwt }

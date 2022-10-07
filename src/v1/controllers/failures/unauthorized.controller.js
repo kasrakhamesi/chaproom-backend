@@ -1,7 +1,7 @@
-const errors = require('../../errors')
+const { httpError, errorsType } = require('../../configs')
 
-module.exports = (req, res) => {
-  res
-    .status(errors.codes.errorsCode.unauthorized.statusCode)
-    .send(errors.codes.errorsCode.unauthorized)
+const unauthorized = (req, res) => {
+  httpError(errorsType.UNAUTHORIZED, res)
 }
+
+module.exports = unauthorized

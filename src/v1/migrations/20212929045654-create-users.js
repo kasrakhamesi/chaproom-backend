@@ -26,17 +26,14 @@ module.exports = {
         },
         password: {
           type: Sequelize.STRING,
-          allowNull: false,
-          set(value) {
-            this.setDataValue('password', hash(this.phone + value))
-          }
+          allowNull: false
         },
         marketingCommission: {
           type: Sequelize.FLOAT,
           defaultValue: 10,
           allowNull: false
         },
-        reeferralUserId: {
+        referralUserId: {
           type: Sequelize.BIGINT.UNSIGNED,
           allowNull: true
         },
@@ -45,6 +42,10 @@ module.exports = {
           defaultValue: 0,
           allowNull: false
         },
+        access_token: {
+          type: Sequelize.STRING,
+          allowNull: true
+        },
         balance: {
           type: Sequelize.STRING,
           defaultValue: 0,
@@ -52,6 +53,7 @@ module.exports = {
         },
         active: {
           type: Sequelize.BOOLEAN,
+          defaultValue: true,
           allowNull: true
         },
         createdAt: {

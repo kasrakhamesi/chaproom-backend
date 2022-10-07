@@ -7,17 +7,11 @@
   },
   "host": "localhost:3000",
   "basePath": "/v1",
-  "tags": [
-    {
-      "name": "Users Auth ( Login & Register )",
-      "name": "Users Addresses"
-    }
-  ],
   "schemes": ["http", "https"],
   "paths": {
-    "/users/register": {
+    "/users/auth/register": {
       "post": {
-        "tags": ["Users Auth ( Login & Register )"],
+        "tags": ["Users Auth ( Login & Register & ... )"],
         "summary": "Register new user",
         "consumes": ["application/json"],
         "produces": ["application/json"],
@@ -36,9 +30,16 @@
               "application/json": {
                 "statusCode": 201,
                 "data": {
+                  "marketingCommission": 10,
+                  "marketingBalance": 0,
+                  "balance": 0,
+                  "active": true,
                   "id": 1,
-                  "name": "KasraProgrammer",
-                  "phone": "09385667274"
+                  "phone": "09385667274",
+                  "name": "Programmer Kasra",
+                  "password": "This Is A Passowrd!",
+                  "updatedAt": "2022-10-06T18:17:07.510Z",
+                  "createdAt": "2022-10-06T18:17:07.510Z"
                 },
                 "error": null
               }
@@ -51,8 +52,7 @@
                 "statusCode": 422,
                 "data": null,
                 "error": {
-                  "message": "missing input",
-                  "message_locale": "اینپوت پیدا نشد",
+                  "message": "اینپوت پیدا نشد",
                   "details": [{ "phone": ["شماره تلفن وارد نشده است"] }]
                 }
               }
@@ -65,9 +65,67 @@
                 "statusCode": 400,
                 "data": null,
                 "error": {
-                  "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر",
-                  "details": [{ "phone": ["شماره تلفن نامعتبر است"] }]
+                  "message": " این اکانت قبلا ساخته شده بود ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/auth/login": {
+      "post": {
+        "tags": ["Users Auth ( Login & Register & ... )"],
+        "summary": "Login exist user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersLogin" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "name": "KasraProgrammer",
+                  "phone": "09385667274",
+                  "access_token": "SadWQDXASdqWXDsadqwxQWDX"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phone": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "نام کاربری یا رمزعبور اشتباه میباشد",
+                  "details": []
                 }
               }
             }
@@ -122,8 +180,7 @@
                 "statusCode": 422,
                 "data": null,
                 "error": {
-                  "message": "missing input",
-                  "message_locale": "اینپوت پیدا نشد",
+                  "message": "اینپوت پیدا نشد",
                   "details": [
                     { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
                     {
@@ -141,14 +198,8 @@
                 "statusCode": 400,
                 "data": null,
                 "error": {
-                  "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر",
-                  "details": [
-                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
-                    {
-                      "recipientDeliveryProvince": ["استان نامعتبر است"]
-                    }
-                  ]
+                  "message": "این آدرس قبلا درج شده است",
+                  "details": []
                 }
               }
             }
@@ -170,7 +221,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "OK",
             "examples": {
               "application/json": {
@@ -206,8 +257,7 @@
                 "statusCode": 400,
                 "data": null,
                 "error": {
-                  "message": "bad request",
-                  "message_locale": "مشکل در فراخوانی داده ها",
+                  "message": "مشکل در فراخوانی داده ها",
                   "details": []
                 }
               }
@@ -285,8 +335,7 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "message": "successfully deleted",
-                  "message_locale": "با موفقعیت پاک شد"
+                  "message": "با موفقعیت پاک شد"
                 },
                 "error": null
               }
@@ -299,8 +348,7 @@
                 "statusCode": 400,
                 "data": null,
                 "error": {
-                  "message": "can not delete this record",
-                  "message_locale": "امکان پاک کردن این رکورد وجود ندارد",
+                  "message": "امکان پاک کردن این رکورد وجود ندارد",
                   "details": []
                 }
               }
@@ -341,8 +389,7 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "message": "successfully updated",
-                  "message_locale": "با موفقعیت آپدیت شد"
+                  "message": "با موفقعیت آپدیت شد"
                 },
                 "error": null
               }
@@ -355,11 +402,11 @@
                 "statusCode": 422,
                 "data": null,
                 "error": {
-                  "message": "missing input",
-                  "message_locale": "اینپوت پیدا نشد",
+                  "message": "اینپوت پیدا نشد",
                   "details": [
+                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
                     {
-                      "recipientDeliveryProvince": ["استان پیدا نشد است"]
+                      "recipientDeliveryProvince": ["استان نامعتبر است"]
                     }
                   ]
                 }
@@ -373,14 +420,179 @@
                 "statusCode": 400,
                 "data": null,
                 "error": {
-                  "message": "invalid input",
-                  "message_locale": "ورودی نا معتبر",
+                  "message": "این داده قبلا درج شده بود",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/withdrawals/id/{id}": {
+      "get": {
+        "tags": ["Users Withdrawals"],
+        "summary": "Get Single withdraw info",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "recipientName": "کسری تحویل میگیرم",
+                  "recipientPhoneNumber": "09385667274",
+                  "recipientPostalCode": "4675744151",
+                  "recipientDeliveryProvince": "مازندران",
+                  "recipientDeliveryCity": "ساری",
+                  "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده"
+                },
+                "error": null
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/withdrawals": {
+      "post": {
+        "tags": ["Users Withdrawals"],
+        "summary": "Add new withdraw from user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersWithdrawals" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
                   "details": [
                     { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
                     {
                       "recipientDeliveryProvince": ["استان نامعتبر است"]
                     }
                   ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این داده قبلا درج شده بود",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users Withdrawals"],
+        "summary": "Get all withdrawals from user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [
+                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
+                    {
+                      "recipientDeliveryProvince": ["استان نامعتبر است"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این داده قبلا درج شده بود",
+                  "details": []
                 }
               }
             }
@@ -398,6 +610,27 @@
     }
   },
   "definitions": {
+    "UsersWithdrawals": {
+      "type": "object",
+      "properties": {
+        "iban": { "type": "string", "example": "123123123123132" },
+        "status": {
+          "type": "string",
+          "example": "This Is A Passowrd!",
+          "enum": ["pending", "rejected", "approved", "pending_confirmation"]
+        },
+        "trackingNumber": { "type": "string", "example": "213124" },
+        "amount": { "type": "string", "example": "2000" },
+        "description": { "type": "string", "example": "This Is A Description!" }
+      }
+    },
+    "UsersLogin": {
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string", "example": "09385667274" },
+        "password": { "type": "string", "example": "This Is A Passowrd!" }
+      }
+    },
     "UsersRegister": {
       "type": "object",
       "properties": {

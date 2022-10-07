@@ -8,7 +8,7 @@ const StrategyJwt = passportJwt.Strategy
 
 const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
-
+/*
 adminsPassport.use(
   new StrategyJwt(
     {
@@ -63,7 +63,7 @@ adminsPassport.use(
     }
   )
 )
-
+*/
 usersPassport.use(
   new StrategyJwt(
     {
@@ -71,28 +71,15 @@ usersPassport.use(
       secretOrKey: userAccess
     },
     (jwtPayLoad, done) => {
+      console.log(jwtPayLoad)
       return sequelize.models.users
         .findAll({
           where: {
             id: jwtPayLoad.id,
-            phone: jwtPayLoad.phone,
-            national_code: jwtPayLoad.national_code
+            phone: jwtPayLoad.phone
           },
-          include: [
-            {
-              model: sequelize.models.users_groups,
-              as: 'user_group'
-            },
-            {
-              model: sequelize.models.users,
-              as: 'referral',
-              attributes: {
-                include: ['national_code']
-              }
-            }
-          ],
           attributes: {
-            exclude: ['userGroupId', 'referralUserId']
+            exclude: ['password', 'referralUserId', 'active']
           }
         })
         .then((result) => {

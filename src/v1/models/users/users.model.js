@@ -9,10 +9,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      users.belongsTo(models.users_groups, {
-        as: 'user_group',
-        foreignKey: 'userGroupId'
-      })
       users.belongsTo(models.users, {
         as: 'referral',
         foreignKey: 'referralUserId'
@@ -21,60 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   users.init(
     {
-      first_name: {
+      name: {
         type: DataTypes.STRING,
-        allowNull: false
-      },
-      last_name: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      father_name: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      national_code: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      birthday_timestamp: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      country: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      province: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      city: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      residence_address: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      postal_code: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      talan_address: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      referral_code: {
-        type: DataTypes.STRING(12),
-        allowNull: false
-      },
-      referralUserId: {
-        type: DataTypes.BIGINT,
-        allowNull: true
-      },
-      userGroupId: {
-        type: DataTypes.INTEGER,
         allowNull: false
       },
       phone: {
@@ -88,25 +32,36 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false
       },
-      home_phone: {
-        type: DataTypes.STRING,
-        unique: {
-          args: true,
-          msg: 'This phone is already registered.'
-        },
-        allowNull: true
-      },
-      address: {
+      password: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      status: {
-        type: DataTypes.ENUM('pending', 'rejected', 'approved'),
-        defaultValue: 'pending',
+      marketingCommission: {
+        type: DataTypes.FLOAT,
+        defaultValue: 10,
+        allowNull: false
+      },
+      referralUserId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
+      marketingBalance: {
+        type: DataTypes.STRING,
+        defaultValue: 0,
+        allowNull: false
+      },
+      accessToken: {
+        type: DataTypes.STRING,
         allowNull: true
       },
       balance: {
         type: DataTypes.STRING,
+        defaultValue: 0,
+        allowNull: false
+      },
+      active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
         allowNull: true
       }
     },
