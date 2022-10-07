@@ -7,63 +7,29 @@ module.exports = {
           allowNull: false,
           autoIncrement: true,
           primaryKey: true,
-          type: Sequelize.BIGINT
+          type: Sequelize.BIGINT.UNSIGNED
         },
-        adminId: {
-          type: Sequelize.INTEGER.UNSIGNED,
-          references: { model: 'admins', key: 'id' },
+        userId: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          references: { model: 'users', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          allowNull: true
+        },
+        blogId: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          references: { model: 'blogs', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: false
         },
-        category: {
-          type: Sequelize.STRING,
-          allowNull: true
-        },
-        title: {
+        score: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        pageTitle: {
+        ip: {
           type: Sequelize.STRING,
           allowNull: true
-        },
-        slug: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        slugLink: {
-          type: Sequelize.STRING,
-          allowNull: true
-        },
-        description: {
-          type: Sequelize.STRING,
-          allowNull: true
-        },
-        body: {
-          type: Sequelize.TEXT('long'),
-          allowNull: true
-        },
-        images: {
-          type: Sequelize.JSON,
-          allowNull: true
-        },
-        body: {
-          type: Sequelize.TEXT('medium'),
-          allowNull: true
-        },
-        thumb_alt: {
-          type: Sequelize.STRING,
-          allowNull: true
-        },
-        viewCount: {
-          type: Sequelize.INTEGER.UNSIGNED,
-          allowNull: true
-        },
-        display: {
-          type: Sequelize.BOOLEAN,
-          defaultValue: true,
-          allowNull: false
         },
         createdAt: {
           allowNull: true,
@@ -75,7 +41,7 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('blog_scores', ['slug'], {
+        queryInterface.addIndex('blog_scores', ['userId', 'blogId'], {
           unique: true
         })
       )
