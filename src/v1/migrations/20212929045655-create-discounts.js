@@ -28,7 +28,7 @@ module.exports = {
           allowNull: false
         },
         type: {
-          type: Sequelize.ENUM('fix', 'percentage', 'countOfPages'),
+          type: Sequelize.ENUM('fixed', 'percentage', 'countOfPages'),
           allowNull: false
         },
         value: {
@@ -48,6 +48,11 @@ module.exports = {
           type: Sequelize.INTEGER.UNSIGNED,
           defaultValue: 0,
           allowNull: true
+        },
+        userMarketing: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false,
+          allowNull: false
         },
         expireAt: {
           allowNull: true,

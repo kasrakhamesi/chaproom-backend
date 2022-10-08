@@ -1,8 +1,8 @@
-const types = require('./errorsType.config')
+const { errorTypes } = require('../configs')
 
-const Config = (err, res) => {
+const Config = (err, res = null) => {
   const details = []
-  for (const entity in types) {
+  for (const entity in errorTypes) {
     console.log(String(err))
     if (String(err) !== entity) continue
     return res.status(entity.statusCode).send({
@@ -25,6 +25,16 @@ const Config = (err, res) => {
     }
   } else if (err.name === 'SequelizeUniqueConstraintError')
     message = 'این اطلاعات قبلا ساخته شده بود'
+
+  if (res === null)
+    return {
+      statusCode: 400,
+      data: null,
+      error: {
+        message,
+        details
+      }
+    }
 
   return res.status(400).send({
     statusCode: 400,

@@ -70,6 +70,14 @@ module.exports = {
         type: Sequelize.ENUM('deposit', 'withdrawal'),
         allowNull: false
       },
+      telegramUploadFile: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+      },
+      whatsupUploadFile: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+      },
       paymentWithGatePackage: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false

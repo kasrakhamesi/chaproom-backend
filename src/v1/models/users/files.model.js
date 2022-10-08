@@ -1,7 +1,7 @@
 'use strict'
 const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class withdrawals extends Model {
+  class files extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,48 +11,34 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  withdrawals.init(
+  files.init(
     {
       userId: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      adminId: {
+      uploadedFileName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      fileName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      fileUrl: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      pageCount: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true
-      },
-      iban: {
-        type: DataTypes.STRING,
         allowNull: false
-      },
-      status: {
-        type: DataTypes.ENUM(
-          'pending',
-          'rejected',
-          'approved',
-          'pending_confirmation'
-        ),
-        defaultValue: 'pending',
-        allowNull: false
-      },
-      trackingNumber: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
-      amount: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      description: {
-        type: DataTypes.STRING,
-        allowNull: true
       }
     },
     {
       sequelize,
       paranoid: true,
-      modelName: 'withdrawals'
+      modelName: 'files'
     }
   )
-  return withdrawals
+  return files
 }

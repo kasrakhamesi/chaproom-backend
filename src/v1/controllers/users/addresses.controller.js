@@ -1,5 +1,7 @@
 const { httpError } = require('../../configs')
+const { restful } = require('../../libs')
 const { sequelize } = require('../../models')
+const addresses = new restful(sequelize.models.addresses)
 
 const create = (req, res) => {
   const {
@@ -84,8 +86,8 @@ const update = (req, res) => {
 
 const findAll = (req, res) => {
   const userId = req?.user[0]?.id
-  return sequelize.models.addresses
-    .findAll({
+  addresses
+    .Get({
       where: {
         userId
       },
@@ -94,39 +96,26 @@ const findAll = (req, res) => {
       }
     })
     .then((r) => {
-      return res.status(200).send({
-        statusCode: 200,
-        data: r,
-        error: null
-      })
-    })
-    .catch((e) => {
-      return httpError(e, res)
+      return res.status(r.statusCode).send(r)
     })
 }
 
 const findOne = (req, res) => {
   const { id } = req.params
   const userId = req?.user[0]?.id
-  return sequelize.models.addresses
-    .findOne({
+  addresses
+    .Get({
       where: {
-        userId,
-        id
+        id,
+        userId
       },
       attributes: {
         exclude: ['userId']
-      }
+      },
+      findOne: true
     })
     .then((r) => {
-      return res.status(200).send({
-        statusCode: 200,
-        data: r,
-        error: null
-      })
-    })
-    .catch((e) => {
-      return httpError(e, res)
+      return res.status(r.statusCode).send(r)
     })
 }
 

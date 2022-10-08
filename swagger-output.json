@@ -599,6 +599,65 @@
           }
         }
       }
+    },
+    "/public/contact-us": {
+      "post": {
+        "tags": ["Public"],
+        "summary": "create new contact-us message",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ContactUs" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "id": 4,
+                  "name": "Programmer Kasra",
+                  "phone": "09385667274",
+                  "message": "Hi,this is a message !"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "name": ["شماره تلفن مقصد نامعتبر است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -610,6 +669,14 @@
     }
   },
   "definitions": {
+    "ContactUs": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "example": "Programmer Kasra" },
+        "phone": { "type": "string", "example": "09385667274" },
+        "message": { "type": "string", "example": "Hi,this is a message !" }
+      }
+    },
     "UsersWithdrawals": {
       "type": "object",
       "properties": {

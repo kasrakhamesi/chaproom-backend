@@ -42,21 +42,14 @@ module.exports = {
         defaultValue: false,
         allowNull: false
       },
-      expire: {
-        type: Sequelize.STRING,
+      passwordReset: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
         allowNull: false
       },
-      user_token: {
+      expireAt: {
         type: Sequelize.STRING,
-        allowNull: true
-      },
-      user_token_used: {
-        type: Sequelize.BOOLEAN,
-        allowNull: true
-      },
-      user_token_expire: {
-        type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
       },
       createdAt: {
         allowNull: true,

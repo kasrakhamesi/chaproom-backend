@@ -1,66 +1,23 @@
-const axios = require('axios')
 const { sequelize } = require('../../../models')
+const { uniqueGenerates, regex } = require('../../libs')
 const _ = require('lodash')
-const errors = require('../../../errors')
 const crypto = require('crypto')
 
-const randomValueHex = (len) => {
-  return crypto
-    .randomBytes(Math.ceil(len / 2))
-    .toString('hex')
-    .slice(0, len)
-    .toUpperCase()
-}
-
-const generateRandomToken = (
-  phoneNumber,
-  code,
-  isForgetPassword = false,
-  len = 5
-) => {
-  const LastNumberOfPhoneNumber = phoneNumber.substr(
-    phoneNumber.length - isForgetPassword ? 2 : 1
-  )
-  return (
-    randomValueHex(len) +
-    '-' +
-    randomValueHex(len) +
-    LastNumberOfPhoneNumber +
-    '-' +
-    randomValueHex(len) +
-    LastNumberOfPhoneNumber +
-    1 +
-    '-' +
-    +LastNumberOfPhoneNumber +
-    randomValueHex(len) +
-    '-' +
-    randomValueHex(len) +
-    '-' +
-    code
-  )
-}
-
-const randomNumber = () => {
-  return '787878'
-  //return (Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000).toString()
-}
-
-const regexPhone = (phoneNumber) => {
-  phoneNumber = parseInt(phoneNumber)
-  const phoneRegex = /^(\+98|0098|98|0)?9\d{9}$/
-  return phoneRegex.test(phoneNumber)
-}
+const Kavenegar = require('kavenegar')
+const api = Kavenegar.KavenegarApi({
+  apikey: 'your apikey here'
+})
 
 const send = async (
   accountId,
   phoneNumber,
   isAdmin = true,
-  isResend = false
+  isPasswordReset = false
 ) => {
   try {
-    if (!regexPhone(phoneNumber)) throw new Error('Invalid phone number')
+    if (!regex.iranPhone(phoneNumber)) throw new Error('Invalid phone number')
 
-    const userIdOrAdminId = isAdmin ? 'adminId' : 'userId'
+    const creatorId = isAdmin ? 'adminId' : 'userId'
 
     const where =
       accountId === null
@@ -84,7 +41,7 @@ const send = async (
         ? {
             statusCode: 400,
             data: {
-              unlockTime: verifyData?.expire
+              unlockTime: verifyData?.expireAt
             },
             error: {
               code: '2fa.locked',
@@ -99,12 +56,19 @@ const send = async (
               phoneNumber: `09** *** *${phoneNumber.substr(
                 phoneNumber.length - 3
               )}`,
-              expire: verifyData?.expire
+              expireAt: verifyData?.expire
             },
             error: null
           }
 
     const oneTimeCode = randomNumber()
+
+    const r = await api.VerifyLookup({
+      receptor: 'your receptor mobile number',
+      token: 'your token',
+      template: 'your template'
+    })
+
     /*
     const resSend = await axios({
       method: 'post',
@@ -139,12 +103,12 @@ const send = async (
             expire: Date.now() + 1000 * 60 * 2
           }
         : {
-            [userIdOrAdminId]: accountId,
+            [creatorId]: accountId,
             email: null,
             phone: phoneNumber,
             code: oneTimeCode,
             used: false,
-            expire: Date.now() + 1000 * 60 * 2
+            expireAt: Date.now() + 1000 * 60 * 2
           }
 
     const resCreateCode = await sequelize.models.verifies.create(body)

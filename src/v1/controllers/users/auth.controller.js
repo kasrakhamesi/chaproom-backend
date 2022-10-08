@@ -1,4 +1,4 @@
-const { httpError, errorsType } = require('../../configs')
+const { httpError, errorTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const bcrypt = require('bcrypt')
@@ -56,7 +56,7 @@ const login = (req, res) => {
       }
     })
     .then((r) => {
-      if (!r) httpError(errorsType.INVALID_PHONE_PASSWORD, res)
+      if (!r) httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
       const accessToken = authorize.generateUserJwt(r?.id, r?.phone)
       return sequelize.models.users
         .update(
@@ -86,11 +86,4 @@ const login = (req, res) => {
     })
 }
 
-const dashboard = (req, res) => {}
-
-const changePassword = (req, res) => {
-  const { oldPassword, newPassword } = req.body
-  sequelize.models.users.findOne()
-}
-
-module.exports = { register, login, changePassword, dashboard }
+module.exports = { register, login }

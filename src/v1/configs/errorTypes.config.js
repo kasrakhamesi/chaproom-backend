@@ -1,4 +1,8 @@
 const Types = {
+  INVALID_PASSWORD: {
+    statusCode: 400,
+    message: 'رمزعبور اشتباه است'
+  },
   INVALID_PHONE_PASSWORD: {
     statusCode: 400,
     message: 'رمزعبور یا نام کاربری اشتباه است'

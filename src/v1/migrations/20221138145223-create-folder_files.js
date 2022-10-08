@@ -2,7 +2,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
-      .createTable('files', {
+      .createTable('folder_files', {
         id: {
           allowNull: false,
           autoIncrement: true,
@@ -16,20 +16,18 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: false
         },
-        uploadedFileName: {
-          type: Sequelize.STRING,
+        folderId: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          references: { model: 'folders', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           allowNull: false
         },
-        fileName: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        fileUrl: {
-          type: Sequelize.TEXT,
-          allowNull: false
-        },
-        pageCount: {
-          type: Sequelize.INTEGER.UNSIGNED,
+        fileId: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          references: { model: 'files', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           allowNull: false
         },
         createdAt: {
@@ -42,12 +40,16 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('fileName', ['files'], {
-          unique: true
-        })
+        queryInterface.addIndex(
+          'folder_files',
+          ['userId', 'folderId', 'fileId'],
+          {
+            unique: true
+          }
+        )
       )
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('files')
+    await queryInterface.dropTable('folder_files')
   }
 }
