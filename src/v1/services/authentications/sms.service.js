@@ -9,7 +9,7 @@ const api = Kavenegar.KavenegarApi({
 })
 
 const send = async (
-  accountId,
+  creatorId,
   phoneNumber,
   isAdmin = true,
   isPasswordReset = false
@@ -17,17 +17,19 @@ const send = async (
   try {
     if (!regex.iranPhone(phoneNumber)) throw new Error('Invalid phone number')
 
-    const creatorId = isAdmin ? 'adminId' : 'userId'
+    const creatorKey = isAdmin ? 'adminId' : 'userId'
 
     const where =
-      accountId === null
+      creatorId === null
         ? {
             phone: phoneNumber,
+            passwordReset: isPasswordReset,
             used: false
           }
         : {
-            [userIdOrAdminId]: accountId,
+            [creatorKey]: creatorId,
             phone: phoneNumber,
+            passwordReset: isPasswordReset,
             used: false
           }
 
@@ -36,12 +38,12 @@ const send = async (
       order: [['id', 'DESC']]
     })
 
-    if (!_.isEmpty(verifyData) && parseInt(verifyData?.expire) > Date.now())
+    if (!_.isEmpty(verifyData) && parseInt(verifyData?.expireAt) > Date.now())
       return isResend
         ? {
             statusCode: 400,
             data: {
-              unlockTime: verifyData?.expireAt
+              expireAt: verifyData?.expireAt
             },
             error: {
               code: '2fa.locked',
@@ -61,38 +63,16 @@ const send = async (
             error: null
           }
 
-    const oneTimeCode = randomNumber()
-
+    const oneTimeCode = '787878' //uniqueGenerates.randomNumber()
+    /*
     const r = await api.VerifyLookup({
       receptor: 'your receptor mobile number',
       token: 'your token',
       template: 'your template'
     })
-
-    /*
-    const resSend = await axios({
-      method: 'post',
-      url: 'http://ippanel.com/api/select',
-      headers: {},
-      data: {
-        op: 'pattern',
-        user: '09120909643',
-        pass: 'Ab123456789',
-        fromNum: '+98300023492359',
-        toNum: '"' + phoneNumber + '"',
-        patternCode: '2a6x9tiz9i',
-        inputData: [{ 'verification-code': oneTimeCode }]
-      }
-    })
-    
-
-    if (resSend.status !== 200)
-      throw new Error("Can't Send Sms,Please Call Administrator")
-
-      */
-
+*/
     const body =
-      accountId === null
+      creatorId === null
         ? {
             userId: null,
             adminId: null,
@@ -103,7 +83,7 @@ const send = async (
             expire: Date.now() + 1000 * 60 * 2
           }
         : {
-            [creatorId]: accountId,
+            [creatorKey]: creatorId,
             email: null,
             phone: phoneNumber,
             code: oneTimeCode,
@@ -113,21 +93,19 @@ const send = async (
 
     const resCreateCode = await sequelize.models.verifies.create(body)
 
-    if (resCreateCode?.id)
-      return {
-        statusCode: 200,
-        data: {
-          status: 'success',
-          message: 'code sent',
-          phoneNumber: `09** *** *${phoneNumber.substr(
-            phoneNumber.length - 3
-          )}`,
-          expire: String(Date.now() + 1000 * 60 * 2)
-        },
-        error: null
-      }
+    if (!resCreateCode?.id)
+      throw new Error("Can't Send Sms,Please Call Administrator")
 
-    throw new Error("Can't Send Sms,Please Call Administrator")
+    return {
+      statusCode: 200,
+      data: {
+        status: 'success',
+        message: 'code sent',
+        phoneNumber: `09** *** *${phoneNumber.substr(phoneNumber.length - 3)}`,
+        expire: String(Date.now() + 1000 * 60 * 2)
+      },
+      error: null
+    }
   } catch (e) {
     const errorMessage = e?.errors?.message || e.message
     return errors.configs.findErrorCode(errorMessage)
@@ -135,7 +113,7 @@ const send = async (
 }
 
 const check = async (
-  accountId,
+  creatorId,
   code,
   phoneNumber = null,
   isAdmin = true,
@@ -143,17 +121,17 @@ const check = async (
   isForgetPassword = false
 ) => {
   try {
-    const userIdOrAdminId = isAdmin ? 'adminId' : 'userId'
+    const creatorKey = isAdmin ? 'adminId' : 'userId'
 
     const where =
-      accountId === null && phoneNumber !== null
+      creatorId === null && phoneNumber !== null
         ? {
             code: code,
             phone: phoneNumber,
             used: false
           }
         : {
-            [userIdOrAdminId]: accountId,
+            [creatorKey]: creatorId,
             code: code,
             used: false
           }

@@ -40,7 +40,8 @@ const getDiscounts = (req, res) => {
   return sequelize.models.discounts
     .findAll({
       where: {
-        userId
+        userId,
+        userMarketing: true
       }
     })
     .then((r) => {

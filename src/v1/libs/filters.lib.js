@@ -34,8 +34,7 @@ const filter = async (query, model) => {
         String(key).toLowerCase() === 'sort' ||
         String(key).toLowerCase() === 'search' ||
         String(key).toLowerCase() === 'page' ||
-        String(key).toLowerCase() === 'pagesize' ||
-        String(key).toLowerCase() === 'withbalance'
+        String(key).toLowerCase() === 'pagesize'
       )
         continue
       structure.push({ [key]: query[key] })

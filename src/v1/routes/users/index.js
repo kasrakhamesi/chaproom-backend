@@ -12,5 +12,6 @@ router.use(passport.usersPassport.initialize())
 router.use('/auth', require('./auth.route'))
 router.use('/addresses', usersPassport, require('./addresses.route'))
 router.use('/withdrawals', usersPassport, require('./withdrawals.route'))
+router.use('/files', usersPassport, require('./files.route'))
 
 module.exports = router

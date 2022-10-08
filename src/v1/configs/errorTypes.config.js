@@ -5,6 +5,10 @@ const Types = {
   },
   INVALID_PHONE_PASSWORD: {
     statusCode: 400,
+    message: 'رمزعبور یا شماره تماس اشتباه است'
+  },
+  INVALID_USERNAME_PASSWORD: {
+    statusCode: 400,
     message: 'رمزعبور یا نام کاربری اشتباه است'
   },
   UNAUTHORIZED: {
