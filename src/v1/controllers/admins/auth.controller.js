@@ -24,6 +24,6 @@ const login = (req, res) => {
     })
 }
 
-const confirmLogin = (req, res) => {}
+const loginConfirm = (req, res) => {}
 
-module.exports = { login, confirmLogin }
+module.exports = { login, loginConfirm }

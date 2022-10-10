@@ -14,16 +14,12 @@ module.exports = (sequelize, DataTypes) => {
   orders.init(
     {
       userId: {
-        type: DataTypes.BIGINT,
+        type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      type: {
-        type: DataTypes.ENUM('deposit', 'withdraw'),
+      addressId: {
+        type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
-      },
-      gatewayId: {
-        type: DataTypes.INTEGER,
-        allowNull: true
       },
       status: {
         type: DataTypes.ENUM(
@@ -35,66 +31,93 @@ module.exports = (sequelize, DataTypes) => {
         ),
         allowNull: false
       },
-      amount: {
+      color: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
       },
-      ref_number: {
+      side: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
       },
-      res_number: {
+      size: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
       },
-      bank_terminal_number: {
-        type: DataTypes.STRING,
-        allowNull: true
+      countOfPages: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false
       },
-      bank_status: {
-        type: DataTypes.STRING,
-        allowNull: true
+      uploadedPages: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false
       },
-      bank_amount: {
-        type: DataTypes.STRING,
-        allowNull: true
+      binding: {
+        type: DataTypes.TEXT,
+        allowNull: false
       },
-      bank_rrn: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
-      bank_response: {
-        type: DataTypes.JSON,
-        allowNull: true
-      },
-      bank_verify_response: {
-        type: DataTypes.JSON,
-        allowNull: true
-      },
-      payout_track_id: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
-      payout_order_id: {
-        type: DataTypes.STRING,
-        allowNull: true
+      numberOfCopies: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false
       },
       description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
       },
-      created_date: {
+      shipmentPrice: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
       },
-      payment_token: {
+      price: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
       },
-      is_token_used: {
+      telegramUploadFile: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        allowNull: false
+      },
+      whatsupUploadFile: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
+      payment: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
+      discountId: {
+        type: DataTypes.BIGINT.UNSIGNED,
         allowNull: true
+      },
+      discountType: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      discountValue: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      discountCode: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      discountAmount: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      cancelReason: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      adminId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true
+      },
+      compeleteAt: {
+        allowNull: true,
+        type: DataTypes.DATE
+      },
+      sentAt: {
+        allowNull: true,
+        type: DataTypes.DATE
       }
     },
     {

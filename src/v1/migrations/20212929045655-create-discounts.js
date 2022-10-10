@@ -23,15 +23,15 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: true
         },
-        code: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
         type: {
-          type: Sequelize.ENUM('fixed', 'percentage', 'countOfPages'),
+          type: Sequelize.ENUM('fixed', 'percentage', 'page'),
           allowNull: false
         },
         value: {
+          type: Sequelize.STRING,
+          allowNull: false
+        },
+        code: {
           type: Sequelize.STRING,
           allowNull: false
         },
@@ -45,6 +45,11 @@ module.exports = {
           allowNull: true
         },
         usageLimit: {
+          type: Sequelize.INTEGER.UNSIGNED,
+          defaultValue: 0,
+          allowNull: true
+        },
+        timesUsed: {
           type: Sequelize.INTEGER.UNSIGNED,
           defaultValue: 0,
           allowNull: true

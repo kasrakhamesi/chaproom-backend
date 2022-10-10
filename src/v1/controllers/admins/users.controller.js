@@ -10,6 +10,7 @@ const findAll = async (req, res) => {
       req.query,
       sequelize.models.users
     )
+
     const r = await users.Get({
       where,
       order,
@@ -19,6 +20,15 @@ const findAll = async (req, res) => {
         pageSize
       }
     })
+
+    const ordersCondition = []
+
+    const orders = await sequelize.models.orders.findAll({
+      where: {
+        userId
+      }
+    })
+
     res.status(r?.statusCode).send(r)
   } catch (e) {
     httpError(e, res)

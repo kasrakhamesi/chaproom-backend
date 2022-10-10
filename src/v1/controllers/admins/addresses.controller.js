@@ -77,4 +77,4 @@ const softDelete = async (req, res) => {
   }
 }
 
-module.exports = { findAll, findOne, create, update, softDelete }
+module.exports = { findAll, findOne, update, softDelete }

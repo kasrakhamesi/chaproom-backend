@@ -16,42 +16,19 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: true
         },
-        adminId: {
-          type: Sequelize.INTEGER.UNSIGNED,
-          references: { model: 'admins', key: 'id' },
+        orderId: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          references: { model: 'orders', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: true
         },
-        code: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        type: {
-          type: Sequelize.ENUM('fix', 'percentage', 'countOfPages'),
-          allowNull: false
-        },
-        value: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        active: {
-          type: Sequelize.BOOLEAN,
-          defaultValue: true,
-          allowNull: false
-        },
-        description: {
-          type: Sequelize.STRING,
+        discountId: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          references: { model: 'discounts', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           allowNull: true
-        },
-        usageLimit: {
-          type: Sequelize.INTEGER.UNSIGNED,
-          defaultValue: 0,
-          allowNull: true
-        },
-        expireAt: {
-          allowNull: true,
-          type: Sequelize.DATE
         },
         createdAt: {
           allowNull: true,
@@ -63,9 +40,13 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('discount_usages', ['code'], {
-          unique: true
-        })
+        queryInterface.addIndex(
+          'discount_usages',
+          ['userId', 'orderId', 'discountId'],
+          {
+            unique: true
+          }
+        )
       )
   },
   down: async (queryInterface, Sequelize) => {

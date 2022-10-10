@@ -43,6 +43,8 @@ const register = (req, res) => {
     })
 }
 
+const registerConfirm = (req, res) => {}
+
 const login = (req, res) => {
   const { phone, password } = req.body
   return sequelize.models.users
@@ -86,4 +88,8 @@ const login = (req, res) => {
     })
 }
 
-module.exports = { register, login }
+const passwordReset = (req, res) => {}
+
+const passwordResetConfirm = (req, res) => {}
+
+module.exports = { register, login, registerConfirm, passwordResetConfirm }

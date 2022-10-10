@@ -22,52 +22,54 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false
       },
-      type: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+      status: {
+        type: Sequelize.ENUM(
+          'pending',
+          'approved',
+          'rejected',
+          'canceled',
+          'hold'
+        ),
         allowNull: false
       },
       color: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.STRING,
         allowNull: false
       },
       side: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.STRING,
         allowNull: false
       },
       size: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.STRING,
         allowNull: false
       },
       countOfPages: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       uploadedPages: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       binding: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.TEXT,
         allowNull: false
       },
       numberOfCopies: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       description: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
-        allowNull: false
-      },
-      totalOrderPrice: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
-        allowNull: false
+        type: Sequelize.TEXT,
+        allowNull: true
       },
       shipmentPrice: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+        type: Sequelize.STRING,
         allowNull: false
       },
-      totalPrice: {
-        type: Sequelize.ENUM('deposit', 'withdrawal'),
+      price: {
+        type: Sequelize.STRING,
         allowNull: false
       },
       telegramUploadFile: {
@@ -78,37 +80,52 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         allowNull: false
       },
-      paymentWithGatePackage: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: false
-      },
-      paymentWithGateWallet: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: false
-      },
       payment: {
         type: Sequelize.BOOLEAN,
         allowNull: false
       },
-
-      /*
-
-      21 	status_id 	int(11) 			No 	None 			Change Change 	Drop Drop 	
-      22 	discount_id 	int(11) 			Yes 	NULL 			Change Change 	Drop Drop 	
-      23 	discount_percent 	int(11) 			No 	0 			Change Change 	Drop Drop 	
-      24 	discount_page 	int(11) 			Yes 	NULL 			Change Change 	Drop Drop 	
-      25 	discount_code 	varchar(191) 	utf8mb4_unicode_ci 		Yes 	NULL 			Change Change 	Drop Drop 	
-      26 	discount_amount 	int(11) 			No 	0 			Change Change 	Drop Drop 	
-      27 	telegram_upload_file 	tinyint(1) 			No 	0 			Change Change 	Drop Drop 	
-      28 	whatsup_upload_file 	tinyint(1) 			No 	0 			Change Change 	Drop Drop 	
-      29 	confirm_for_send_date 	timestamp 			Yes 	NULL 			Change Change 	Drop Drop 	
-      30 	sent_date 	timestamp 			Yes 	NULL 			Change Change 	Drop Drop 	
-      31 	complete_date 	timestamp 			Yes 	NULL 			Change Change 	Drop Drop 	
-      32 	postal_tracking_code 	varchar(191) 	utf8mb4_unicode_ci 		Yes 	NULL 			Change Change 	Drop Drop 	
-      33 	cancel_request 	tinyint(1) 			No 	0 			Change Change 	Drop Drop 	
-      34 	cancel_request_reason 	text 	utf8mb4_unicode_ci 		Yes 	NULL 			Change Change 	Drop Drop 	
-      35 	cancel_request_approved_by 	int(11) 
-*/
+      discountId: {
+        type: Sequelize.BIGINT.UNSIGNED,
+        references: { model: 'addresses', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: true
+      },
+      discountType: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      discountValue: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      discountCode: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      discountAmount: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      cancelReason: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      adminId: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        references: { model: 'admins', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: true
+      },
+      compeleteAt: {
+        allowNull: true,
+        type: Sequelize.DATE
+      },
+      sentAt: {
+        allowNull: true,
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE

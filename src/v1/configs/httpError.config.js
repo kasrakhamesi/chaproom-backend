@@ -1,4 +1,4 @@
-const { errorTypes } = require('../configs')
+const errorTypes = require('../configs/errorTypes.config')
 
 const Config = (err, res = null) => {
   const details = []

@@ -1,8 +1,6 @@
-const { sequelize } = require('../../../models')
+const { sequelize } = require('../../models')
 const { uniqueGenerates, regex } = require('../../libs')
 const _ = require('lodash')
-const crypto = require('crypto')
-
 const Kavenegar = require('kavenegar')
 const api = Kavenegar.KavenegarApi({
   apikey: 'your apikey here'

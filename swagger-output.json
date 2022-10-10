@@ -658,6 +658,63 @@
           }
         }
       }
+    },
+    "/public/َaffiliates": {
+      "post": {
+        "tags": ["Public"],
+        "summary": "create new affiliates message ( this request needed use in home page - Hamkari ba moasesat )",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/َAffiliates" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "id": 4,
+                  "phone": "09385667274"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phone": ["شماره تلفن نامعتبر است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -669,6 +726,12 @@
     }
   },
   "definitions": {
+    "َAffiliates": {
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string", "example": "09385667274" }
+      }
+    },
     "ContactUs": {
       "type": "object",
       "properties": {

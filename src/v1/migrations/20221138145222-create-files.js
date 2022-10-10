@@ -42,7 +42,7 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('fileName', ['files'], {
+        queryInterface.addIndex('files', ['fileName'], {
           unique: true
         })
       )
