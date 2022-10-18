@@ -6,8 +6,6 @@ router.use(bodyParser.json())
 
 const { users } = require('../../controllers')
 
-router.get('/id/:id', users.withdrawals.findOne)
-router.get('/', users.withdrawals.findAll)
-router.post('/', users.withdrawals.create)
+router.get('/callback', users.payments.callback)
 
 module.exports = router

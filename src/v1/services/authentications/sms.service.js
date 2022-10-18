@@ -1,17 +1,18 @@
 const { sequelize } = require('../../models')
-const { uniqueGenerates, regex } = require('../../libs')
+const { uniqueGenerates, regex, utils } = require('../../libs')
 const _ = require('lodash')
 const Kavenegar = require('kavenegar')
+const { httpError } = require('../../configs')
 const api = Kavenegar.KavenegarApi({
   apikey: 'your apikey here'
 })
 
-const send = async (
-  creatorId,
+const send = async ({
   phoneNumber,
+  creatorId = null,
   isAdmin = true,
   isPasswordReset = false
-) => {
+}) => {
   try {
     if (!regex.iranPhone(phoneNumber)) throw new Error('Invalid phone number')
 
@@ -20,13 +21,13 @@ const send = async (
     const where =
       creatorId === null
         ? {
-            phone: phoneNumber,
+            phoneNumber,
             passwordReset: isPasswordReset,
             used: false
           }
         : {
             [creatorKey]: creatorId,
-            phone: phoneNumber,
+            phoneNumber,
             passwordReset: isPasswordReset,
             used: false
           }
@@ -36,30 +37,25 @@ const send = async (
       order: [['id', 'DESC']]
     })
 
-    if (!_.isEmpty(verifyData) && parseInt(verifyData?.expireAt) > Date.now())
-      return isResend
-        ? {
-            statusCode: 400,
-            data: {
-              expireAt: verifyData?.expireAt
-            },
-            error: {
-              code: '2fa.locked',
-              message: 'Your 2Fa code is locked,waiting for unlock'
-            }
-          }
-        : {
-            statusCode: 200,
-            data: {
-              status: 'success',
-              message: 'code sent before',
-              phoneNumber: `09** *** *${phoneNumber.substr(
-                phoneNumber.length - 3
-              )}`,
-              expireAt: verifyData?.expire
-            },
-            error: null
-          }
+    const phoneNumberNewStyle =
+      creatorId === null
+        ? phoneNumber
+        : `09** *** *${phoneNumber.substr(phoneNumber.length - 3)}`
+
+    if (
+      !_.isEmpty(verifyData) &&
+      utils.isoToTimestamp(verifyData?.expireAt) > Date.now()
+    )
+      return {
+        statusCode: 200,
+        data: {
+          isSuccess: true,
+          message: 'کد ارسال شد',
+          phoneNumber: phoneNumberNewStyle,
+          expireAt: verifyData?.expireAt
+        },
+        error: null
+      }
 
     const oneTimeCode = '787878' //uniqueGenerates.randomNumber()
     /*
@@ -75,18 +71,18 @@ const send = async (
             userId: null,
             adminId: null,
             email: null,
-            phone: phoneNumber,
+            phoneNumber,
             code: oneTimeCode,
             used: false,
-            expire: Date.now() + 1000 * 60 * 2
+            expireAt: utils.timestampToIso(Date.now() + 1000 * 60 * 2)
           }
         : {
             [creatorKey]: creatorId,
             email: null,
-            phone: phoneNumber,
+            phoneNumber,
             code: oneTimeCode,
             used: false,
-            expireAt: Date.now() + 1000 * 60 * 2
+            expireAt: utils.timestampToIso(Date.now() + 1000 * 60 * 2)
           }
 
     const resCreateCode = await sequelize.models.verifies.create(body)
@@ -97,16 +93,15 @@ const send = async (
     return {
       statusCode: 200,
       data: {
-        status: 'success',
-        message: 'code sent',
-        phoneNumber: `09** *** *${phoneNumber.substr(phoneNumber.length - 3)}`,
-        expire: String(Date.now() + 1000 * 60 * 2)
+        isSuccess: true,
+        message: 'کد ارسال شد',
+        phoneNumber: phoneNumberNewStyle,
+        expireAt: utils.timestampToIso(Date.now() + 1000 * 60 * 2)
       },
       error: null
     }
   } catch (e) {
-    const errorMessage = e?.errors?.message || e.message
-    return errors.configs.findErrorCode(errorMessage)
+    return httpError(e)
   }
 }
 
@@ -125,7 +120,7 @@ const check = async (
       creatorId === null && phoneNumber !== null
         ? {
             code: code,
-            phone: phoneNumber,
+            phoneNumber,
             used: false
           }
         : {
@@ -168,8 +163,7 @@ const check = async (
       error: null
     }
   } catch (e) {
-    const errorMessage = e?.errors?.message || e.message
-    return errors.configs.findErrorCode(errorMessage)
+    return httpError(e)
   }
 }
 

@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       amount: {
-        type: DataTypes.STRING,
+        type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
       description: {

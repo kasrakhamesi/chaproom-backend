@@ -16,10 +16,10 @@ const Config = (err, res = null) => {
   }
   let message = err?.message || 'ورودی نامعتبر'
   if (err.name === 'SequelizeValidationError') {
-    for (const entity of e.errors) {
+    for (const entity of err?.errors) {
       const errorMessage = entity.type.includes('notNull')
-        ? [entity.path] + 'نمیتواند خالی باشد '
-        : 'معتبر نمیباشد ' + [entity.path]
+        ? 'نمیتواند خالی باشد '
+        : 'معتبر نمیباشد '
 
       details.push({ [entity.path]: errorMessage })
     }

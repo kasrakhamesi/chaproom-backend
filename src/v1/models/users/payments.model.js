@@ -1,7 +1,7 @@
 'use strict'
 const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class balance_changes extends Model {
+  class payments extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,50 +11,45 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  balance_changes.init(
+  payments.init(
     {
       userId: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      orderId: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: true
-      },
-      adminId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true
-      },
-      type: {
-        type: DataTypes.ENUM('deposit', 'withdrawal'),
-        allowNull: false
-      },
-      balanceBefore: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      balance: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      balanceAfter: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       amount: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false
+      },
+      authority: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      description: {
+      status: {
         type: DataTypes.STRING,
         allowNull: true
+      },
+      refId: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      verifiedStatus: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      fullResponse: {
+        type: DataTypes.JSON,
+        allowNull: true
+      },
+      verifiedAt: {
+        allowNull: true,
+        type: DataTypes.DATE
       }
     },
     {
       sequelize,
-      paranoid: true,
-      modelName: 'balance_changes'
+      modelName: 'payments'
     }
   )
-  return balance_changes
+  return payments
 }

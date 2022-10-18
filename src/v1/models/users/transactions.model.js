@@ -17,27 +17,55 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      uploadedFileName: {
-        type: DataTypes.STRING,
-        allowNull: false
+      orderId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
       },
-      fileName: {
-        type: DataTypes.STRING,
-        allowNull: false
+      paymentId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
       },
-      fileUrl: {
-        type: DataTypes.TEXT,
-        allowNull: false
+      withdrawalId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
       },
-      pageCount: {
+      adminId: {
         type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true
+      },
+      type: {
+        type: DataTypes.ENUM('withdrawal', 'deposit', 'order', 'admin'),
+        allowNull: false
+      },
+      status: {
+        type: DataTypes.ENUM('rejected', 'pending', 'approved'),
+        allowNull: false
+      },
+      change: {
+        type: DataTypes.ENUM('increase', 'decrease'),
+        allowNull: false
+      },
+      balance: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false
+      },
+      balanceAfter: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false
+      },
+      amount: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false
+      },
+      description: {
+        type: DataTypes.STRING,
         allowNull: false
       }
     },
     {
       sequelize,
       paranoid: true,
-      modelName: 'transcations'
+      modelName: 'transactions'
     }
   )
   return transcations

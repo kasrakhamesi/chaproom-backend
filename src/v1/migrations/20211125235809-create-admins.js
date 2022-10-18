@@ -39,11 +39,11 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: true
         },
-        phone: {
+        phoneNumber: {
           type: Sequelize.STRING,
           unique: {
             args: true,
-            msg: 'This phone is already registered.'
+            msg: 'This phoneNumber is already registered.'
           },
           validate: {
             is: /^(\+98|0098|98|0)?9\d{9}$/
@@ -64,7 +64,7 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('admins', ['phone'], { unique: true })
+        queryInterface.addIndex('admins', ['phoneNumber'], { unique: true })
       )
       .then(() =>
         queryInterface.addIndex('admins', ['username'], { unique: true })

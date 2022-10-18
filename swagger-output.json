@@ -12,7 +12,7 @@
     "/users/auth/register": {
       "post": {
         "tags": ["Users Auth ( Login & Register & ... )"],
-        "summary": "Register new user",
+        "summary": "Send confirmation code for Register new user",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -21,6 +21,65 @@
             "name": "body",
             "required": true,
             "schema": { "$ref": "#/definitions/UsersRegister" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "isSuccess": true,
+                  "message": "کد ارسال شد",
+                  "phoneNumber": "09385667274",
+                  "expireAt": "2022-10-17T20:31:30.629Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این اکانت قبلا ساخته شده بود ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/auth/register/confirm": {
+      "post": {
+        "tags": ["Users Auth ( Login & Register & ... )"],
+        "summary": "confirm your code and Register new user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersRegisterConfirm" }
           }
         ],
         "responses": {
@@ -35,7 +94,7 @@
                   "balance": 0,
                   "active": true,
                   "id": 1,
-                  "phone": "09385667274",
+                  "phoneNumber": "09385667274",
                   "name": "Programmer Kasra",
                   "password": "This Is A Passowrd!",
                   "updatedAt": "2022-10-06T18:17:07.510Z",
@@ -53,7 +112,7 @@
                 "data": null,
                 "error": {
                   "message": "اینپوت پیدا نشد",
-                  "details": [{ "phone": ["شماره تلفن وارد نشده است"] }]
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
                 }
               }
             }
@@ -96,9 +155,14 @@
                 "statusCode": 200,
                 "data": {
                   "id": 1,
-                  "name": "KasraProgrammer",
-                  "phone": "09385667274",
-                  "access_token": "SadWQDXASdqWXDsadqwxQWDX"
+                  "name": "Programmer Kasra",
+                  "phoneNumber": "09385667274",
+                  "marketingCommission": 10,
+                  "marketingBalance": "0",
+                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ",
+                  "balance": "0",
+                  "createdAt": "2022-10-12T10:48:45.000Z",
+                  "updatedAt": "2022-10-14T19:21:59.000Z"
                 },
                 "error": null
               }
@@ -112,7 +176,7 @@
                 "data": null,
                 "error": {
                   "message": "اینپوت پیدا نشد",
-                  "details": [{ "phone": ["شماره تلفن وارد نشده است"] }]
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
                 }
               }
             }
@@ -125,6 +189,590 @@
                 "data": null,
                 "error": {
                   "message": "نام کاربری یا رمزعبور اشتباه میباشد",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "put": {
+        "tags": ["Users Profile"],
+        "summary": "Change Profile Information ( password & name )",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersProfile" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "name": "Programmer Kasra 2",
+                  "marketingCommission": 10,
+                  "marketingBalance": "0",
+                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ",
+                  "balance": "0",
+                  "createdAt": "2022-10-12T10:48:45.000Z",
+                  "updatedAt": "2022-10-14T19:21:59.000Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "name": [" نام اشتباه وارد شده است است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "رمزعبور نا امن میباشد",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users Profile"],
+        "summary": "Get user profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "name": "Programmer Kasra",
+                  "phoneNumber": "09385667274",
+                  "marketingCommission": 10,
+                  "marketingBalance": "0",
+                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ",
+                  "balance": "0",
+                  "createdAt": "2022-10-12T10:48:45.000Z",
+                  "updatedAt": "2022-10-14T19:21:59.000Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "در گرفتن اطلاعات دچار مشکل شدیم",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/files": {
+      "post": {
+        "tags": ["Users Files"],
+        "summary": "Upload new file",
+        "consumes": ["multipart/form-data"],
+        "produces": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "attachment",
+            "type": "file",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/users/folders": {
+      "post": {
+        "tags": ["Users Folders"],
+        "summary": "create new folder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersFolders" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "id": 1,
+                  "color": "رنگی",
+                  "side": "تک رو",
+                  "size": "A4",
+                  "countOfPages": 8,
+                  "uploadedPages": 6,
+                  "binding": "من صحافی میخواهم",
+                  "numberOfCopies": 5,
+                  "description": "این یک توضیح است",
+                  "shipmentPrice": "5000",
+                  "amount": "5000",
+                  "files": [{ "id": 1 }]
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "size": ["سایز صفحه مشخص نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "مشکلی پیش آمده است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users Folders"],
+        "summary": "get open folders",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "color": "رنگی",
+                  "side": "تک رو",
+                  "size": "A4",
+                  "countOfPages": 8,
+                  "uploadedPages": 6,
+                  "binding": "من صحافی میخواهم",
+                  "numberOfCopies": 5,
+                  "description": "این یک توضیح است",
+                  "shipmentPrice": "5000",
+                  "amount": "5000",
+                  "files": [
+                    {
+                      "id": 1,
+                      "uploadedFileName": "CV-4.pdf",
+                      "fileName": "CV-4.pdf",
+                      "fileUrl": "are",
+                      "pageCount": 1,
+                      "createdAt": "2022-10-12T10:51:37.000Z",
+                      "updatedAt": "2022-10-12T10:51:37.000Z"
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "size": ["سایز صفحه مشخص نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "مشکلی پیش آمده است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/wallets/deposit": {
+      "post": {
+        "tags": ["Users Wallet"],
+        "summary": "create new deposit payment url for increase wallet balance",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersDeposit" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "paymentUrl": "https://sandbox.zarinpal.com/pg/StartPay/000000000000000000000000000000956163",
+                  "amount": 1000
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "amount": ["مبلغ نادرست"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "مشکلی پیش آمده است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/folders/id/{id}": {
+      "put": {
+        "tags": ["Users Folders"],
+        "summary": "edit exist folder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersFolders" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "color": "رنگی",
+                  "side": "تک رو",
+                  "size": "A4",
+                  "countOfPages": 8,
+                  "uploadedPages": 6,
+                  "binding": "من صحافی میخواهم",
+                  "numberOfCopies": 5,
+                  "description": "این یک توضیح است",
+                  "shipmentPrice": 5000,
+                  "amount": 5000,
+                  "files": [
+                    {
+                      "id": 1,
+                      "uploadedFileName": "CV-4.pdf",
+                      "fileName": "CV-4.pdf",
+                      "fileUrl": "are",
+                      "pageCount": 1,
+                      "createdAt": "2022-10-12T10:51:37.000Z",
+                      "updatedAt": "2022-10-12T10:51:37.000Z"
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "size": ["سایز صفحه مشخص نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "مشکلی پیش آمده است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users Folders"],
+        "summary": "get single open folder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersFolders" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "color": "رنگی",
+                  "side": "تک رو",
+                  "size": "A4",
+                  "countOfPages": 8,
+                  "uploadedPages": 6,
+                  "binding": "من صحافی میخواهم",
+                  "numberOfCopies": 5,
+                  "description": "این یک توضیح است",
+                  "shipmentPrice": 5000,
+                  "price": 5000,
+                  "files": [{ "id": 1 }]
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "size": ["سایز صفحه مشخص نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "مشکلی پیش آمده است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users Folders"],
+        "summary": "delete single  folder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "color": "رنگی",
+                  "side": "تک رو",
+                  "size": "A4",
+                  "countOfPages": 8,
+                  "uploadedPages": 6,
+                  "binding": "من صحافی میخواهم",
+                  "numberOfCopies": 5,
+                  "description": "این یک توضیح است",
+                  "shipmentPrice": 5000,
+                  "price": 5000,
+                  "files": [{ "id": 1 }]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "مشکلی پیش آمده است",
                   "details": []
                 }
               }
@@ -163,7 +811,7 @@
                 "data": {
                   "id": 1,
                   "recipientName": "کسری تحویل میگیرم",
-                  "recipientPhoneNumber": "09385667274",
+                  "recipientphoneNumberNumber": "09385667274",
                   "recipientPostalCode": "4675744151",
                   "recipientDeliveryProvince": "مازندران",
                   "recipientDeliveryCity": "ساری",
@@ -182,7 +830,11 @@
                 "error": {
                   "message": "اینپوت پیدا نشد",
                   "details": [
-                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
+                    {
+                      "recipientphoneNumberNumber": [
+                        "شماره تلفن مقصد نامعتبر است"
+                      ]
+                    },
                     {
                       "recipientDeliveryProvince": ["استان نامعتبر است"]
                     }
@@ -230,7 +882,7 @@
                   {
                     "id": 1,
                     "recipientName": "کسری تحویل میگیرم",
-                    "recipientPhoneNumber": "09385667274",
+                    "recipientphoneNumberNumber": "09385667274",
                     "recipientPostalCode": "4675744151",
                     "recipientDeliveryProvince": "مازندران",
                     "recipientDeliveryCity": "ساری",
@@ -239,7 +891,7 @@
                   {
                     "id": 2,
                     "recipientName": "رضا تحویل میگیرم",
-                    "recipientPhoneNumber": "09385667276",
+                    "recipientphoneNumberNumber": "09385667276",
                     "recipientPostalCode": "4675744157",
                     "recipientDeliveryProvince": "مازندران",
                     "recipientDeliveryCity": "ساری",
@@ -296,7 +948,7 @@
                 "data": {
                   "id": 1,
                   "recipientName": "کسری تحویل میگیرم",
-                  "recipientPhoneNumber": "09385667274",
+                  "recipientphoneNumberNumber": "09385667274",
                   "recipientPostalCode": "4675744151",
                   "recipientDeliveryProvince": "مازندران",
                   "recipientDeliveryCity": "ساری",
@@ -404,7 +1056,11 @@
                 "error": {
                   "message": "اینپوت پیدا نشد",
                   "details": [
-                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
+                    {
+                      "recipientphoneNumberNumber": [
+                        "شماره تلفن مقصد نامعتبر است"
+                      ]
+                    },
                     {
                       "recipientDeliveryProvince": ["استان نامعتبر است"]
                     }
@@ -429,53 +1085,10 @@
         }
       }
     },
-    "/users/withdrawals/id/{id}": {
-      "get": {
-        "tags": ["Users Withdrawals"],
-        "summary": "Get Single withdraw info",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "authorization",
-            "description": "Bearer Token",
-            "in": "header",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "examples": {
-              "application/json": {
-                "statusCode": 200,
-                "data": {
-                  "id": 1,
-                  "recipientName": "کسری تحویل میگیرم",
-                  "recipientPhoneNumber": "09385667274",
-                  "recipientPostalCode": "4675744151",
-                  "recipientDeliveryProvince": "مازندران",
-                  "recipientDeliveryCity": "ساری",
-                  "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده"
-                },
-                "error": null
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/withdrawals": {
+    "/users/wallets/withdrawal": {
       "post": {
-        "tags": ["Users Withdrawals"],
-        "summary": "Add new withdraw from user",
+        "tags": ["Users Wallet"],
+        "summary": "Add new withdrawal from user",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -490,7 +1103,7 @@
             "in": "body",
             "name": "body",
             "required": true,
-            "schema": { "$ref": "#/definitions/UsersWithdrawals" }
+            "schema": { "$ref": "#/definitions/UsersWithdrawal" }
           }
         ],
         "responses": {
@@ -515,67 +1128,11 @@
                 "error": {
                   "message": "اینپوت پیدا نشد",
                   "details": [
-                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
                     {
-                      "recipientDeliveryProvince": ["استان نامعتبر است"]
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "examples": {
-              "application/json": {
-                "statusCode": 400,
-                "data": null,
-                "error": {
-                  "message": "این داده قبلا درج شده بود",
-                  "details": []
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": ["Users Withdrawals"],
-        "summary": "Get all withdrawals from user",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "authorization",
-            "description": "Bearer Token",
-            "in": "header",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "examples": {
-              "application/json": {
-                "statusCode": 200,
-                "data": {
-                  "message": "با موفقعیت آپدیت شد"
-                },
-                "error": null
-              }
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity",
-            "examples": {
-              "application/json": {
-                "statusCode": 422,
-                "data": null,
-                "error": {
-                  "message": "اینپوت پیدا نشد",
-                  "details": [
-                    { "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"] },
+                      "recipientphoneNumberNumber": [
+                        "شماره تلفن مقصد نامعتبر است"
+                      ]
+                    },
                     {
                       "recipientDeliveryProvince": ["استان نامعتبر است"]
                     }
@@ -623,7 +1180,7 @@
                 "data": {
                   "id": 4,
                   "name": "Programmer Kasra",
-                  "phone": "09385667274",
+                  "phoneNumber": "09385667274",
                   "message": "Hi,this is a message !"
                 },
                 "error": null
@@ -681,7 +1238,7 @@
                 "statusCode": 201,
                 "data": {
                   "id": 4,
-                  "phone": "09385667274"
+                  "phoneNumber": "09385667274"
                 },
                 "error": null
               }
@@ -695,7 +1252,7 @@
                 "data": null,
                 "error": {
                   "message": "اینپوت پیدا نشد",
-                  "details": [{ "phone": ["شماره تلفن نامعتبر است"] }]
+                  "details": [{ "phoneNumber": ["شماره تلفن نامعتبر است"] }]
                 }
               }
             }
@@ -729,18 +1286,24 @@
     "َAffiliates": {
       "type": "object",
       "properties": {
-        "phone": { "type": "string", "example": "09385667274" }
+        "phoneNumber": { "type": "string", "example": "09385667274" }
       }
     },
     "ContactUs": {
       "type": "object",
       "properties": {
         "name": { "type": "string", "example": "Programmer Kasra" },
-        "phone": { "type": "string", "example": "09385667274" },
+        "phoneNumber": { "type": "string", "example": "09385667274" },
         "message": { "type": "string", "example": "Hi,this is a message !" }
       }
     },
-    "UsersWithdrawals": {
+    "UsersDeposit": {
+      "type": "object",
+      "properties": {
+        "amount": { "type": "int", "example": 1000 }
+      }
+    },
+    "UsersWithdrawal": {
       "type": "object",
       "properties": {
         "iban": { "type": "string", "example": "123123123123132" },
@@ -750,21 +1313,53 @@
           "enum": ["pending", "rejected", "approved", "pending_confirmation"]
         },
         "trackingNumber": { "type": "string", "example": "213124" },
-        "amount": { "type": "string", "example": "2000" },
+        "amount": { "type": "int", "example": 2000 },
         "description": { "type": "string", "example": "This Is A Description!" }
+      }
+    },
+    "UsersFolders": {
+      "type": "object",
+      "properties": {
+        "color": { "type": "string", "example": "رنگی" },
+        "side": { "type": "string", "example": "تک رو" },
+        "size": { "type": "string", "example": "A4" },
+        "countOfPages": { "type": "int", "example": 6 },
+        "uploadedPages": { "type": "int", "example": 2 },
+        "binding": { "type": "string", "example": "میخواهم صحافی بشود" },
+        "numberOfCopies": { "type": "int", "example": 6 },
+        "description": { "type": "string", "example": "این یک توضیح است" },
+        "shipmentPrice": { "type": "int", "example": 20000 },
+        "amount": { "type": "int", "example": 10000 },
+        "files": {
+          "type": "array",
+          "items": { "type": "int", "example": { "id": 1 } }
+        }
       }
     },
     "UsersLogin": {
       "type": "object",
       "properties": {
-        "phone": { "type": "string", "example": "09385667274" },
+        "phoneNumber": { "type": "string", "example": "09385667274" },
         "password": { "type": "string", "example": "This Is A Passowrd!" }
+      }
+    },
+    "UsersProfile": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "example": "Kasra Programmer 2" },
+        "password": { "type": "string", "example": "This Is A New Passowrd!" }
       }
     },
     "UsersRegister": {
       "type": "object",
       "properties": {
-        "phone": { "type": "string", "example": "09385667274" },
+        "phoneNumber": { "type": "string", "example": "09385667274" }
+      }
+    },
+    "UsersRegisterConfirm": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" },
         "name": { "type": "string", "example": "Programmer Kasra" },
         "password": { "type": "string", "example": "This Is A Passowrd!" }
       }
@@ -773,7 +1368,7 @@
       "type": "object",
       "properties": {
         "recipientName": { "type": "string", "example": "کسری تحویل میگیره" },
-        "recipientPhoneNumber": {
+        "recipientphoneNumberNumber": {
           "type": "string",
           "example": "09385667274"
         },

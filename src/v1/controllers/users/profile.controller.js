@@ -5,7 +5,7 @@ const { uniqueGenerates } = require('../../libs')
 
 const dashboard = (req, res) => {}
 
-const changeProfile = (req, res) => {
+const update = (req, res) => {
   const { name, password } = req.body
   const userId = req?.user[0]?.id
   const data = {
@@ -31,4 +31,27 @@ const changeProfile = (req, res) => {
     })
 }
 
-module.exports = { dashboard, changeProfile }
+const findOne = (req, res) => {
+  const userId = req?.user[0]?.id
+  return sequelize.models.users
+    .findOne({
+      where: {
+        id: userId
+      },
+      attributes: {
+        exclude: ['password', 'referralUserId', 'active']
+      }
+    })
+    .then((r) => {
+      return res.status(200).send({
+        statusCode: 200,
+        data: r,
+        error: null
+      })
+    })
+    .catch((e) => {
+      return httpError(e, res)
+    })
+}
+
+module.exports = { dashboard, findOne, update }

@@ -1,18 +1,25 @@
+const { httpError, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const { pageCounter } = require('../../libs')
+const fs = require('fs')
+const path = require('path')
 
 const upload = async (req, res) => {
   try {
+    return res.send('are')
+    const userId = req?.user[0]?.id
+
     const { attachment } = req.files
 
     if (!req.files || Object.keys(req.files).length === 0 || !attachment)
-      throw new Error('Invalid Inputs')
+      return httpError(errorTypes.FILE_NOT_SELECTED, res)
 
     const extensionName = path.extname(attachment.name)
 
-    const allowedExtension = ['.pdf', '.docx']
+    const allowedExtension = ['.pdf']
 
     if (!allowedExtension.includes(extensionName.toLowerCase()))
-      throw new Error('Invalid Image Format')
+      return httpError(errorTypes.INVALID_PDF_DOCX_FORMAT, res)
 
     let filePath = `./app/v1/storages/files/${attachment.name}`
 
@@ -27,22 +34,25 @@ const upload = async (req, res) => {
 
     await attachment.mv(filePath)
 
-    return res.status(201).send({
+    const rCounter = await pageCounter.pdf(filePath)
+
+    const r = await sequelize.models.files.create({
+      userId,
+      uploadedFileName: attachment.name,
+      fileName: attachment.name,
+      pageCount: rCounter.data || 0,
+      fileUrl: 'are'
+    })
+
+    console.log(r)
+
+    res.status(201).send({
       statusCode: 201,
-      data: {
-        icon_url: attachment.name
-      },
+      data: r,
       error: null
     })
   } catch (e) {
-    return res.status(400).send({
-      statusCode: 400,
-      data: null,
-      error: {
-        code: null,
-        message: e.message
-      }
-    })
+    return httpError(e, res)
   }
 }
 

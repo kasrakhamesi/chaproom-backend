@@ -3,18 +3,13 @@ const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
 const userRefreshToken = 'refresh'
 
-module.exports.adminJwt = ({
-  id: id,
-  roleId: roleId,
-  phone: phone,
-  password: password
-}) => {
+module.exports.adminJwt = ({ id, roleId, phoneNumber, password }) => {
   return jsonwebtoken.sign(
     {
-      id: id,
-      roleId: roleId,
-      phone: phone,
-      password: password,
+      id,
+      roleId,
+      phoneNumber,
+      password,
       isAdmin: true
     },
     adminAccess,
@@ -22,11 +17,11 @@ module.exports.adminJwt = ({
   )
 }
 
-const generateUserJwt = (id, phone) => {
+const generateUserJwt = (id, phoneNumber) => {
   return jsonwebtoken.sign(
     {
       id,
-      phone,
+      phoneNumber,
       isAdmin: false
     },
     userAccess,

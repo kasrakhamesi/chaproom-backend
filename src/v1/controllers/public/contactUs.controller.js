@@ -2,11 +2,11 @@ const { httpError } = require('../../configs')
 const { sequelize } = require('../../models')
 
 const create = (req, res) => {
-  const { name, message, phone } = req.body
+  const { name, message, phoneNumber } = req.body
   const data = {
     name,
     message,
-    phone
+    phoneNumber
   }
   return sequelize.models.contact_us.create(data).then((r) => {
     return res

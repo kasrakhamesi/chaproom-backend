@@ -22,11 +22,11 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: true
       },
-      phone: {
+      phoneNumber: {
         type: Sequelize.STRING(11),
         unique: {
           args: true,
-          msg: 'This phone is already registered.'
+          msg: 'This phoneNumber is already registered.'
         },
         validate: {
           is: /^(\+98|0098|98|0)?9\d{9}$/

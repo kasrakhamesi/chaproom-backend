@@ -24,6 +24,7 @@
     "passport-jwt": "^4.0.0",
     "pdf-page-counter": "^1.0.3",
     "pdfjs-dist": "^2.16.105",
+    "request-promise": "^4.2.6",
     "sequelize": "^6.21.4",
     "swagger-jsdoc": "^6.2.5",
     "swagger-ui-express": "^4.5.0"

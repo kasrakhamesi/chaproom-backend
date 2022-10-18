@@ -13,7 +13,7 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false
         },
-        phone: {
+        phoneNumber: {
           type: Sequelize.STRING,
           unique: {
             args: true,
@@ -38,7 +38,7 @@ module.exports = {
           allowNull: true
         },
         marketingBalance: {
-          type: Sequelize.STRING,
+          type: Sequelize.BIGINT.UNSIGNED,
           defaultValue: 0,
           allowNull: false
         },
@@ -47,7 +47,7 @@ module.exports = {
           allowNull: true
         },
         balance: {
-          type: Sequelize.STRING,
+          type: Sequelize.BIGINT.UNSIGNED,
           defaultValue: 0,
           allowNull: false
         },
@@ -63,10 +63,14 @@ module.exports = {
         updatedAt: {
           allowNull: true,
           type: Sequelize.DATE
+        },
+        deletedAt: {
+          allowNull: true,
+          type: Sequelize.DATE
         }
       })
       .then(() =>
-        queryInterface.addIndex('users', ['phone'], {
+        queryInterface.addIndex('users', ['phoneNumber'], {
           unique: true
         })
       )

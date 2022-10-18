@@ -41,7 +41,7 @@ module.exports = {
         allowNull: true
       },
       amount: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       },
       description: {
@@ -54,6 +54,10 @@ module.exports = {
       },
       updatedAt: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      deletedAt: {
+        allowNull: true,
         type: Sequelize.DATE
       }
     })

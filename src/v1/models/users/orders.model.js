@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
+      discountId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
       status: {
         type: DataTypes.ENUM(
           'pending',
@@ -31,61 +35,38 @@ module.exports = (sequelize, DataTypes) => {
         ),
         allowNull: false
       },
-      color: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      side: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      size: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      countOfPages: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      },
-      uploadedPages: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      },
-      binding: {
-        type: DataTypes.TEXT,
-        allowNull: false
-      },
-      numberOfCopies: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      },
-      description: {
-        type: DataTypes.TEXT,
-        allowNull: true
-      },
-      shipmentPrice: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      price: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      telegramUploadFile: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-      },
-      whatsupUploadFile: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-      },
-      payment: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-      },
-      discountId: {
+      amount: {
         type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false
+      },
+      sendMethod: {
+        type: DataTypes.STRING,
+        defaultValue: 'پست پیشتاز',
         allowNull: true
+      },
+      recipientName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      recipientPhoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      recipientPostalCode: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      recipientDeliveryProvince: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      recipientDeliveryCity: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      recipientDeliveryAddress: {
+        type: DataTypes.TEXT,
+        allowNull: false
       },
       discountType: {
         type: DataTypes.STRING,
@@ -103,6 +84,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true
       },
+      trackingNumber: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
       cancelReason: {
         type: DataTypes.STRING,
         allowNull: true
@@ -111,9 +96,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true
       },
-      compeleteAt: {
-        allowNull: true,
-        type: DataTypes.DATE
+      paymentId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
+      walletPaidPrice: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
+      gatewayPaidPrice: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
       },
       sentAt: {
         allowNull: true,

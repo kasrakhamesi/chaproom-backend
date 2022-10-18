@@ -71,22 +71,20 @@ usersPassport.use(
       secretOrKey: userAccess
     },
     (jwtPayLoad, done) => {
-      console.log(jwtPayLoad)
       return sequelize.models.users
         .findAll({
           where: {
-            id: jwtPayLoad.id,
-            phone: jwtPayLoad.phone
+            id: jwtPayLoad.id
           },
           attributes: {
             exclude: ['password', 'referralUserId', 'active']
           }
         })
-        .then((result) => {
-          return done(null, result)
+        .then((r) => {
+          return done(null, r)
         })
-        .catch((err) => {
-          return done(err)
+        .catch((e) => {
+          return done(e)
         })
     }
   )

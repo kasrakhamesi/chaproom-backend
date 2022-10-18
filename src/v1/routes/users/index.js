@@ -11,7 +11,11 @@ router.use(passport.usersPassport.initialize())
 
 router.use('/auth', require('./auth.route'))
 router.use('/addresses', usersPassport, require('./addresses.route'))
-router.use('/withdrawals', usersPassport, require('./withdrawals.route'))
+router.use('/wallets', usersPassport, require('./wallets.route'))
 router.use('/files', usersPassport, require('./files.route'))
+router.use('/folders', usersPassport, require('./folders.route'))
+router.use('/profile', usersPassport, require('./profile.route'))
+//router.use('/marketing', usersPassport, require('./marketing.route'))
+router.use('/payments', require('./payments.route'))
 
 module.exports = router

@@ -19,29 +19,30 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerUserDocument)
 )
-/*
-const pdfjsLib = require('pdfjs-dist')
-pdfjsLib
-  .getDocument(`C:/Users/Kasra/Downloads/f.pdf`)
-  .promise.then(function (doc) {
-    var numPages = doc.numPages
-    console.log('# Document Loaded')
-    console.log('Number of Pages: ' + numPages)
-  })
-*/
-const fs = require('fs')
-const pdf = require('pdf-page-counter')
 
-let dataBuffer = fs.readFileSync(`C:/Users/Kasra/Downloads/w.pdf`)
+const { gateways } = require('./src/v1/libs')
 
-pdf(dataBuffer).then(function (data) {
-  // number of pages
-  console.log(data.numpages)
-  // number of rendered pages
-})
+const create = async () => {
+  try {
+    const zarinpal = gateways.zarinpal.create(
+      process.env.ZARINPAL_MERCHANT,
+      true
+    )
+    const payment = await zarinpal.PaymentRequest({
+      Amount: '1000',
+      CallbackURL: 'http://siamak.us',
+      Description: 'Hello NodeJS API.',
+      Email: 'hi@siamak.work',
+      Mobile: '09120000000'
+    })
 
-//  var numPages = console.log('# Document Loaded') //doc.numPages
-// console.log('Number of Pages: ' + numPages)
+    console.log(payment)
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+//create().then().catch()
 
 app.use('*', (req, res) => {
   res.status(404).send({

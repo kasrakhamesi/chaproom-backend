@@ -2,7 +2,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
-      .createTable('balance_changes', {
+      .createTable('payments', {
         id: {
           allowNull: false,
           autoIncrement: true,
@@ -16,43 +16,33 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: false
         },
-        orderId: {
-          type: Sequelize.BIGINT.UNSIGNED,
-          references: { model: 'orders', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
-          allowNull: true
-        },
-        adminId: {
-          type: Sequelize.INTEGER.UNSIGNED,
-          references: { model: 'admins', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
-          allowNull: true
-        },
-        type: {
-          type: Sequelize.ENUM('deposit', 'withdrawal'),
-          allowNull: false
-        },
-        balanceBefore: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        balance: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-        balanceAfter: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
         amount: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          allowNull: false
+        },
+        authority: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        description: {
+        status: {
           type: Sequelize.STRING,
           allowNull: true
+        },
+        refId: {
+          type: Sequelize.STRING,
+          allowNull: true
+        },
+        verifiedStatus: {
+          type: Sequelize.STRING,
+          allowNull: true
+        },
+        fullResponse: {
+          type: Sequelize.JSON,
+          allowNull: true
+        },
+        verifiedAt: {
+          allowNull: true,
+          type: Sequelize.DATE
         },
         createdAt: {
           allowNull: true,
@@ -64,12 +54,12 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('balance_changes', ['orderId'], {
+        queryInterface.addIndex('payments', ['authority'], {
           unique: true
         })
       )
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('balance_changes')
+    await queryInterface.dropTable('payments')
   }
 }

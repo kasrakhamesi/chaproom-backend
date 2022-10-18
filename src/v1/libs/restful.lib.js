@@ -113,13 +113,7 @@ class Restful {
       return {
         statusCode: 200,
         data: resGet,
-        error: _.isEmpty(resGet)
-          ? {
-              code: errorsConfig.codes.errorsCode.data_not_found_404.error.code,
-              message:
-                errorsConfig.codes.errorsCode.data_not_found_404.error.message
-            }
-          : null
+        error: null
       }
     } catch (e) {
       return httpError(e)
@@ -150,8 +144,7 @@ class Restful {
         error: null
       }
     } catch (e) {
-      const errorMessage = e?.errors?.message || e.message
-      return errorsConfig.configs.findErrorCode(errorMessage)
+      return httpError(e)
     }
   }
 
@@ -192,8 +185,7 @@ class Restful {
       }
       return errorsConfig.codes.errorsCode.data_not_found_404
     } catch (e) {
-      const errorMessage = e?.errors?.message || e.message
-      return errorsConfig.configs.findErrorCode(errorMessage)
+      return httpError(e)
     }
   }
 
@@ -234,8 +226,7 @@ class Restful {
 
       return errorsConfig.codes.errorsCode.data_not_found_404
     } catch (e) {
-      const errorMessage = e?.errors?.message || e.message
-      return errorsConfig.configs.findErrorCode(errorMessage)
+      return httpError(e)
     }
   }
 }

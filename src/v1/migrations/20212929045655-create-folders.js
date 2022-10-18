@@ -48,11 +48,11 @@ module.exports = {
         allowNull: true
       },
       shipmentPrice: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       },
-      price: {
-        type: Sequelize.STRING,
+      amount: {
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       },
       telegramUploadFile: {
@@ -60,7 +60,7 @@ module.exports = {
         defaultValue: false,
         allowNull: false
       },
-      whatsupUploadFile: {
+      whatsappUploadFile: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         allowNull: false

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: true
       },
-      phone: {
+      phoneNumber: {
         type: DataTypes.STRING(11),
         unique: {
           args: true,

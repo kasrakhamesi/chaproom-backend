@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      phone: {
+      phoneNumber: {
         type: DataTypes.STRING,
         unique: {
           args: true,
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       marketingBalance: {
-        type: DataTypes.STRING,
+        type: DataTypes.BIGINT.UNSIGNED,
         defaultValue: 0,
         allowNull: false
       },
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       balance: {
-        type: DataTypes.STRING,
+        type: DataTypes.BIGINT.UNSIGNED,
         defaultValue: 0,
         allowNull: false
       },
