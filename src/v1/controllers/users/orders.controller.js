@@ -4,7 +4,11 @@ const _ = require('lodash')
 
 const create = async (req, res) => {
   try {
-    const { folders, addressId } = req.body
+    const userId = req?.user[0]?.id
+
+    const totalPrice = 0
+
+    const { folders, addressId, paidWithWallet } = req.body
 
     const address = await sequelize.models.addresses.findOne({
       where: {
@@ -26,7 +30,56 @@ const create = async (req, res) => {
       recipientDeliveryCity: address?.recipientDeliveryCity,
       recipientDeliveryAddress: address?.recipientDeliveryAddress,
       status: 'pending',
-      price: 'test'
+      price: test
+    }
+
+    if (paidWithWallet) {
+      const user = await sequelize.models.users.findOne({
+        where: {
+          id: userId
+        }
+      })
+
+      const balance = user?.balance
+
+      if (balance >= totalPrice) {
+        const r = await sequelize.models.orders.create(data)
+      } else {
+        const priceLeft = totalPrice - balance
+
+        const zarinpal = gateways.zarinpal.create(
+          process.env.ZARINPAL_MERCHANT,
+          true
+        )
+        const payment = await zarinpal.PaymentRequest({
+          Amount: parseInt(priceLeft),
+          CallbackURL: process.env.PAYMENT_CALLBACK,
+          Description: 'افزایش موجودی کیف پول'
+        })
+
+        if (payment?.status !== 100)
+          return httpError(errorTypes.GATEWAY_ERROR, res)
+
+        const paymentCreated = await sequelize.models.payments.create({
+          userId,
+          amount: priceLeft,
+          authority: payment?.authority
+        })
+
+        if (!r) return httpError(errorTypes.GATEWAY_ERROR, res)
+        data.paymentId = paymentCreated?.id
+
+        const r = await sequelize.models.orders.create(data)
+
+        return res.status(201).send({
+          statusCode: 201,
+          data: {
+            paymentUrl: payment?.url,
+            amount
+          },
+          error: null
+        })
+      }
     }
   } catch (e) {
     return httpError(e, res)

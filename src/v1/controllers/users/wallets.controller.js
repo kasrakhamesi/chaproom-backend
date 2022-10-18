@@ -3,32 +3,66 @@ const { gateways } = require('../../libs')
 const { httpError, errorTypes } = require('../../configs')
 require('dotenv').config()
 
-const withdrawal = (req, res) => {
-  const { iban, amount } = req.body
+const withdrawal = async (req, res) => {
+  try {
+    const { iban, amount } = req.body
 
-  if (typeof amount !== 'number')
-    return httpError(errorTypes.INVALID_AMOUNT_TYPE, res)
+    if (typeof amount !== 'number')
+      return httpError(errorTypes.INVALID_AMOUNT_TYPE, res)
 
-  const userId = req?.user[0]?.id
+    const userId = req?.user[0]?.id
 
-  const data = {
-    iban: String(iban),
-    amount,
-    userId
+    const data = {
+      iban: String(iban),
+      amount,
+      userId
+    }
+
+    const userTransactions = await sequelize.models.transactions.findAll({
+      where: {
+        userId: payment?.userId,
+        status: 'approved'
+      }
+    })
+
+    let incoming = 0
+    let outgoing = 0
+
+    for (const transaction of userTransactions) {
+      if (transaction?.change === 'increase')
+        incoming += parseInt(transaction?.amount)
+      else outgoing += parseInt(transaction?.amount)
+    }
+
+    outgoing = await Promise.all(outgoing)
+    incoming = await Promise.all(incoming)
+
+    const balance = incoming - outgoing
+
+    if (balance < amount) return httpError(errorTypes.INSUFFICIENT_FUNDS, res)
+
+    const r = await sequelize.models.withdrawals.create(data)
+
+    await sequelize.models.transactions.create({
+      userId,
+      withdrawalId: r?.id,
+      type: 'withdrawal',
+      change: 'decrease',
+      balance,
+      balanceAfter: balance - amount,
+      status: 'pending',
+      amount,
+      description: 'برداشت وجه'
+    })
+
+    res.status(201).send({
+      statusCode: 201,
+      data: r,
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
   }
-
-  return sequelize.models.withdrawals
-    .create(data)
-    .then((r) => {
-      return res.status(201).send({
-        statusCode: 201,
-        data: r,
-        error: null
-      })
-    })
-    .catch((e) => {
-      return httpError(e, res)
-    })
 }
 
 const deposit = async (req, res) => {

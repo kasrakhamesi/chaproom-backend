@@ -1,8 +1,33 @@
 const { httpError, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const { restful } = require('../../libs')
+const transactions = new restful(sequelize.models.transactions)
 
-const findAll = (req, res) => {
-  const userId = req?.user[0]?.id
+const findAll = async (req, res) => {
+  try {
+    const userId = req?.user[0]?.id
+
+    const { page, pageSize } = req.query
+    const [order, where] = await filters.filter(
+      req.query,
+      sequelize.models.transactions
+    )
+
+    const newWhere = { ...where, userId }
+
+    const r = await transactions.Get({
+      newWhere,
+      order,
+      pagination: {
+        active: true,
+        page,
+        pageSize
+      }
+    })
+    res.status(r?.statusCode).send(r)
+  } catch (e) {
+    httpError(e, res)
+  }
 }
 
 const findOne = (req, res) => {

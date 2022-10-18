@@ -51,6 +51,10 @@ const Types = {
   MISSING_TRANSACTION: {
     statusCode: 400,
     message: 'تراکنش پیدا نشد'
+  },
+  INSUFFICIENT_FUNDS: {
+    statusCode: 400,
+    message: 'موجودی شما کافی نمیباشد'
   }
 }
 

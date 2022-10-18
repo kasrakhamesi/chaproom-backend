@@ -5,7 +5,6 @@ const { authentications } = require('../../services')
 const bcrypt = require('bcrypt')
 
 const register = (req, res) => {
-  console.log(req.body)
   const { phoneNumber } = req.body
   return authentications.sms
     .send({ phoneNumber })
