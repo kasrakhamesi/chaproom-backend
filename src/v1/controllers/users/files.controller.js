@@ -6,7 +6,6 @@ const path = require('path')
 
 const upload = async (req, res) => {
   try {
-    return res.send('are')
     const userId = req?.user[0]?.id
 
     const { attachment } = req.files
@@ -21,13 +20,13 @@ const upload = async (req, res) => {
     if (!allowedExtension.includes(extensionName.toLowerCase()))
       return httpError(errorTypes.INVALID_PDF_DOCX_FORMAT, res)
 
-    let filePath = `./app/v1/storages/files/${attachment.name}`
+    let filePath = `./src/v1/storages/files/${attachment.name}`
 
     if (fs.existsSync(filePath)) {
       for (let k = 0; k < 100000000000; k++) {
-        if (fs.existsSync(`./app/v1/storages/files/${k}${attachment.name}`))
+        if (fs.existsSync(`./src/v1/storages/files/${k}${attachment.name}`))
           continue
-        filePath = `./app/v1/storages/files/${k}${attachment.name}`
+        filePath = `./src/v1/storages/files/${k}${attachment.name}`
         break
       }
     }
@@ -43,8 +42,6 @@ const upload = async (req, res) => {
       pageCount: rCounter.data || 0,
       fileUrl: 'are'
     })
-
-    console.log(r)
 
     res.status(201).send({
       statusCode: 201,
