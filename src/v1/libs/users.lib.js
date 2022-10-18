@@ -18,9 +18,6 @@ const getBalance = async (userId) => {
       else outgoing += parseInt(transaction?.amount)
     }
 
-    outgoing = await Promise.all(outgoing)
-    incoming = await Promise.all(incoming)
-
     const balance = incoming - outgoing
 
     return {
@@ -32,6 +29,7 @@ const getBalance = async (userId) => {
       }
     }
   } catch (e) {
+    console.log(e)
     return {
       isSuccess: false,
       message: e.message

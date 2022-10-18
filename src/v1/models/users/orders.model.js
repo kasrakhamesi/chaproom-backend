@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.ENUM(
+          'pending_payment',
           'pending',
           'approved',
           'rejected',
@@ -100,11 +101,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: true
       },
-      walletPaidPrice: {
+      walletPaidAmount: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: true
       },
-      gatewayPaidPrice: {
+      gatewayPaidAmount: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: true
       },

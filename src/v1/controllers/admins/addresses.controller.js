@@ -1,5 +1,5 @@
 const { sequelize } = require('../../models')
-const { restful } = require('../../libs')
+const { restful, filters } = require('../../libs')
 const { httpError } = require('../../configs')
 const addresses = new restful(sequelize.models.addresses)
 

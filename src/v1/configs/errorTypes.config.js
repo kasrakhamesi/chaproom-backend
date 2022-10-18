@@ -36,13 +36,18 @@ const Types = {
     statusCode: 400,
     message: 'پرداخت با شکست مواجه شد'
   },
+  PAYMENT_FAILED: {
+    statusCode: 400,
+    message: 'این صفحه پرداخت قبلا استفاده شده'
+  },
   PAYMENT_VERIFICATION_FAILED: {
     statusCode: 400,
     message: 'پرداخت شما تایید نشد.مبلغ تا 72 ساعت به حساب شما بازمیگردد'
   },
   INVALID_ADDRESS: {
     statusCode: 400,
-    message: 'آدرس اشتباه است یا آدرس انتخاب شده مربوط به این کاربر نمیباشد'
+    message:
+      'آدرس انتخاب نشده است یا آدرس انتخاب شده مربوط به این کاربر نمیباشد'
   },
   MISSING_FOLDERS: {
     statusCode: 400,

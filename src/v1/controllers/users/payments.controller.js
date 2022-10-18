@@ -1,6 +1,7 @@
 const { sequelize } = require('../../models')
 const { gateways, utils, users } = require('../../libs')
 const { httpError, errorTypes } = require('../../configs')
+const _ = require('lodash')
 require('dotenv').config()
 
 const callback = async (req, res) => {
@@ -16,6 +17,8 @@ const callback = async (req, res) => {
     })
 
     if (!payment) return httpError(errorTypes.PAYMENT_FAILED, res)
+    if (!_.isEmpty(payment.status))
+      return httpError(errorTypes.PAYMENT_DOUBLE_SPENDING, res)
 
     const zarinpal = gateways.zarinpal.create(
       process.env.ZARINPAL_MERCHANT,
@@ -60,22 +63,18 @@ const callback = async (req, res) => {
     })
 
     await user.update({
-      balance: balance + payment?.amount
+      balance: user?.balance + payment?.amount
     })
 
     const order = await sequelize.models.orders.findOne({
       where: {
         userId: payment?.userId,
         paymentId: payment?.id,
-        status: 'pending'
+        status: 'pending_payment'
       }
     })
 
     if (order) {
-      await order.update({
-        status: 'approved'
-      })
-
       const newUserWallet = await users.getBalance(payment?.userId)
 
       if (!newUserWallet?.isSuccess)
@@ -92,6 +91,11 @@ const callback = async (req, res) => {
         amount: payment?.amount,
         description: 'ثبت سفارش'
       })
+
+      await order.update({
+        status: 'pending'
+      })
+
       return res.status(200).send({
         statusCode: 200,
         data: {
@@ -116,7 +120,6 @@ const callback = async (req, res) => {
       error: null
     })
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }

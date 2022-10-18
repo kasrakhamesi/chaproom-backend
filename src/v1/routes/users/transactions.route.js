@@ -6,6 +6,7 @@ router.use(bodyParser.json())
 
 const { users } = require('../../controllers')
 
-router.post('/', users.orders.create)
+router.get('/id/:id', users.transactions.findOne)
+router.get('/', users.transactions.findAll)
 
 module.exports = router

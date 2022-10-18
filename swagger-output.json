@@ -811,7 +811,7 @@
                 "data": {
                   "id": 1,
                   "recipientName": "کسری تحویل میگیرم",
-                  "recipientphoneNumberNumber": "09385667274",
+                  "recipientPhoneNumber": "09385667274",
                   "recipientPostalCode": "4675744151",
                   "recipientDeliveryProvince": "مازندران",
                   "recipientDeliveryCity": "ساری",
@@ -831,9 +831,7 @@
                   "message": "اینپوت پیدا نشد",
                   "details": [
                     {
-                      "recipientphoneNumberNumber": [
-                        "شماره تلفن مقصد نامعتبر است"
-                      ]
+                      "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"]
                     },
                     {
                       "recipientDeliveryProvince": ["استان نامعتبر است"]
@@ -882,7 +880,7 @@
                   {
                     "id": 1,
                     "recipientName": "کسری تحویل میگیرم",
-                    "recipientphoneNumberNumber": "09385667274",
+                    "recipientPhoneNumber": "09385667274",
                     "recipientPostalCode": "4675744151",
                     "recipientDeliveryProvince": "مازندران",
                     "recipientDeliveryCity": "ساری",
@@ -891,7 +889,7 @@
                   {
                     "id": 2,
                     "recipientName": "رضا تحویل میگیرم",
-                    "recipientphoneNumberNumber": "09385667276",
+                    "recipientPhoneNumber": "09385667276",
                     "recipientPostalCode": "4675744157",
                     "recipientDeliveryProvince": "مازندران",
                     "recipientDeliveryCity": "ساری",
@@ -948,7 +946,7 @@
                 "data": {
                   "id": 1,
                   "recipientName": "کسری تحویل میگیرم",
-                  "recipientphoneNumberNumber": "09385667274",
+                  "recipientPhoneNumber": "09385667274",
                   "recipientPostalCode": "4675744151",
                   "recipientDeliveryProvince": "مازندران",
                   "recipientDeliveryCity": "ساری",
@@ -1057,9 +1055,7 @@
                   "message": "اینپوت پیدا نشد",
                   "details": [
                     {
-                      "recipientphoneNumberNumber": [
-                        "شماره تلفن مقصد نامعتبر است"
-                      ]
+                      "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"]
                     },
                     {
                       "recipientDeliveryProvince": ["استان نامعتبر است"]
@@ -1129,9 +1125,7 @@
                   "message": "اینپوت پیدا نشد",
                   "details": [
                     {
-                      "recipientphoneNumberNumber": [
-                        "شماره تلفن مقصد نامعتبر است"
-                      ]
+                      "recipientPhoneNumber": ["شماره تلفن مقصد نامعتبر است"]
                     },
                     {
                       "recipientDeliveryProvince": ["استان نامعتبر است"]
@@ -1272,8 +1266,205 @@
           }
         }
       }
+    },
+
+    "/users/orders": {
+      "post": {
+        "tags": ["Users Orders"],
+        "summary": "create new order",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ContactUs" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 4,
+                  "phoneNumber": "09385667274"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/marketing": {
+      "get": {
+        "tags": ["Users Marketing"],
+        "summary": "get user marketing information",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 4,
+                  "phoneNumber": "09385667274"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/transactions": {
+      "get": {
+        "tags": ["Users Transactions"],
+        "summary": "get all user transactions",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 4,
+                  "phoneNumber": "09385667274"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/transactions/id/{id}": {
+      "get": {
+        "tags": ["Users Transactions"],
+        "summary": "get one of user transaction from transaction id",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "id": 4,
+                  "phoneNumber": "09385667274"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
+
   "securityDefinitions": {
     "bearerAuth": {
       "type": "http",
@@ -1368,7 +1559,7 @@
       "type": "object",
       "properties": {
         "recipientName": { "type": "string", "example": "کسری تحویل میگیره" },
-        "recipientphoneNumberNumber": {
+        "recipientPhoneNumber": {
           "type": "string",
           "example": "09385667274"
         },

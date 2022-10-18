@@ -1,6 +1,6 @@
 const { httpError, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
-const { restful } = require('../../libs')
+const { restful, filters } = require('../../libs')
 const transactions = new restful(sequelize.models.transactions)
 
 const findAll = async (req, res) => {
@@ -16,8 +16,11 @@ const findAll = async (req, res) => {
     const newWhere = { ...where, userId }
 
     const r = await transactions.Get({
-      newWhere,
+      where: newWhere,
       order,
+      attributes: {
+        exclude: ['userId']
+      },
       pagination: {
         active: true,
         page,
@@ -38,6 +41,9 @@ const findOne = (req, res) => {
       where: {
         id,
         userId
+      },
+      attributes: {
+        exclude: ['userId']
       }
     })
     .then((r) => {

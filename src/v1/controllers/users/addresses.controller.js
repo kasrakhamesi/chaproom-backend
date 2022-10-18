@@ -1,5 +1,5 @@
 const { httpError } = require('../../configs')
-const { restful } = require('../../libs')
+const { restful, filters } = require('../../libs')
 const { sequelize } = require('../../models')
 const addresses = new restful(sequelize.models.addresses)
 
@@ -84,20 +84,31 @@ const update = (req, res) => {
     })
 }
 
-const findAll = (req, res) => {
-  const userId = req?.user[0]?.id
-  addresses
-    .Get({
-      where: {
-        userId
-      },
+const findAll = async (req, res) => {
+  try {
+    const { page, pageSize } = req.query
+    const [order, where] = await filters.filter(
+      req.query,
+      sequelize.models.addresses
+    )
+    const userId = req?.user[0]?.id
+    const newWhere = { ...where, userId }
+    const r = await addresses.Get({
+      order,
+      where: newWhere,
       attributes: {
         exclude: ['userId']
+      },
+      pagination: {
+        active: true,
+        page,
+        pageSize
       }
     })
-    .then((r) => {
-      return res.status(r.statusCode).send(r)
-    })
+    return res.status(r.statusCode).send(r)
+  } catch (e) {
+    return httpError(e)
+  }
 }
 
 const findOne = (req, res) => {

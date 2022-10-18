@@ -40,7 +40,7 @@ const upload = async (req, res) => {
       uploadedFileName: attachment.name,
       fileName: attachment.name,
       pageCount: rCounter.data || 0,
-      fileUrl: 'are'
+      fileUrl: 'https://google.com/' + attachment.name
     })
 
     res.status(201).send({

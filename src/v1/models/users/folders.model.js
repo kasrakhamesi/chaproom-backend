@@ -10,9 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       folders.belongsToMany(models.files, {
-        through: 'folder_files',
-        as: 'files',
-        foreignKey: 'fileId'
+        through: 'folder_files'
       })
     }
   }

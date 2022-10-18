@@ -2,6 +2,8 @@ const { httpError } = require('../../configs')
 const { sequelize } = require('../../models')
 
 const create = async (req, res) => {
+  console.log(req.body)
+
   const {
     color,
     side,
@@ -12,7 +14,7 @@ const create = async (req, res) => {
     numberOfCopies,
     description,
     shipmentPrice,
-    price,
+    amount,
     files
   } = req.body
 
@@ -28,7 +30,7 @@ const create = async (req, res) => {
     numberOfCopies,
     description,
     shipmentPrice,
-    price,
+    amount,
     userId
   }
 
@@ -61,11 +63,43 @@ const create = async (req, res) => {
       })
     }
 
-    await sequelize.models.folder_files.bulkCreate(folderFiles)
+    const [folderFilesCreated] = await sequelize.models.folder_files.bulkCreate(
+      folderFiles
+    )
+
+    const r = await sequelize.models.folders.findOne({
+      where: {
+        userId,
+        id: folderFilesCreated?.folderId
+      },
+      attributes: {
+        exclude: ['userId']
+      },
+      include: [
+        {
+          model: sequelize.models.files,
+          as: 'files',
+          attributes: {
+            exclude: ['userId', 'folder_files']
+          },
+          through: {
+            attributes: {
+              exclude: [
+                'userId',
+                'createdAt',
+                'updatedAt',
+                'fileId',
+                'folderId'
+              ]
+            }
+          }
+        }
+      ]
+    })
 
     return res.status(201).send({
       statusCode: 201,
-      data: null,
+      data: r,
       error: null
     })
   } catch (e) {
@@ -136,7 +170,6 @@ const findAll = (req, res) => {
       include: [
         {
           model: sequelize.models.files,
-          as: 'files',
           attributes: {
             exclude: ['userId', 'folder_files']
           },

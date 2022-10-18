@@ -2,8 +2,8 @@ const { httpError } = require('../../configs')
 const { sequelize } = require('../../models')
 
 const create = (req, res) => {
-  const { phone } = req.body
-  const data = { phone }
+  const { phoneNumber } = req.body
+  const data = { phoneNumber }
   return sequelize.models.affiliates.create(data).then((r) => {
     return res
       .status(201)

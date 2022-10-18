@@ -1,12 +1,15 @@
 const { httpError, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const { gateways } = require('../../libs')
 const _ = require('lodash')
 
 const create = async (req, res) => {
   try {
+    console.log(req.body)
+
     const userId = req?.user[0]?.id
 
-    const totalPrice = 0
+    const totalPrice = 10000
 
     const { folders, addressId, paidWithWallet } = req.body
 
@@ -23,14 +26,15 @@ const create = async (req, res) => {
 
     const data = {
       addressId,
+      userId,
       recipientName: address?.recipientName,
       recipientPhoneNumber: address?.recipientPhoneNumber,
       recipientPostalCode: address?.recipientPostalCode,
       recipientDeliveryProvince: address?.recipientDeliveryProvince,
       recipientDeliveryCity: address?.recipientDeliveryCity,
       recipientDeliveryAddress: address?.recipientDeliveryAddress,
-      status: 'pending',
-      price: test
+      status: 'pending_payment',
+      amount: 15000
     }
 
     if (paidWithWallet) {
@@ -43,7 +47,10 @@ const create = async (req, res) => {
       const balance = user?.balance
 
       if (balance >= totalPrice) {
+        data.walletPaidAmount = balance
+        data.status = 'pending'
         const r = await sequelize.models.orders.create(data)
+        return res.status(201).send(r)
       } else {
         const priceLeft = totalPrice - balance
 
@@ -66,8 +73,10 @@ const create = async (req, res) => {
           authority: payment?.authority
         })
 
-        if (!r) return httpError(errorTypes.GATEWAY_ERROR, res)
+        if (!paymentCreated) return httpError(errorTypes.GATEWAY_ERROR, res)
         data.paymentId = paymentCreated?.id
+        data.gatewayPaidAmount = priceLeft
+        data.walletPaidAmount = balance
 
         const r = await sequelize.models.orders.create(data)
 
@@ -75,13 +84,14 @@ const create = async (req, res) => {
           statusCode: 201,
           data: {
             paymentUrl: payment?.url,
-            amount
+            amount: priceLeft
           },
           error: null
         })
       }
     }
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

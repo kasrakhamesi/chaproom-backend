@@ -2,6 +2,7 @@ const { httpError, errorTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
+
 const bcrypt = require('bcrypt')
 
 const register = (req, res) => {
@@ -99,7 +100,17 @@ const login = (req, res) => {
     })
 }
 
-const passwordReset = (req, res) => {}
+const passwordReset = (req, res) => {
+  const { phoneNumber } = req.body
+  return authentications.sms
+    .send({ phoneNumber, isPasswordReset: true })
+    .then((r) => {
+      return res.status(r?.statusCode).send(r)
+    })
+    .catch((e) => {
+      return httpError(e, res)
+    })
+}
 
 const passwordResetConfirm = (req, res) => {}
 

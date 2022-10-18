@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      files.belongsToMany(models.folders, {
+        through: 'folder_files'
+      })
     }
   }
   files.init(

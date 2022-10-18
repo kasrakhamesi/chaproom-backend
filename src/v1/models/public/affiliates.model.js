@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   affiliates.init(
     {
-      phone: {
+      phoneNumber: {
         type: DataTypes.STRING,
         allowNull: false
       },
