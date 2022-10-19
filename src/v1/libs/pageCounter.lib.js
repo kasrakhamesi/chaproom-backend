@@ -12,7 +12,7 @@ const pdf = async (filePath) => {
   } catch (e) {
     return {
       isSuccess: false,
-      message: "Can't calculate page count"
+      message: e?.message || "Can't calculate page count"
     }
   }
 }

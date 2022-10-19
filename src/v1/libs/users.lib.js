@@ -37,4 +37,47 @@ const getBalance = async (userId) => {
   }
 }
 
-module.exports = { getBalance }
+const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
+  const order = await sequelize.models.orders.findOne({
+    where: {
+      userId,
+      paymentId,
+      status: 'pending_payment'
+    }
+  })
+
+  if (!order) return null
+  const userWallet = await getBalance(userId)
+
+  if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+
+  await sequelize.models.transactions.create({
+    userId,
+    orderId: order?.id,
+    type: 'order',
+    change: 'decrease',
+    balance: userWallet?.data?.balance,
+    balanceAfter: userWallet?.data?.balance - paymentAmount,
+    status: 'approved',
+    amount: paymentAmount,
+    description: 'ثبت سفارش'
+  })
+
+  await order.update({
+    status: 'pending'
+  })
+
+  return {
+    statusCode: 200,
+    data: {
+      id: paymentAmount,
+      orderId: order?.id,
+      message: 'پرداخت با موفقعیت انجام شد',
+      amount: paymentId,
+      refId
+    },
+    error: null
+  }
+}
+
+module.exports = { getBalance, submitOrder }
