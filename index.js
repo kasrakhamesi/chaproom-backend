@@ -9,7 +9,7 @@ app.use(cors())
 app.use(logger('dev'))
 
 const swaggerUi = require('swagger-ui-express')
-const swaggerUserDocument = require('./users-swagger.json')
+const swaggerUserDocument = require('./docs/users.swagger.json')
 
 app.use('/v1', require('./src/v1/routes'))
 app.use(
