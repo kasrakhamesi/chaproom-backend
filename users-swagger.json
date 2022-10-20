@@ -1577,47 +1577,9 @@
                     {
                       "id": 3,
                       "status": "pending",
+                      "notFinishingReason": null,
                       "amount": 15000,
-                      "sendMethod": "پست پیشتاز",
-                      "postFee": 20000,
-                      "recipientName": "کسری تحویل میگیره",
-                      "recipientPhoneNumber": "09385667274",
-                      "recipientPostalCode": "4675744151",
-                      "recipientDeliveryProvince": "مازندران",
-                      "recipientDeliveryCity": "ساری",
-                      "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده",
-                      "discountCode": null,
-                      "discountAmount": null,
-                      "trackingNumber": null,
-                      "cancelReason": null,
-                      "walletPaidAmount": 0,
-                      "gatewayPaidAmount": 10000,
-                      "sentAt": null,
-                      "createdAt": "2022-10-19T22:34:30.000Z",
-                      "updatedAt": "2022-10-19T22:36:39.000Z",
-                      "deletedAt": null,
-                      "folders": [
-                        {
-                          "id": 1,
-                          "color": "رنگی",
-                          "side": "تک رو",
-                          "size": "A4",
-                          "countOfPages": 6,
-                          "uploadedPages": 2,
-                          "binding": "میخواهم صحافی بشود",
-                          "numberOfCopies": 6,
-                          "description": "این یک توضیح است",
-                          "shipmentPrice": 20000,
-                          "summary": "تست / تست / تست / تست / تست",
-                          "countOfFiles": 1,
-                          "filesUrl": "https://google.com",
-                          "amount": 10000,
-                          "telegramUploadFile": false,
-                          "whatsappUploadFile": false,
-                          "createdAt": "2022-10-19T21:55:07.000Z",
-                          "updatedAt": "2022-10-19T21:55:07.000Z"
-                        }
-                      ]
+                      "createdAt": "2022-10-19T22:34:30.000Z"
                     }
                   ]
                 },

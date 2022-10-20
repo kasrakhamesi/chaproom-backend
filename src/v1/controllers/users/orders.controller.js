@@ -136,37 +136,7 @@ const findAll = async (req, res) => {
     const r = await orders.Get({
       where: newWhere,
       order,
-      attributes: {
-        exclude: [
-          'userId',
-          'addressId',
-          'discountId',
-          'discountType',
-          'discountValue',
-          'paymentId',
-          'adminId',
-          'order_folders'
-        ]
-      },
-      include: [
-        {
-          model: sequelize.models.folders,
-          attributes: {
-            exclude: ['userId']
-          },
-          through: {
-            attributes: {
-              exclude: [
-                'userId',
-                'createdAt',
-                'updatedAt',
-                'orderId',
-                'folderId'
-              ]
-            }
-          }
-        }
-      ],
+      attributes: ['id', 'status', 'notFinishingReason', 'amount', 'createdAt'],
       pagination: {
         active: true,
         page,
