@@ -81,7 +81,7 @@ const login = (req, res) => {
         password
       },
       attributes: {
-        exclude: ['password', 'referralUserId', 'active']
+        exclude: ['password']
       }
     })
     .then((r) => {

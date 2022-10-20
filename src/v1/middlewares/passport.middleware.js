@@ -77,7 +77,7 @@ usersPassport.use(
             id: jwtPayLoad.id
           },
           attributes: {
-            exclude: ['password', 'referralUserId', 'active']
+            exclude: ['password']
           }
         })
         .then((r) => {
