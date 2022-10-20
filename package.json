@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "rebuild": "cd ./src/v1/ && npx sequelize db:migrate:undo:all && npx sequelize db:migrate && cd ../.. && nodemon index.js",
+    "dev": "cd ./src/v1/ && npx sequelize db:migrate && cd ../.. && nodemon index.js",
+    "start": "cd ./src/v1/ && npx sequelize db:migrate && cd ../.. && node index.js"
   },
   "author": "",
   "license": "ISC",
