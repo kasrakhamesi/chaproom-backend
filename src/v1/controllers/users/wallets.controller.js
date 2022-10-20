@@ -41,19 +41,28 @@ const withdrawal = async (req, res) => {
 
     if (balance < amount) return httpError(errorTypes.INSUFFICIENT_FUNDS, res)
 
-    const r = await sequelize.models.withdrawals.create(data)
+    const t = await sequelize.transaction()
 
-    await sequelize.models.transactions.create({
-      userId,
-      withdrawalId: r?.id,
-      type: 'withdrawal',
-      change: 'decrease',
-      balance,
-      balanceAfter: balance - amount,
-      status: 'pending',
-      amount,
-      description: 'برداشت وجه'
+    const r = await sequelize.models.withdrawals.create(data, {
+      transaction: t
     })
+
+    await sequelize.models.transactions.create(
+      {
+        userId,
+        withdrawalId: r?.id,
+        type: 'withdrawal',
+        change: 'decrease',
+        balance,
+        balanceAfter: balance - amount,
+        status: 'pending',
+        amount,
+        description: 'برداشت وجه'
+      },
+      { transaction: t }
+    )
+
+    await transaction.commit()
 
     res.status(201).send({
       statusCode: 201,
