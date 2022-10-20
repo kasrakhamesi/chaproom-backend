@@ -1,6 +1,6 @@
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
-const { restful, filters, users, utils } = require('../../libs')
+const { restful, filters, users, discounts } = require('../../libs')
 const orders = new restful(sequelize.models.orders)
 const _ = require('lodash')
 
@@ -40,6 +40,11 @@ const create = async (req, res) => {
       status: 'pending_payment',
       amount: 15000
     }
+
+    let discount = null
+    if (discountCode) discount = await discounts.check(discountCode)
+
+    if (discount?.statusCode !== 200) return httpError(discount, res)
 
     if (paidWithWallet) {
       const user = await sequelize.models.users.findOne({
@@ -91,24 +96,9 @@ const priceCalculator = async (req, res) => {
     const userId = req?.user[0]?.id
     const { discountCode, paidWithWallet } = req.body
     let discount = null
-    if (discountCode) {
-      discount = await sequelize.models.discounts.findOne({
-        where: {
-          code: discountCode
-        }
-      })
+    if (discountCode) discount = await discounts.check(discountCode)
 
-      if (!discount) return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND, res)
-
-      if (!discount?.active)
-        return httpError(errorTypes.DISCOUNT_CODE_INACTIVE, res)
-
-      if (utils.isoToTimestamp(discount?.expireAt) < Date.now())
-        return httpError(errorTypes.DISCOUNT_CODE_EXPIRED, res)
-
-      if (parseInt(discount?.timesUsed) >= parseInt(discount?.usageLimit))
-        return httpError(errorTypes.DISCOUNT_CODE_USAGE_LIMIT, res)
-    }
+    if (discount?.statusCode !== 200) return httpError(discount, res)
 
     const folders = await sequelize.models.folders.findAll({
       where: {
@@ -227,30 +217,54 @@ const findOne = (req, res) => {
     })
 }
 
-const update = (req, res) => {
-  const { status, notFinishingReason } = req.body
-  if (status !== 'canceled')
-    return httpError(errorTypes.USER_ONLY_CAN_CANCEL_ORDER, res)
+const update = async (req, res) => {
+  try {
+    const { status, notFinishingReason } = req.body
+    if (status !== 'canceled')
+      return httpError(errorTypes.USER_ONLY_CAN_CANCEL_ORDER, res)
 
-  const userId = req?.user[0]?.id
-  const { id } = req.params
+    const userId = req?.user[0]?.id
+    const { id } = req.params
 
-  const data = { status, notFinishingReason }
-  return sequelize.models.orders
-    .update(data, {
+    const data = { status, notFinishingReason }
+    const t = await sequelize.transaction()
+
+    const order = await sequelize.models.orders.findOne({
       where: {
         userId,
         id
       }
     })
-    .then(() => {
-      return res
-        .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
-        .send(messageTypes.SUCCESSFUL_UPDATE)
-    })
-    .catch((e) => {
-      return httpError(e, res)
-    })
+
+    await order.update(data, { transaction: t })
+
+    const userWallet = await users.getBalance(payment?.userId)
+
+    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+
+    await sequelize.models.transactions.create(
+      {
+        userId,
+        orderId: id,
+        type: 'deposit',
+        change: 'increase',
+        balance: userWallet?.data?.balance,
+        balanceAfter: userWallet?.data?.balance + order?.amount,
+        status: 'approved',
+        amount: order?.amount,
+        description: 'لغو کردن سفارش توسط کاربر'
+      },
+      { transaction: t }
+    )
+
+    await t.commit()
+
+    res
+      .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+      .send(messageTypes.SUCCESSFUL_UPDATE)
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 module.exports = { create, findAll, findOne, update, priceCalculator }

@@ -1,6 +1,9 @@
 const errorTypes = require('../configs/errorTypes.config')
 
 const Config = (err, res = null) => {
+  if (err?.statusCode && res !== null)
+    return res.status(err?.statusCode).send(err)
+  else if (err?.statusCode) return err
   const details = []
   for (const entity in errorTypes) {
     console.log(String(err))

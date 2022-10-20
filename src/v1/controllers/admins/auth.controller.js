@@ -2,26 +2,25 @@ const { httpError, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
 
-const login = (req, res) => {
-  const { username, password } = req.body
-  return sequelize.models.admins
-    .findOne({
+const login = async (req, res) => {
+  try {
+    const { phoneNumber, password } = req.body
+    const admin = await sequelize.models.admins.findOne({
       where: {
-        username,
+        phoneNumber,
         password
       }
     })
-    .then((r) => {
-      if (!r) return httpError(errorTypes.INVALID_USERNAME_PASSWORD, res)
-      return authentications.sms
-        .send(r?.id, r?.phone, true, false)
-        .then((r) => {
-          return r
-        })
+    if (!admin) return httpError(errorTypes.INVALID_USERNAME_PASSWORD, res)
+
+    res.status(200).send({
+      statusCode: 200,
+      data: admin,
+      error: null
     })
-    .catch((e) => {
-      return httpError(e, res)
-    })
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 const loginConfirm = (req, res) => {}

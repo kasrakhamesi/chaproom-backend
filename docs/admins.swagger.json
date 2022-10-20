@@ -1,0 +1,29 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ChapRoom API - Admins",
+    "description": "Chaproom Backend Restful-API ( Admins Panel )",
+    "version": "1.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/v1",
+  "schemes": ["http", "https"],
+  "paths": {},
+
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "َAffiliates": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" }
+      }
+    }
+  }
+}

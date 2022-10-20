@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "ChapRoom API",
-    "description": "Chaproom Backend Restful-API",
+    "title": "ChapRoom API - Users",
+    "description": "Chaproom Backend Restful-API ( Users Panel )",
     "version": "1.0"
   },
   "host": "localhost:3000",

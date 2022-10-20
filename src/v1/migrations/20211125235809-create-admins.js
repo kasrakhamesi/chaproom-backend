@@ -30,14 +30,7 @@ module.exports = {
         },
         password: {
           type: Sequelize.STRING,
-          allowNull: false,
-          set(value) {
-            this.setDataValue('password', hash(this.username + value))
-          }
-        },
-        lastLogin: {
-          type: Sequelize.STRING,
-          allowNull: true
+          allowNull: false
         },
         phoneNumber: {
           type: Sequelize.STRING,
@@ -52,7 +45,8 @@ module.exports = {
         },
         active: {
           type: Sequelize.BOOLEAN,
-          defaultValue: true
+          defaultValue: true,
+          allowNull: false
         },
         createdAt: {
           allowNull: true,

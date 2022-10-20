@@ -23,11 +23,15 @@ const findAll = async (req, res) => {
 
     const ordersCondition = []
 
-    const orders = await sequelize.models.orders.findAll({
-      where: {
-        userId
-      }
-    })
+    if (r.statusCode !== 200) return res.status(r?.statusCode).send(r)
+
+    for (const entity of r?.data?.data) {
+      const orders = await sequelize.models.orders.count({
+        where: {
+          userId: entity?.id
+        }
+      })
+    }
 
     res.status(r?.statusCode).send(r)
   } catch (e) {
