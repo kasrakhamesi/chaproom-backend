@@ -1,9 +1,31 @@
-## Chaproom-Backend
+# Chaproom-Backend
 
-First set your database config in .env file then ready to start with these commands :
+## Setup Guide
 
-Rebuild database and run in dev mode : npm run rebuild
-Development : npm run dev
-Production : npm start
+### 1. Setup Database config
 
-users swagger : http://localhost:3000/v1/users/api-docs
+The definition for all the configs configuration can be found in `.env`
+
+## Get Started
+
+Rebuild database and run in development mode
+
+```
+npm run rebuild
+```
+
+Development
+
+```
+npm run dev
+```
+
+Production
+
+```
+npm start
+```
+
+## API Documentation
+
+- [Users Swagger - Rest API](http://localhost:3000/v1/users/api-docs)
