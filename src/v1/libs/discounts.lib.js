@@ -1,3 +1,4 @@
+const { utils } = require('.')
 const { httpError, errorTypes } = require('../configs')
 const { sequelize } = require('../models')
 
