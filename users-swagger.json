@@ -1280,6 +1280,62 @@
         }
       }
     },
+    "/public/referrals/view": {
+      "put": {
+        "tags": ["Public"],
+        "summary": "increase referral slug view",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ReferralsIncreaseView" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "slug": ["اسلاگ نامعتبر است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/public/َaffiliates": {
       "post": {
         "tags": ["Public"],
@@ -1340,7 +1396,7 @@
     "/users/orders/id/{id}": {
       "get": {
         "tags": ["Users Orders"],
-        "summary": "create new order",
+        "summary": "get one of order",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -1430,7 +1486,7 @@
       },
       "put": {
         "tags": ["Users Orders"],
-        "summary": "create new order",
+        "summary": "update or change order",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -1462,6 +1518,68 @@
                 "statusCode": 200,
                 "data": {
                   "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/orders/price-calculator": {
+      "post": {
+        "tags": ["Users Orders"],
+        "summary": "order price calculator",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersOrdersPriceCalculator" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "discount": null,
+                  "user": {
+                    "balance": 10000
+                  },
+                  "folders": [
+                    {
+                      "id": 1,
+                      "amount": 10000
+                    }
+                  ],
+                  "payableAmountWithGateway": 2000,
+                  "postFee": 20000,
+                  "totalPrice": 30000
                 },
                 "error": null
               }
@@ -1847,12 +1965,24 @@
         "phoneNumber": { "type": "string", "example": "09385667274" }
       }
     },
+    "ReferralsIncreaseView": {
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "example": "ref=123" }
+      }
+    },
     "ContactUs": {
       "type": "object",
       "properties": {
         "name": { "type": "string", "example": "Programmer Kasra" },
         "phoneNumber": { "type": "string", "example": "09385667274" },
         "message": { "type": "string", "example": "Hi,this is a message !" }
+      }
+    },
+    "UsersOrdersPriceCalculator": {
+      "type": "object",
+      "properties": {
+        "discountCode": { "type": "string", "example": null }
       }
     },
     "UsersDeposit": {
@@ -1906,11 +2036,7 @@
       "properties": {
         "addressId": { "type": "int", "example": 1 },
         "discountCode": { "type": "string", "example": null },
-        "paidWithWallet": { "type": "bool", "example": true },
-        "folders": {
-          "type": "array",
-          "items": { "type": "int", "example": { "id": 1 } }
-        }
+        "paidWithWallet": { "type": "bool", "example": true }
       }
     },
     "UpdateUsersOrders": {
@@ -1927,18 +2053,20 @@
         "password": { "type": "string", "example": "This Is A New Passowrd!" }
       }
     },
-    "UsersRegister": {
-      "type": "object",
-      "properties": {
-        "phoneNumber": { "type": "string", "example": "09385667274" }
-      }
-    },
     "UsersRegisterConfirm": {
       "type": "object",
       "properties": {
         "phoneNumber": { "type": "string", "example": "09385667274" },
+        "code": { "type": "int", "example": 787878 }
+      }
+    },
+    "UsersRegister": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" },
         "name": { "type": "string", "example": "Programmer Kasra" },
-        "password": { "type": "string", "example": "This Is A Passowrd!" }
+        "password": { "type": "string", "example": "This Is A Passowrd!" },
+        "referralSlug": { "type": "string", "example": "ref=123" }
       }
     },
     "UsersAddresses": {

@@ -54,6 +54,16 @@ module.exports = {
           defaultValue: 0,
           allowNull: true
         },
+        totalSale: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: true
+        },
+        benefit: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: true
+        },
         userMarketing: {
           type: Sequelize.BOOLEAN,
           defaultValue: false,

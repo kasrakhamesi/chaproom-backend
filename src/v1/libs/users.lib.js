@@ -1,4 +1,7 @@
 const { sequelize } = require('../models')
+const { gateways } = require('.')
+const { httpError, errorTypes } = require('../configs')
+require('dotenv').config()
 
 const getBalance = async (userId) => {
   try {
@@ -34,6 +37,74 @@ const getBalance = async (userId) => {
       isSuccess: false,
       message: e.message
     }
+  }
+}
+
+const createOrder = async (
+  userId,
+  gatewayPayAmount,
+  walletPayAmount,
+  folders,
+  data
+) => {
+  try {
+    const zarinpal = gateways.zarinpal.create(
+      process.env.ZARINPAL_MERCHANT,
+      true
+    )
+
+    const payment = await zarinpal.PaymentRequest({
+      Amount: parseInt(gatewayPayAmount),
+      CallbackURL: process.env.PAYMENT_CALLBACK,
+      Description: 'افزایش موجودی کیف پول'
+    })
+
+    if (payment?.status !== 100) return httpError(errorTypes.GATEWAY_ERROR, res)
+
+    const t = await sequelize.transaction()
+
+    const paymentCreated = await sequelize.models.payments.create(
+      {
+        userId,
+        amount: gatewayPayAmount,
+        authority: payment?.authority
+      },
+      { transaction: t }
+    )
+
+    if (!paymentCreated) return httpError(errorTypes.GATEWAY_ERROR, res)
+    data.paymentId = paymentCreated?.id
+    data.gatewayPaidAmount = gatewayPayAmount
+    data.walletPaidAmount = walletPayAmount
+
+    const r = await sequelize.models.orders.create(data, {
+      transaction: t
+    })
+
+    for (const folder of folders) {
+      await sequelize.models.order_folders.create(
+        {
+          userId,
+          folderId: folder?.id,
+          orderId: r?.id
+        },
+        { transaction: t }
+      )
+    }
+
+    await t.commit()
+
+    return {
+      statusCode: 201,
+      data: {
+        orderType: 'payment',
+        paymentUrl: payment?.url,
+        payableAmount: gatewayPayAmount
+      },
+      error: null
+    }
+  } catch (e) {
+    return httpError(e)
   }
 }
 
@@ -92,6 +163,4 @@ const submitOrder = async (
   }
 }
 
-const transactions = async () => {}
-
-module.exports = { getBalance, submitOrder, transactions }
+module.exports = { getBalance, submitOrder, createOrder }

@@ -47,6 +47,10 @@ module.exports = {
         defaultValue: false,
         allowNull: false
       },
+      registerData: {
+        type: Sequelize.JSON,
+        allowNull: true
+      },
       expireAt: {
         type: Sequelize.STRING,
         allowNull: false

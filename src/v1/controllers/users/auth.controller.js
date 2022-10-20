@@ -7,9 +7,11 @@ const { uniqueGenerates } = require('../../libs')
 const bcrypt = require('bcrypt')
 
 const register = (req, res) => {
-  const { phoneNumber } = req.body
+  const { phoneNumber, name, password, referralSlug } = req.body
+  const data = { phoneNumber, name, password, referralSlug }
+
   return authentications.sms
-    .send({ phoneNumber })
+    .send({ phoneNumber, registerData: data })
     .then((r) => {
       return res.status(r?.statusCode).send(r)
     })
@@ -20,8 +22,28 @@ const register = (req, res) => {
 
 const registerConfirm = async (req, res) => {
   try {
-    const { phoneNumber, name, password, referralUserId } = req.body
-    const data = { phoneNumber, name, password, referralUserId }
+    const { phoneNumber, code } = req.body
+
+    if (typeof code !== 'number')
+      return httpError(errorTypes.INVALID_OTP_TYPE, res)
+
+    const auth = await authentications.sms.check({ code, phoneNumber })
+
+    if (auth.statusCode !== 200) return res.status(auth.statusCode).send(auth)
+
+    const data = {
+      name: auth?.data?.registerData?.name,
+      phoneNumber: auth?.data?.registerData?.phoneNumber,
+      password: auth?.data?.registerData?.password
+    }
+
+    const referralSlug = auth?.data?.registerData?.referralSlug
+
+    const referrals = await sequelize.models.referrals.findOne({
+      where: {
+        slug: referralSlug
+      }
+    })
 
     const t = await sequelize.transaction()
 
@@ -53,7 +75,7 @@ const registerConfirm = async (req, res) => {
     await sequelize.models.referrals.create(
       {
         userId: r?.id,
-        referralUserId,
+        referralUserId: referrals?.userId || null,
         slug: `ref=${r?.id}`
       },
       { transaction: t }
@@ -64,10 +86,15 @@ const registerConfirm = async (req, res) => {
     const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
     return res.status(200).send({
       statusCode: 200,
-      data: { ...r?.dataValues, token: { access: accessToken } },
+      data: {
+        ...r?.dataValues,
+        walletBalance: r?.balance - r?.marketingBalance,
+        token: { access: accessToken }
+      },
       error: null
     })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }
@@ -89,7 +116,11 @@ const login = (req, res) => {
       const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
       return res.status(200).send({
         statusCode: 200,
-        data: { ...r?.dataValues, token: { access: accessToken } },
+        data: {
+          ...r?.dataValues,
+          walletBalance: r?.balance - r?.marketingBalance,
+          token: { access: accessToken }
+        },
         error: null
       })
     })

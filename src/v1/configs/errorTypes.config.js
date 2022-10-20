@@ -68,6 +68,39 @@ const Types = {
   USER_ONLY_CAN_CANCEL_ORDER: {
     statusCode: 400,
     message: 'شما فقط میتوانید سفارش را لغو کنید'
+  },
+  INVALID_OTP: {
+    statusCode: 400,
+    message: 'کد یکبار مصرف شما اشتباه است.لطفا مجددا کد را وارد کنید'
+  },
+  DISCOUNT_CODE_NOT_FOUND: {
+    statusCode: 400,
+    message: 'کد تخفیف پیدا نشد'
+  },
+  DISCOUNT_CODE_INACTIVE: {
+    statusCode: 400,
+    message: 'کد تخفیف غیرفعال شده است'
+  },
+  DISCOUNT_CODE_EXPIRED: {
+    statusCode: 400,
+    message: 'مهلت استفاده از کد تخفیف به تمام شده است'
+  },
+  DISCOUNT_CODE_USAGE_LIMIT: {
+    statusCode: 400,
+    message:
+      'این کد تخفیف به حداکثر استفاده خود رسیده است و دیگر قابل استفاده نمیباشد'
+  },
+  SLUG_NOT_FOUND: {
+    statusCode: 400,
+    message: 'کاربری با این اسلاگ پیدا نشد'
+  },
+  INVALID_OTP_TYPE: {
+    statusCode: 400,
+    message: 'کد تایید باید بصورت عدد وارد شود'
+  },
+  INVALID_OTP_TYPE: {
+    statusCode: 400,
+    message: 'کد تایید باید بصورت عدد وارد شود'
   }
 }
 

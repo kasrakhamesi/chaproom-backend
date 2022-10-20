@@ -57,6 +57,16 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: false,
         allowNull: false
       },
+      totalSale: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: true
+      },
+      benefit: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: true
+      },
       expireAt: {
         allowNull: true,
         type: DataTypes.DATE

@@ -8,6 +8,7 @@ const { users } = require('../../controllers')
 
 router.put('/id/:id', users.orders.update)
 router.get('/id/:id', users.orders.findOne)
+router.post('/price-calculator', users.orders.priceCalculator)
 router.get('/', users.orders.findAll)
 router.post('/', users.orders.create)
 

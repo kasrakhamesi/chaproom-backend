@@ -2,7 +2,7 @@ const { sequelize } = require('../../models')
 const { uniqueGenerates, regex, utils } = require('../../libs')
 const _ = require('lodash')
 const Kavenegar = require('kavenegar')
-const { httpError } = require('../../configs')
+const { httpError, errorTypes } = require('../../configs')
 const api = Kavenegar.KavenegarApi({
   apikey: 'your apikey here'
 })
@@ -11,10 +11,12 @@ const send = async ({
   phoneNumber,
   creatorId = null,
   isAdmin = true,
-  isPasswordReset = false
+  isPasswordReset = false,
+  registerData
 }) => {
   try {
-    if (!regex.iranPhone(phoneNumber)) throw new Error('Invalid phone number')
+    if (!regex.iranPhone(phoneNumber))
+      return httpError(errorTypes.INVALID_PHONE_FORMAT)
 
     const creatorKey = isAdmin ? 'adminId' : 'userId'
 
@@ -68,9 +70,6 @@ const send = async ({
     const body =
       creatorId === null
         ? {
-            userId: null,
-            adminId: null,
-            email: null,
             phoneNumber,
             code: oneTimeCode,
             used: false,
@@ -78,12 +77,15 @@ const send = async ({
           }
         : {
             [creatorKey]: creatorId,
-            email: null,
             phoneNumber,
             code: oneTimeCode,
             used: false,
             expireAt: utils.timestampToIso(Date.now() + 1000 * 60 * 2)
           }
+
+    registerData && registerData !== null
+      ? (body.registerData = JSON.stringify(registerData))
+      : null
 
     const resCreateCode = await sequelize.models.verifies.create(body)
 
@@ -105,59 +107,50 @@ const send = async ({
   }
 }
 
-const check = async (
+const check = async ({
+  code,
   phoneNumber,
   creatorId = null,
   isAdmin = true,
   isPasswordReset = false
-) => {
+}) => {
   try {
+    if (!regex.iranPhone(phoneNumber))
+      return httpError(errorTypes.INVALID_PHONE_FORMAT)
+
     const creatorKey = isAdmin ? 'adminId' : 'userId'
 
     const where =
       creatorId === null && phoneNumber !== null
         ? {
-            code: code,
+            code,
             phoneNumber,
             used: false
           }
         : {
             [creatorKey]: creatorId,
-            code: code,
+            code,
             used: false
           }
 
     const verifyData = await sequelize.models.verifies.findOne({
-      where: where,
+      where,
       order: [['id', 'DESC']]
     })
 
-    if (_.isEmpty(verifyData)) throw new Error('Invalid Code')
-
-    const userToken =
-      isAdmin && !isCreated
-        ? null
-        : generateRandomToken(phoneNumber, code, isForgetPassword)
-
-    const userTokenExpireTimestamp = Date.now() + 1000 * 60 * 30
+    if (_.isEmpty(verifyData)) return httpError(errorTypes.INVALID_OTP)
 
     await verifyData.update({
-      used: true,
-      user_token: isCreated ? userToken : null,
-      user_token_used: isCreated ? false : null,
-      user_token_expire: isCreated ? userTokenExpireTimestamp : null
+      used: true
     })
 
     return {
       statusCode: 200,
-      data: isCreated
-        ? {
-            status: 'success',
-            message: 'successfully confirmed',
-            token: userToken,
-            expire: String(userTokenExpireTimestamp)
-          }
-        : { status: 'success', message: 'login successfully' },
+      data: {
+        registerData: JSON.parse(JSON.parse(verifyData?.registerData)),
+        isSuccess: true,
+        message: 'کد با موفقعیت تایید شد'
+      },
       error: null
     }
   } catch (e) {

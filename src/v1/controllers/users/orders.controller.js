@@ -1,18 +1,16 @@
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
-const { gateways, restful, filters } = require('../../libs')
+const { restful, filters, users, utils } = require('../../libs')
 const orders = new restful(sequelize.models.orders)
 const _ = require('lodash')
 
 const create = async (req, res) => {
   try {
-    console.log(req.body)
-
     const userId = req?.user[0]?.id
 
-    const totalPrice = 10000
+    const totalPrice = 150000
 
-    const { folders, addressId, discountCode, paidWithWallet } = req.body
+    const { addressId, discountCode, paidWithWallet } = req.body
 
     const address = await sequelize.models.addresses.findOne({
       where: {
@@ -23,8 +21,12 @@ const create = async (req, res) => {
 
     if (!address) return httpError(errorTypes.INVALID_ADDRESS, res)
 
-    if (!folders || _.isEmpty(folders))
-      return httpError(errorTypes.MISSING_FOLDERS, res)
+    const folders = await sequelize.models.folders.findAll({
+      where: {
+        userId,
+        used: false
+      }
+    })
 
     const data = {
       addressId,
@@ -51,75 +53,98 @@ const create = async (req, res) => {
       if (balance >= totalPrice) {
         data.walletPaidAmount = balance
         data.status = 'pending'
-        const r = await sequelize.models.orders.create(data)
+        const t = await sequelize.transaction()
+        const r = await sequelize.models.orders.create(data, { transaction: t })
+        await sequelize.models.folders.update(
+          { used: true },
+          { where: { userId, used: false } },
+          {
+            transaction: t
+          }
+        )
+
         return res.status(201).send(r)
       } else {
-        const priceLeft = totalPrice - balance
+        const gatewayPayAmount = totalPrice - balance
 
-        const zarinpal = gateways.zarinpal.create(
-          process.env.ZARINPAL_MERCHANT,
-          true
+        const r = await users.createOrder(
+          userId,
+          gatewayPayAmount,
+          balance,
+          folders,
+          data
         )
-        const payment = await zarinpal.PaymentRequest({
-          Amount: parseInt(priceLeft),
-          CallbackURL: process.env.PAYMENT_CALLBACK,
-          Description: 'افزایش موجودی کیف پول'
-        })
-
-        if (payment?.status !== 100)
-          return httpError(errorTypes.GATEWAY_ERROR, res)
-
-        const t = await sequelize.transaction()
-
-        const paymentCreated = await sequelize.models.payments.create(
-          {
-            userId,
-            amount: priceLeft,
-            authority: payment?.authority
-          },
-          { transaction: t }
-        )
-
-        if (!paymentCreated) return httpError(errorTypes.GATEWAY_ERROR, res)
-        data.paymentId = paymentCreated?.id
-        data.gatewayPaidAmount = priceLeft
-        data.walletPaidAmount = balance
-
-        const r = await sequelize.models.orders.create(data, {
-          transaction: t
-        })
-
-        for (const folder of folders) {
-          await sequelize.models.order_folders.create(
-            {
-              userId,
-              folderId: folder?.id,
-              orderId: r?.id
-            },
-            { transaction: t }
-          )
-        }
-
-        await t.commit()
-
-        return res.status(201).send({
-          statusCode: 201,
-          data: {
-            orderType: 'payment',
-            paymentUrl: payment?.url,
-            amount: priceLeft
-          },
-          error: null
-        })
+        return res.status(r?.statusCode).send(r)
       }
     }
+
+    const r = await users.createOrder(userId, totalPrice, 0, folders, data)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     console.log(e)
     return httpError(e, res)
   }
 }
 
-const priceCalculator = async (req, res) => {}
+const priceCalculator = async (req, res) => {
+  try {
+    const userId = req?.user[0]?.id
+    const { discountCode, paidWithWallet } = req.body
+    let discount = null
+    if (discountCode) {
+      discount = await sequelize.models.discounts.findOne({
+        where: {
+          code: discountCode
+        }
+      })
+
+      if (!discount) return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND, res)
+
+      if (!discount?.active)
+        return httpError(errorTypes.DISCOUNT_CODE_INACTIVE, res)
+
+      if (utils.isoToTimestamp(discount?.expireAt) < Date.now())
+        return httpError(errorTypes.DISCOUNT_CODE_EXPIRED, res)
+
+      if (parseInt(discount?.timesUsed) >= parseInt(discount?.usageLimit))
+        return httpError(errorTypes.DISCOUNT_CODE_USAGE_LIMIT, res)
+    }
+
+    const folders = await sequelize.models.folders.findAll({
+      where: {
+        userId,
+        used: false
+      },
+      attributes: ['id', 'amount']
+    })
+
+    const user = await sequelize.models.users.findOne({
+      where: { id: userId },
+      attributes: ['balance']
+    })
+
+    let foldersPrice = 0
+
+    folders.map((item) => (foldersPrice += item.amount))
+
+    const data = {
+      discount: null,
+      user,
+      folders,
+      payableAmountWithGateway: 2000,
+      postFee: 20000,
+      totalPrice: foldersPrice + 20000
+    }
+
+    return res.status(200).send({
+      statusCode: 200,
+      data,
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
 
 const findAll = async (req, res) => {
   try {
@@ -228,4 +253,4 @@ const update = (req, res) => {
     })
 }
 
-module.exports = { create, findAll, findOne, update }
+module.exports = { create, findAll, findOne, update, priceCalculator }

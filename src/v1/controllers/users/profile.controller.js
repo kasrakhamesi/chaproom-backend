@@ -83,7 +83,10 @@ const findOne = (req, res) => {
     .then((r) => {
       return res.status(200).send({
         statusCode: 200,
-        data: r,
+        data: {
+          ...r.dataValues,
+          walletBalance: r?.balance - r?.marketingBalance
+        },
         error: null
       })
     })

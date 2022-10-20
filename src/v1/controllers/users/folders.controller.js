@@ -55,26 +55,30 @@ const create = async (req, res) => {
     data.summary = 'تست / تست / تست / تست / تست'
     data.countOfFiles = ids.length
     data.filesUrl = 'https://google.com'
-    const createdFolders = await sequelize.models.folders.create(data)
 
-    const folderFiles = []
+    const t = await sequelize.transaction()
+
+    const createdFolders = await sequelize.models.folders.create(data, {
+      transaction: t
+    })
 
     for (const entity of ids) {
-      folderFiles.push({
-        userId,
-        folderId: createdFolders?.id,
-        fileId: entity
-      })
+      await sequelize.models.folder_files.create(
+        {
+          userId,
+          folderId: createdFolders?.id,
+          fileId: entity
+        },
+        { transaction: t }
+      )
     }
 
-    const [folderFilesCreated] = await sequelize.models.folder_files.bulkCreate(
-      folderFiles
-    )
+    await t.commit()
 
     const r = await sequelize.models.folders.findOne({
       where: {
         userId,
-        id: folderFilesCreated?.folderId
+        id: createdFolders?.id
       },
       attributes: {
         exclude: ['userId']
@@ -166,7 +170,8 @@ const findAll = (req, res) => {
   return sequelize.models.folders
     .findAll({
       where: {
-        userId
+        userId,
+        used: false
       },
       attributes: {
         exclude: ['userId']
@@ -210,7 +215,8 @@ const findOne = (req, res) => {
     .findOne({
       where: {
         userId,
-        id
+        id,
+        used: false
       },
       attributes: {
         exclude: ['userId']
