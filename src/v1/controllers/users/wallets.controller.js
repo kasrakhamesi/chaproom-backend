@@ -34,9 +34,6 @@ const withdrawal = async (req, res) => {
       else outgoing += parseInt(transaction?.amount)
     }
 
-    outgoing = await Promise.all(outgoing)
-    incoming = await Promise.all(incoming)
-
     const balance = incoming - outgoing
 
     if (balance < amount) return httpError(errorTypes.INSUFFICIENT_FUNDS, res)
