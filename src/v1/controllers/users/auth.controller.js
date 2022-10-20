@@ -2,6 +2,7 @@ const { httpError, errorTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
+const { uniqueGenerates } = require('../../libs')
 
 const bcrypt = require('bcrypt')
 
@@ -17,44 +18,58 @@ const register = (req, res) => {
     })
 }
 
-const registerConfirm = (req, res) => {
-  return sequelize.models.users
-    .create(req.body)
-    .then((r) => {
-      const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
-      return sequelize.models.users
-        .update(
-          {
-            accessToken
-          },
-          {
-            where: {
-              id: r?.id
-            }
-          }
-        )
-        .then(() => {
-          return sequelize.models.users
-            .findOne({
-              where: {
-                id: r?.id
-              },
-              attributes: {
-                exclude: ['password', 'referralUserId', 'active']
-              }
-            })
-            .then((r) => {
-              return res.status(201).send({
-                statusCode: 201,
-                data: r,
-                error: null
-              })
-            })
-        })
+const registerConfirm = async (req, res) => {
+  try {
+    const { phoneNumber, name, password, referralUserId } = req.body
+    const data = { phoneNumber, name, password, referralUserId }
+
+    const t = await sequelize.transaction()
+
+    const r = await sequelize.models.users.create(data, { transaction: t })
+
+    const discountCodes = await uniqueGenerates.discountCode(2)
+
+    await sequelize.models.discounts.create(
+      {
+        userId: r?.id,
+        value: '5',
+        type: 'percentage',
+        code: discountCodes[0],
+        userMarketing: true
+      },
+      { transaction: t }
+    )
+    await sequelize.models.discounts.create(
+      {
+        userId: r?.id,
+        value: '10',
+        type: 'percentage',
+        code: discountCodes[1],
+        userMarketing: true
+      },
+      { transaction: t }
+    )
+
+    await sequelize.models.referrals.create(
+      {
+        userId: r?.id,
+        referralUserId,
+        slug: `ref=${r?.id}`
+      },
+      { transaction: t }
+    )
+
+    await t.commit()
+
+    const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
+    return res.status(200).send({
+      statusCode: 200,
+      data: { ...r?.dataValues, token: { access: accessToken } },
+      error: null
     })
-    .catch((e) => {
-      return httpError(e, res)
-    })
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 const login = (req, res) => {
@@ -72,46 +87,44 @@ const login = (req, res) => {
     .then((r) => {
       if (!r) httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
       const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
-      return sequelize.models.users
-        .update(
-          {
-            accessToken
-          },
-          {
-            where: {
-              id: r?.id,
-              phoneNumber: r?.phoneNumber
-            },
-            attributes: {
-              exclude: ['accessToken']
-            }
-          }
-        )
-        .then(() => {
-          return res.status(200).send({
-            statusCode: 200,
-            data: { ...r?.dataValues, accessToken },
-            error: null
-          })
-        })
+      return res.status(200).send({
+        statusCode: 200,
+        data: { ...r?.dataValues, token: { access: accessToken } },
+        error: null
+      })
     })
     .catch((e) => {
       return httpError(e, res)
     })
 }
 
-const passwordReset = (req, res) => {
-  const { phoneNumber } = req.body
-  return authentications.sms
-    .send({ phoneNumber, isPasswordReset: true })
-    .then((r) => {
-      return res.status(r?.statusCode).send(r)
+const passwordReset = async (req, res) => {
+  try {
+    const { phoneNumber } = req.body
+
+    const user = await sequelize.models.users.findOne({
+      phoneNumber
     })
-    .catch((e) => {
-      return httpError(e, res)
+
+    if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
+
+    const r = await authentications.sms.send({
+      phoneNumber,
+      isPasswordReset: true
     })
+
+    res.status(r?.statusCode).send(r)
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 const passwordResetConfirm = (req, res) => {}
 
-module.exports = { register, login, registerConfirm, passwordResetConfirm }
+module.exports = {
+  register,
+  login,
+  registerConfirm,
+  passwordReset,
+  passwordResetConfirm
+}

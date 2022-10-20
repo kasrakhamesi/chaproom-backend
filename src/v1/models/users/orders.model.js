@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      orders.belongsToMany(models.folders, {
+        through: 'order_folders'
+      })
     }
   }
   orders.init(
@@ -43,6 +46,11 @@ module.exports = (sequelize, DataTypes) => {
       sendMethod: {
         type: DataTypes.STRING,
         defaultValue: 'پست پیشتاز',
+        allowNull: true
+      },
+      postFee: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 20000,
         allowNull: true
       },
       recipientName: {
@@ -89,16 +97,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true
       },
-      cancelReason: {
+      notFinishingReason: {
         type: DataTypes.STRING,
         allowNull: true
       },
       adminId: {
         type: DataTypes.INTEGER.UNSIGNED,
+        references: { model: 'admins', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
         allowNull: true
       },
       paymentId: {
         type: DataTypes.BIGINT.UNSIGNED,
+        references: { model: 'payments', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
         allowNull: true
       },
       walletPaidAmount: {

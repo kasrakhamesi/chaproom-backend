@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       folders.belongsToMany(models.files, {
         through: 'folder_files'
       })
+      folders.belongsToMany(models.orders, {
+        through: 'order_folders'
+      })
     }
   }
   folders.init(
@@ -54,6 +57,18 @@ module.exports = (sequelize, DataTypes) => {
       },
       shipmentPrice: {
         type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false
+      },
+      summary: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      countOfFiles: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false
+      },
+      filesUrl: {
+        type: DataTypes.TEXT,
         allowNull: false
       },
       amount: {

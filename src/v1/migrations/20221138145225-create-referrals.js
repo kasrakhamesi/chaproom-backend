@@ -3,7 +3,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
       .createTable(
-        'marketing',
+        'referrals',
         {
           id: {
             allowNull: false,
@@ -16,6 +16,18 @@ module.exports = {
             references: { model: 'users', key: 'id' },
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
+            allowNull: false
+          },
+          referralUserId: {
+            type: Sequelize.BIGINT.UNSIGNED,
+            references: { model: 'users', key: 'id' },
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+            allowNull: true
+          },
+          commission: {
+            type: Sequelize.FLOAT,
+            defaultValue: 10,
             allowNull: false
           },
           slug: {
@@ -53,21 +65,21 @@ module.exports = {
         },
         {
           freezeTableName: true,
-          tableName: 'marketing'
+          tableName: 'referrals'
         }
       )
       .then(() =>
-        queryInterface.addIndex('marketing', ['userId'], {
+        queryInterface.addIndex('referrals', ['userId'], {
           unique: true
         })
       )
       .then(() =>
-        queryInterface.addIndex('marketing', ['slug'], {
+        queryInterface.addIndex('referrals', ['slug'], {
           unique: true
         })
       )
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('marketing')
+    await queryInterface.dropTable('referrals')
   }
 }

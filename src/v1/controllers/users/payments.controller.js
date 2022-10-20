@@ -45,36 +45,51 @@ const callback = async (req, res) => {
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
-    await sequelize.models.transactions.create({
-      userId: payment?.userId,
-      paymentId: payment?.id,
-      type: 'deposit',
-      change: 'increase',
-      balance: userWallet?.data?.balance,
-      balanceAfter: userWallet?.data?.balance + payment?.amount,
-      status: 'approved',
-      amount: payment?.amount,
-      description: 'افزایش موجودی کیف پول'
-    })
+    const t = await sequelize.transaction()
 
-    const user = await sequelize.models.users.findOne({
-      where: {
-        id: payment?.userId
-      }
-    })
+    await sequelize.models.transactions.create(
+      {
+        userId: payment?.userId,
+        paymentId: payment?.id,
+        type: 'deposit',
+        change: 'increase',
+        balance: userWallet?.data?.balance,
+        balanceAfter: userWallet?.data?.balance + payment?.amount,
+        status: 'approved',
+        amount: payment?.amount,
+        description: 'افزایش موجودی کیف پول'
+      },
+      { transaction: t }
+    )
 
-    await user.update({
-      balance: user?.balance + payment?.amount
-    })
+    const user = await sequelize.models.users.findOne(
+      {
+        where: {
+          id: payment?.userId
+        }
+      },
+      { transaction: t }
+    )
+
+    await user.update(
+      {
+        balance: user?.balance + payment?.amount
+      },
+      { transaction: t }
+    )
 
     const submitOrderResult = await submitOrder(
       payment?.userId,
       payment?.id,
       payment?.amount,
-      paymentVerification?.RefID
+      paymentVerification?.RefID,
+      t
     )
 
-    if (submitOrderResult !== null) return submitOrderResult
+    await t.commit()
+
+    if (submitOrderResult !== null)
+      return res.status(submitOrderResult.statusCode).send(submitOrderResult)
 
     res.status(200).send({
       statusCode: 200,

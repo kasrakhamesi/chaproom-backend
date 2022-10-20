@@ -36,7 +36,7 @@ const Types = {
     statusCode: 400,
     message: 'پرداخت با شکست مواجه شد'
   },
-  PAYMENT_FAILED: {
+  PAYMENT_DOUBLE_SPENDING: {
     statusCode: 400,
     message: 'این صفحه پرداخت قبلا استفاده شده'
   },
@@ -60,6 +60,14 @@ const Types = {
   INSUFFICIENT_FUNDS: {
     statusCode: 400,
     message: 'موجودی شما کافی نمیباشد'
+  },
+  USER_NOT_FOUND: {
+    statusCode: 400,
+    message: 'کاربری با این مشخصات وجود ندارد'
+  },
+  USER_ONLY_CAN_CANCEL_ORDER: {
+    statusCode: 400,
+    message: 'شما فقط میتوانید سفارش را لغو کنید'
   }
 }
 

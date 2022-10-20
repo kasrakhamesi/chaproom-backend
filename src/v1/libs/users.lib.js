@@ -37,7 +37,13 @@ const getBalance = async (userId) => {
   }
 }
 
-const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
+const submitOrder = async (
+  userId,
+  paymentId,
+  paymentAmount,
+  refId,
+  transaction
+) => {
   const order = await sequelize.models.orders.findOne({
     where: {
       userId,
@@ -51,21 +57,27 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
 
   if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
-  await sequelize.models.transactions.create({
-    userId,
-    orderId: order?.id,
-    type: 'order',
-    change: 'decrease',
-    balance: userWallet?.data?.balance,
-    balanceAfter: userWallet?.data?.balance - paymentAmount,
-    status: 'approved',
-    amount: paymentAmount,
-    description: 'ثبت سفارش'
-  })
+  await sequelize.models.transactions.create(
+    {
+      userId,
+      orderId: order?.id,
+      type: 'order',
+      change: 'decrease',
+      balance: userWallet?.data?.balance,
+      balanceAfter: userWallet?.data?.balance - paymentAmount,
+      status: 'approved',
+      amount: paymentAmount,
+      description: 'ثبت سفارش'
+    },
+    { transaction }
+  )
 
-  await order.update({
-    status: 'pending'
-  })
+  await order.update(
+    {
+      status: 'pending'
+    },
+    { transaction }
+  )
 
   return {
     statusCode: 200,
@@ -80,4 +92,6 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
   }
 }
 
-module.exports = { getBalance, submitOrder }
+const transactions = async () => {}
+
+module.exports = { getBalance, submitOrder, transactions }

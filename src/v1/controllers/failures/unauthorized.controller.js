@@ -1,7 +1,7 @@
-const { httpError, errorsType } = require('../../configs')
+const { httpError, errorTypes } = require('../../configs')
 
 const unauthorized = (req, res) => {
-  httpError(errorsType.UNAUTHORIZED, res)
+  return httpError(errorTypes.UNAUTHORIZED, res)
 }
 
 module.exports = unauthorized

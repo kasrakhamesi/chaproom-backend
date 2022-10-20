@@ -51,6 +51,18 @@ module.exports = {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       },
+      summary: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
+      countOfFiles: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
+      },
+      filesUrl: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
       amount: {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false

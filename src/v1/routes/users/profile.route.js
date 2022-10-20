@@ -6,8 +6,8 @@ router.use(bodyParser.json())
 
 const { users } = require('../../controllers')
 
-router.get('/', users.profile.findOne)
 router.get('/dashboard', users.profile.dashboard)
-router.put('/change', users.profile.update)
+router.get('/', users.profile.findOne)
+router.put('/', users.profile.update)
 
 module.exports = router

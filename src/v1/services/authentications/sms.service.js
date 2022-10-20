@@ -106,12 +106,10 @@ const send = async ({
 }
 
 const check = async (
-  creatorId,
-  code,
-  phoneNumber = null,
+  phoneNumber,
+  creatorId = null,
   isAdmin = true,
-  isCreated = false,
-  isForgetPassword = false
+  isPasswordReset = false
 ) => {
   try {
     const creatorKey = isAdmin ? 'adminId' : 'userId'

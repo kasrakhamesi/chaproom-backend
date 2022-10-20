@@ -89,7 +89,6 @@
               "application/json": {
                 "statusCode": 201,
                 "data": {
-                  "marketingCommission": 10,
                   "marketingBalance": 0,
                   "balance": 0,
                   "active": true,
@@ -157,12 +156,13 @@
                   "id": 1,
                   "name": "Programmer Kasra",
                   "phoneNumber": "09385667274",
-                  "marketingCommission": 10,
-                  "marketingBalance": "0",
-                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ",
-                  "balance": "0",
+                  "marketingBalance": 0,
+                  "balance": 0,
                   "createdAt": "2022-10-12T10:48:45.000Z",
-                  "updatedAt": "2022-10-14T19:21:59.000Z"
+                  "updatedAt": "2022-10-14T19:21:59.000Z",
+                  "token": {
+                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ"
+                  }
                 },
                 "error": null
               }
@@ -189,6 +189,68 @@
                 "data": null,
                 "error": {
                   "message": "نام کاربری یا رمزعبور اشتباه میباشد",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/profile/dashboard": {
+      "get": {
+        "tags": ["Users Profile"],
+        "summary": "get dashboard",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 24,
+                  "name": "Programmer Kasra",
+                  "phoneNumber": "09385667274",
+                  "marketingBalance": 0,
+                  "balance": 10000,
+                  "active": true,
+                  "createdAt": "2022-10-19T21:33:07.000Z",
+                  "updatedAt": "2022-10-19T22:36:39.000Z",
+                  "deletedAt": null,
+                  "walletBalance": 10000,
+                  "orders": [
+                    {
+                      "id": 3,
+                      "status": "pending",
+                      "amount": 15000,
+                      "createdAt": "2022-10-19T22:34:30.000Z",
+                      "updatedAt": "2022-10-19T22:36:39.000Z"
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
                   "details": []
                 }
               }
@@ -225,14 +287,7 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "id": 1,
-                  "name": "Programmer Kasra 2",
-                  "marketingCommission": 10,
-                  "marketingBalance": "0",
-                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ",
-                  "balance": "0",
-                  "createdAt": "2022-10-12T10:48:45.000Z",
-                  "updatedAt": "2022-10-14T19:21:59.000Z"
+                  "message": "با موفقعیت آپدیت شد"
                 },
                 "error": null
               }
@@ -290,12 +345,13 @@
                   "id": 1,
                   "name": "Programmer Kasra",
                   "phoneNumber": "09385667274",
-                  "marketingCommission": 10,
-                  "marketingBalance": "0",
-                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ",
-                  "balance": "0",
+                  "marketingBalance": 0,
+                  "balance": 0,
                   "createdAt": "2022-10-12T10:48:45.000Z",
-                  "updatedAt": "2022-10-14T19:21:59.000Z"
+                  "updatedAt": "2022-10-14T19:21:59.000Z",
+                  "token": {
+                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ"
+                  }
                 },
                 "error": null
               }
@@ -868,6 +924,20 @@
             "in": "header",
             "type": "string",
             "required": true
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
           }
         ],
         "responses": {
@@ -1267,7 +1337,152 @@
         }
       }
     },
-
+    "/users/orders/id/{id}": {
+      "get": {
+        "tags": ["Users Orders"],
+        "summary": "create new order",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 3,
+                  "status": "pending",
+                  "amount": 15000,
+                  "sendMethod": "پست پیشتاز",
+                  "postFee": null,
+                  "recipientName": "کسری تحویل میگیره",
+                  "recipientPhoneNumber": "09385667274",
+                  "recipientPostalCode": "4675744151",
+                  "recipientDeliveryProvince": "مازندران",
+                  "recipientDeliveryCity": "ساری",
+                  "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده",
+                  "discountCode": null,
+                  "discountAmount": null,
+                  "trackingNumber": null,
+                  "notFinishingReason": null,
+                  "walletPaidAmount": 0,
+                  "gatewayPaidAmount": 10000,
+                  "sentAt": null,
+                  "createdAt": "2022-10-19T22:34:30.000Z",
+                  "updatedAt": "2022-10-19T22:36:39.000Z",
+                  "deletedAt": null,
+                  "folders": [
+                    {
+                      "id": 1,
+                      "color": "رنگی",
+                      "side": "تک رو",
+                      "size": "A4",
+                      "countOfPages": 6,
+                      "uploadedPages": 2,
+                      "binding": "میخواهم صحافی بشود",
+                      "numberOfCopies": 6,
+                      "description": "این یک توضیح است",
+                      "shipmentPrice": 20000,
+                      "summary": "تست / تست / تست / تست / تست",
+                      "countOfFiles": 1,
+                      "filesUrl": "https://google.com",
+                      "amount": 10000,
+                      "telegramUploadFile": false,
+                      "whatsappUploadFile": false,
+                      "createdAt": "2022-10-19T21:55:07.000Z",
+                      "updatedAt": "2022-10-19T21:55:07.000Z"
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users Orders"],
+        "summary": "create new order",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UpdateUsersOrders" }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/orders": {
       "post": {
         "tags": ["Users Orders"],
@@ -1286,7 +1501,7 @@
             "in": "body",
             "name": "body",
             "required": true,
-            "schema": { "$ref": "#/definitions/ContactUs" }
+            "schema": { "$ref": "#/definitions/UsersOrders" }
           }
         ],
         "responses": {
@@ -1317,9 +1532,115 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": ["Users Orders"],
+        "summary": "find all orders",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "data": [
+                    {
+                      "id": 3,
+                      "status": "pending",
+                      "amount": 15000,
+                      "sendMethod": "پست پیشتاز",
+                      "postFee": 20000,
+                      "recipientName": "کسری تحویل میگیره",
+                      "recipientPhoneNumber": "09385667274",
+                      "recipientPostalCode": "4675744151",
+                      "recipientDeliveryProvince": "مازندران",
+                      "recipientDeliveryCity": "ساری",
+                      "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده",
+                      "discountCode": null,
+                      "discountAmount": null,
+                      "trackingNumber": null,
+                      "cancelReason": null,
+                      "walletPaidAmount": 0,
+                      "gatewayPaidAmount": 10000,
+                      "sentAt": null,
+                      "createdAt": "2022-10-19T22:34:30.000Z",
+                      "updatedAt": "2022-10-19T22:36:39.000Z",
+                      "deletedAt": null,
+                      "folders": [
+                        {
+                          "id": 1,
+                          "color": "رنگی",
+                          "side": "تک رو",
+                          "size": "A4",
+                          "countOfPages": 6,
+                          "uploadedPages": 2,
+                          "binding": "میخواهم صحافی بشود",
+                          "numberOfCopies": 6,
+                          "description": "این یک توضیح است",
+                          "shipmentPrice": 20000,
+                          "summary": "تست / تست / تست / تست / تست",
+                          "countOfFiles": 1,
+                          "filesUrl": "https://google.com",
+                          "amount": 10000,
+                          "telegramUploadFile": false,
+                          "whatsappUploadFile": false,
+                          "createdAt": "2022-10-19T21:55:07.000Z",
+                          "updatedAt": "2022-10-19T21:55:07.000Z"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
       }
     },
-
     "/users/marketing": {
       "get": {
         "tags": ["Users Marketing"],
@@ -1342,8 +1663,41 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "id": 4,
-                  "phoneNumber": "09385667274"
+                  "discount": {
+                    "totalSales": 0,
+                    "benefit": 0,
+                    "timesUsed": 0,
+                    "data": [
+                      {
+                        "code": "XCKFR353",
+                        "type": "percentage",
+                        "value": "5",
+                        "active": true,
+                        "userMarketing": true,
+                        "createdAt": "2022-10-19T21:33:07.000Z",
+                        "updatedAt": "2022-10-19T21:33:07.000Z"
+                      },
+                      {
+                        "code": "CXBS1HCY",
+                        "type": "percentage",
+                        "value": "10",
+                        "active": true,
+                        "userMarketing": true,
+                        "createdAt": "2022-10-19T21:33:07.000Z",
+                        "updatedAt": "2022-10-19T21:33:07.000Z"
+                      }
+                    ]
+                  },
+                  "referral": {
+                    "commission": 10,
+                    "slug": "ref=24",
+                    "sellCount": 0,
+                    "viewCount": 0,
+                    "totalSale": 0,
+                    "benefit": 0,
+                    "createdAt": "2022-10-19T21:33:07.000Z",
+                    "updatedAt": "2022-10-19T21:33:07.000Z"
+                  }
                 },
                 "error": null
               }
@@ -1379,6 +1733,20 @@
             "in": "header",
             "type": "string",
             "required": true
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
           }
         ],
         "responses": {
@@ -1388,8 +1756,37 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "id": 4,
-                  "phoneNumber": "09385667274"
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 2,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "data": [
+                    {
+                      "id": 1,
+                      "orderId": null,
+                      "type": "deposit",
+                      "status": "approved",
+                      "change": "increase",
+                      "amount": 10000,
+                      "description": "افزایش موجودی کیف پول",
+                      "createdAt": "2022-10-19T22:36:39.000Z",
+                      "updatedAt": "2022-10-19T22:36:39.000Z",
+                      "deletedAt": null
+                    },
+                    {
+                      "id": 2,
+                      "orderId": 3,
+                      "type": "order",
+                      "status": "approved",
+                      "change": "decrease",
+                      "amount": 10000,
+                      "description": "ثبت سفارش",
+                      "createdAt": "2022-10-19T22:36:39.000Z",
+                      "updatedAt": "2022-10-19T22:36:39.000Z",
+                      "deletedAt": null
+                    }
+                  ]
                 },
                 "error": null
               }
@@ -1438,10 +1835,18 @@
             "description": "OK",
             "examples": {
               "application/json": {
-                "statusCode": 201,
+                "statusCode": 200,
                 "data": {
-                  "id": 4,
-                  "phoneNumber": "09385667274"
+                  "id": 1,
+                  "orderId": null,
+                  "type": "deposit",
+                  "status": "approved",
+                  "change": "increase",
+                  "amount": 10000,
+                  "description": "افزایش موجودی کیف پول",
+                  "createdAt": "2022-10-19T22:36:39.000Z",
+                  "updatedAt": "2022-10-19T22:36:39.000Z",
+                  "deletedAt": null
                 },
                 "error": null
               }
@@ -1532,6 +1937,25 @@
       "properties": {
         "phoneNumber": { "type": "string", "example": "09385667274" },
         "password": { "type": "string", "example": "This Is A Passowrd!" }
+      }
+    },
+    "UsersOrders": {
+      "type": "object",
+      "properties": {
+        "addressId": { "type": "int", "example": 1 },
+        "discountCode": { "type": "string", "example": null },
+        "paidWithWallet": { "type": "bool", "example": true },
+        "folders": {
+          "type": "array",
+          "items": { "type": "int", "example": { "id": 1 } }
+        }
+      }
+    },
+    "UpdateUsersOrders": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "example": "canceled" },
+        "notFinishingReason": { "type": "string", "example": null }
       }
     },
     "UsersProfile": {

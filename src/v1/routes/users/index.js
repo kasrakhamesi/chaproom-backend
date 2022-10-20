@@ -17,7 +17,7 @@ router.use('/folders', usersPassport, require('./folders.route'))
 router.use('/profile', usersPassport, require('./profile.route'))
 router.use('/transactions', usersPassport, require('./transactions.route'))
 router.use('/orders', usersPassport, require('./orders.route'))
-//router.use('/marketing', usersPassport, require('./marketing.route'))
+router.use('/marketing', usersPassport, require('./marketing.route'))
 router.use('/payments', require('./payments.route'))
 
 module.exports = router

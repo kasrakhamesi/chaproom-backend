@@ -1,7 +1,7 @@
 'use strict'
 const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class marketing extends Model {
+  class order_folders extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,42 +11,26 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  marketing.init(
+  order_folders.init(
     {
       userId: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      slug: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      sellCount: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        defaultValue: 0,
-        allowNull: false
-      },
-      viewCount: {
+      folderId: {
         type: DataTypes.BIGINT.UNSIGNED,
-        defaultValue: 0,
         allowNull: false
       },
-      totalSale: {
+      orderId: {
         type: DataTypes.BIGINT.UNSIGNED,
-        defaultValue: 0,
-        allowNull: false
-      },
-      benefit: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        defaultValue: 0,
         allowNull: false
       }
     },
     {
       sequelize,
       //paranoid: true,
-      modelName: 'marketing'
+      modelName: 'order_folders'
     }
   )
-  return marketing
+  return order_folders
 }

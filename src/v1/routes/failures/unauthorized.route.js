@@ -1,8 +1,8 @@
 const { Router } = require('express')
 const router = Router()
 
-const { users } = require('../../controllers')
+const { failures } = require('../../controllers')
 
-router.get('/', users.marketing.findOne)
+router.get('/', failures.unauthorized)
 
 module.exports = router

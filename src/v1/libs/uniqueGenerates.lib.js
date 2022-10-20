@@ -10,23 +10,23 @@ const randomString = () => {
   return result
 }
 
-const discountCode = (number = 1) => {
+const discountCode = async (number = 1) => {
   const discountCodes = []
   while (true) {
-    if (discountCodes.length === number && number !== 1)
-      return new Promise(discountCodes)
     let code = randomString()
-    sequelize.models.discounts
-      .findOne({
-        code
+    try {
+      if (discountCodes.length === number && number !== 1) return discountCodes
+
+      const r = await sequelize.models.discounts.findOne({
+        where: {
+          code
+        }
       })
-      .then((r) => {
-        if (!r && number === 1) return new Promise(code)
-        else if (!r) discountCodes.push(code)
-      })
-      .catch(() => {
-        return code
-      })
+      if (!r && number === 1) return code
+      else if (!r) discountCodes.push(code)
+    } catch {
+      return code
+    }
   }
 }
 const randomNumber = () =>

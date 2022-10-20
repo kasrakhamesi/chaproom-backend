@@ -35,7 +35,7 @@ const create = async (req, res) => {
   }
 
   try {
-    if (files.length === 0) throw new Error('A')
+    if (files.length === 0) throw new Error('files not found')
 
     const findedFiles = await sequelize.models.files.findAll({
       where: {
@@ -49,8 +49,12 @@ const create = async (req, res) => {
         ids.push(entity?.id)
     }
 
-    if (ids.length === 0) throw new Error('ASD')
+    if (ids.length === 0)
+      throw new Error('files length should be greater than 0')
 
+    data.summary = 'تست / تست / تست / تست / تست'
+    data.countOfFiles = ids.length
+    data.filesUrl = 'https://google.com'
     const createdFolders = await sequelize.models.folders.create(data)
 
     const folderFiles = []

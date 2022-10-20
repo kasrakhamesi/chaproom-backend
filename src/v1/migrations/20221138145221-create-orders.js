@@ -50,6 +50,11 @@ module.exports = {
           defaultValue: 'پست پیشتاز',
           allowNull: true
         },
+        postFee: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 20000,
+          allowNull: true
+        },
         recipientName: {
           type: Sequelize.STRING,
           allowNull: false
@@ -94,7 +99,7 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: true
         },
-        cancelReason: {
+        notFinishingReason: {
           type: Sequelize.STRING,
           allowNull: true
         },
@@ -112,11 +117,11 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: true
         },
-        walletPaidPrice: {
+        walletPaidAmount: {
           type: Sequelize.BIGINT.UNSIGNED,
           allowNull: true
         },
-        gatewayPaidPrice: {
+        gatewayPaidAmount: {
           type: Sequelize.BIGINT.UNSIGNED,
           allowNull: true
         },

@@ -1,7 +1,7 @@
 'use strict'
 const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class users extends Model {
+  class referrals extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,50 +9,57 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      referrals.belongsTo(models.users, {
+        as: 'referral',
+        foreignKey: 'referralUserId'
+      })
     }
   }
-  users.init(
+  referrals.init(
     {
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      phoneNumber: {
-        type: DataTypes.STRING,
-        unique: {
-          args: true,
-          msg: 'This phone is already registered.'
-        },
-        validate: {
-          is: /^(\+98|0098|98|0)?9\d{9}$/
-        },
-        allowNull: false
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      marketingBalance: {
+      userId: {
         type: DataTypes.BIGINT.UNSIGNED,
-        defaultValue: 0,
         allowNull: false
       },
-      balance: {
+      referralUserId: {
         type: DataTypes.BIGINT.UNSIGNED,
-        defaultValue: 0,
-        allowNull: false
-      },
-      active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
         allowNull: true
+      },
+      commission: {
+        type: DataTypes.FLOAT,
+        defaultValue: 10,
+        allowNull: false
+      },
+      slug: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      sellCount: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
+      },
+      viewCount: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
+      },
+      totalSale: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
+      },
+      benefit: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
       }
     },
     {
       sequelize,
-      paranoid: true,
-      modelName: 'users'
+      //paranoid: true,
+      modelName: 'referrals'
     }
   )
-  return users
+  return referrals
 }

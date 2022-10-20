@@ -28,23 +28,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false
         },
-        marketingCommission: {
-          type: Sequelize.FLOAT,
-          defaultValue: 10,
-          allowNull: false
-        },
-        referralUserId: {
-          type: Sequelize.BIGINT.UNSIGNED,
-          allowNull: true
-        },
         marketingBalance: {
           type: Sequelize.BIGINT.UNSIGNED,
           defaultValue: 0,
           allowNull: false
-        },
-        accessToken: {
-          type: Sequelize.STRING,
-          allowNull: true
         },
         balance: {
           type: Sequelize.BIGINT.UNSIGNED,
