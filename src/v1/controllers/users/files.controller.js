@@ -1,4 +1,4 @@
-const { httpError, errorTypes } = require('../../configs')
+const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 const { pageCounter } = require('../../libs')
 const fs = require('fs')
@@ -43,11 +43,9 @@ const upload = async (req, res) => {
       fileUrl: 'https://google.com/' + attachment.name
     })
 
-    res.status(201).send({
-      statusCode: 201,
-      data: r,
-      error: null
-    })
+    res
+      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
+      .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
     return httpError(e, res)
   }

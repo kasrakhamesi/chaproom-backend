@@ -55,7 +55,7 @@ const callback = async (req, res) => {
         change: 'increase',
         balance: userWallet?.data?.balance,
         balanceAfter: userWallet?.data?.balance + payment?.amount,
-        status: 'approved',
+        status: 'successful',
         amount: payment?.amount,
         description: 'افزایش موجودی کیف پول'
       },

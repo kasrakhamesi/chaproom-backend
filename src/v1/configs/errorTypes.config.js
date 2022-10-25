@@ -105,6 +105,10 @@ const Types = {
   USER_EXIST_ERROR: {
     statusCode: 400,
     message: 'این شماره تلفن قبلا در سیستم ثبت شده است'
+  },
+  STATUS_NOT_ALLOWED: {
+    statusCode: 400,
+    message: 'وضعیت ثبت شده قابل پزیرش نیست'
   }
 }
 

@@ -2,7 +2,7 @@ const jsonwebtoken = require('jsonwebtoken')
 const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
 
-const generateAdminJwt = ({ id, phoneNumber }) => {
+const generateAdminJwt = (id, phoneNumber) => {
   return jsonwebtoken.sign(
     {
       id,

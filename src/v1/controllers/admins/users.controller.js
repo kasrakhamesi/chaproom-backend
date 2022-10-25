@@ -1,7 +1,8 @@
 const { sequelize } = require('../../models')
-const { restful } = require('../../libs')
+const { restful, filters } = require('../../libs')
 const { httpError } = require('../../configs')
 const users = new restful(sequelize.models.users)
+const _ = require('lodash')
 
 const findAll = async (req, res) => {
   try {
@@ -11,7 +12,8 @@ const findAll = async (req, res) => {
       sequelize.models.users
     )
 
-    const r = await users.Get({
+    let r = await users.Get({
+      attributes: ['id', 'name', 'balance', 'marketingBalance'],
       where,
       order,
       pagination: {
@@ -21,6 +23,20 @@ const findAll = async (req, res) => {
       }
     })
 
+    if (r?.statusCode !== 200) return httpError(e, res)
+
+    if (r?.data?.data !== [] && !_.isEmpty(r?.data?.data)) {
+      r.data.data = r?.data?.data.map((item) => {
+        return {
+          ...item.dataValues,
+          walletBalance: item.balance - item.marketingBalance
+        }
+      })
+
+      r.data.data = await Promise.all(r.data.data)
+    }
+
+    /*
     const ordersCondition = []
 
     if (r.statusCode !== 200) return res.status(r?.statusCode).send(r)
@@ -32,9 +48,11 @@ const findAll = async (req, res) => {
         }
       })
     }
+    */
 
     res.status(r?.statusCode).send(r)
   } catch (e) {
+    console.log(e)
     httpError(e, res)
   }
 }

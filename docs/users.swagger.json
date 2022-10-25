@@ -97,7 +97,12 @@
                   "name": "Programmer Kasra",
                   "password": "This Is A Passowrd!",
                   "updatedAt": "2022-10-06T18:17:07.510Z",
-                  "createdAt": "2022-10-06T18:17:07.510Z"
+                  "createdAt": "2022-10-06T18:17:07.510Z",
+                  "walletBalance": 0,
+                  "avatar": null,
+                  "token": {
+                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ"
+                  }
                 },
                 "error": null
               }
@@ -160,6 +165,8 @@
                   "balance": 0,
                   "createdAt": "2022-10-12T10:48:45.000Z",
                   "updatedAt": "2022-10-14T19:21:59.000Z",
+                  "walletBalance": 0,
+                  "avatar": null,
                   "token": {
                     "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ"
                   }
@@ -229,6 +236,7 @@
                   "updatedAt": "2022-10-19T22:36:39.000Z",
                   "deletedAt": null,
                   "walletBalance": 10000,
+                  "avatar": null,
                   "inProgressOrders": [
                     {
                       "id": 3,
@@ -349,9 +357,8 @@
                   "balance": 0,
                   "createdAt": "2022-10-12T10:48:45.000Z",
                   "updatedAt": "2022-10-14T19:21:59.000Z",
-                  "token": {
-                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ"
-                  }
+                  "walletBalance": 0,
+                  "avatar": null
                 },
                 "error": null
               }
@@ -424,35 +431,7 @@
               "application/json": {
                 "statusCode": 201,
                 "data": {
-                  "id": 1,
-                  "color": "رنگی",
-                  "side": "تک رو",
-                  "size": "A4",
-                  "countOfPages": 6,
-                  "uploadedPages": 2,
-                  "binding": "میخواهم صحافی بشود",
-                  "numberOfCopies": 6,
-                  "description": "این یک توضیح است",
-                  "shipmentPrice": 20000,
-                  "summary": "تست / تست / تست / تست / تست",
-                  "countOfFiles": 1,
-                  "filesUrl": "https://google.com",
-                  "amount": 10000,
-                  "telegramUploadFile": false,
-                  "whatsappUploadFile": false,
-                  "createdAt": "2022-10-22T19:49:22.000Z",
-                  "updatedAt": "2022-10-22T19:49:22.000Z",
-                  "files": [
-                    {
-                      "id": 1,
-                      "uploadedFileName": "f.pdf",
-                      "fileName": "f.pdf",
-                      "fileUrl": "https://google.com/f.pdf",
-                      "pageCount": 2,
-                      "createdAt": "2022-10-22T19:49:13.000Z",
-                      "updatedAt": "2022-10-22T19:49:13.000Z"
-                    }
-                  ]
+                  "message": "درخواست شما با موفقعیت ثبت شد"
                 },
                 "error": null
               }
@@ -600,6 +579,7 @@
               "application/json": {
                 "statusCode": 201,
                 "data": {
+                  "message": "درخواست شما با موفقعیت ثبت شد",
                   "paymentUrl": "https://sandbox.zarinpal.com/pg/StartPay/000000000000000000000000000000956163",
                   "amount": 1000
                 },
@@ -881,13 +861,7 @@
               "application/json": {
                 "statusCode": 201,
                 "data": {
-                  "id": 1,
-                  "recipientName": "کسری تحویل میگیرم",
-                  "recipientPhoneNumber": "09385667274",
-                  "recipientPostalCode": "4675744151",
-                  "recipientDeliveryProvince": "مازندران",
-                  "recipientDeliveryCity": "ساری",
-                  "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده"
+                  "message": "درخواست شما با موفقعیت ثبت شد"
                 },
                 "error": null
               }
@@ -962,26 +936,27 @@
             "examples": {
               "application/json": {
                 "statusCode": 200,
-                "data": [
-                  {
-                    "id": 1,
-                    "recipientName": "کسری تحویل میگیرم",
-                    "recipientPhoneNumber": "09385667274",
-                    "recipientPostalCode": "4675744151",
-                    "recipientDeliveryProvince": "مازندران",
-                    "recipientDeliveryCity": "ساری",
-                    "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده"
-                  },
-                  {
-                    "id": 2,
-                    "recipientName": "رضا تحویل میگیرم",
-                    "recipientPhoneNumber": "09385667276",
-                    "recipientPostalCode": "4675744157",
-                    "recipientDeliveryProvince": "مازندران",
-                    "recipientDeliveryCity": "ساری",
-                    "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک یازده"
-                  }
-                ],
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "addresses": [
+                    {
+                      "id": 2,
+                      "recipientName": "کسری تحویل میگیره",
+                      "recipientPhoneNumber": "09385667274",
+                      "recipientPostalCode": "4675744151",
+                      "recipientDeliveryProvince": "مازندران",
+                      "recipientDeliveryCity": "ساری",
+                      "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده",
+                      "createdAt": "2022-10-25T18:53:08.000Z",
+                      "updatedAt": "2022-10-25T18:53:08.000Z",
+                      "deletedAt": null
+                    }
+                  ]
+                },
                 "error": null
               }
             }
@@ -1189,13 +1164,13 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "examples": {
               "application/json": {
-                "statusCode": 200,
+                "statusCode": 201,
                 "data": {
-                  "message": "با موفقعیت آپدیت شد"
+                  "message": "درخواست شما با موفقعیت ثبت شد"
                 },
                 "error": null
               }
@@ -1258,10 +1233,7 @@
               "application/json": {
                 "statusCode": 201,
                 "data": {
-                  "id": 4,
-                  "name": "Programmer Kasra",
-                  "phoneNumber": "09385667274",
-                  "message": "Hi,this is a message !"
+                  "message": "درخواست شما با موفقعیت ثبت شد"
                 },
                 "error": null
               }
@@ -1311,8 +1283,8 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created",
+          "2010": {
+            "description": "OK",
             "examples": {
               "application/json": {
                 "statusCode": 200,
@@ -1352,10 +1324,10 @@
         }
       }
     },
-    "/public/َaffiliates": {
+    "/public/cooperations": {
       "post": {
         "tags": ["Public"],
-        "summary": "create new affiliates message ( this request needed use in home page - Hamkari ba moasesat )",
+        "summary": "create new cooperation message ( this request needed use in home page - Hamkari ba moasesat )",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -1363,7 +1335,7 @@
             "in": "body",
             "name": "body",
             "required": true,
-            "schema": { "$ref": "#/definitions/َAffiliates" }
+            "schema": { "$ref": "#/definitions/Cooperation" }
           }
         ],
         "responses": {
@@ -1373,8 +1345,7 @@
               "application/json": {
                 "statusCode": 201,
                 "data": {
-                  "id": 4,
-                  "phoneNumber": "09385667274"
+                  "message": "درخواست شما با موفقعیت ثبت شد"
                 },
                 "error": null
               }
@@ -1707,7 +1678,7 @@
                   "totalCount": 1,
                   "totalPageLeft": 0,
                   "totalCountLeft": 0,
-                  "data": [
+                  "orders": [
                     {
                       "id": 3,
                       "status": "pending",
@@ -1855,7 +1826,7 @@
                   "totalCount": 2,
                   "totalPageLeft": 0,
                   "totalCountLeft": 0,
-                  "data": [
+                  "transactions": [
                     {
                       "id": 1,
                       "orderId": null,
@@ -1973,7 +1944,7 @@
     }
   },
   "definitions": {
-    "َAffiliates": {
+    "Cooperation": {
       "type": "object",
       "properties": {
         "phoneNumber": { "type": "string", "example": "09385667274" }
@@ -2009,14 +1980,7 @@
       "type": "object",
       "properties": {
         "iban": { "type": "string", "example": "123123123123132" },
-        "status": {
-          "type": "string",
-          "example": "This Is A Passowrd!",
-          "enum": ["pending", "rejected", "approved", "pending_confirmation"]
-        },
-        "trackingNumber": { "type": "string", "example": "213124" },
-        "amount": { "type": "int", "example": 2000 },
-        "description": { "type": "string", "example": "This Is A Description!" }
+        "amount": { "type": "int", "example": 2000 }
       }
     },
     "UsersFolders": {

@@ -1,7 +1,7 @@
 'use strict'
 const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class affiliates extends Model {
+  class cooperations extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  affiliates.init(
+  cooperations.init(
     {
       phoneNumber: {
         type: DataTypes.STRING,
@@ -25,12 +25,17 @@ module.exports = (sequelize, DataTypes) => {
       description: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      status: {
+        type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+        defaultValue: 'pending',
+        allowNull: false
       }
     },
     {
       sequelize,
-      modelName: 'affiliates'
+      modelName: 'cooperations'
     }
   )
-  return affiliates
+  return cooperations
 }

@@ -6,6 +6,6 @@ router.use(bodyParser.json())
 
 const { public } = require('../../controllers')
 
-router.post('/', public.affiliates.create)
+router.post('/', public.cooperations.create)
 
 module.exports = router

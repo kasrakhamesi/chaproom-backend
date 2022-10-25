@@ -8,7 +8,7 @@ const getBalance = async (userId) => {
     const userTransactions = await sequelize.models.transactions.findAll({
       where: {
         userId,
-        status: 'approved'
+        status: 'successful'
       }
     })
 
@@ -136,7 +136,7 @@ const submitOrder = async (
       change: 'decrease',
       balance: userWallet?.data?.balance,
       balanceAfter: userWallet?.data?.balance - paymentAmount,
-      status: 'approved',
+      status: 'successful',
       amount: paymentAmount,
       description: 'ثبت سفارش'
     },

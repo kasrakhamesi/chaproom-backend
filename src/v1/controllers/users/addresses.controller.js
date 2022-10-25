@@ -1,4 +1,4 @@
-const { httpError } = require('../../configs')
+const { httpError, messageTypes } = require('../../configs')
 const { restful, filters } = require('../../libs')
 const { sequelize } = require('../../models')
 const addresses = new restful(sequelize.models.addresses)
@@ -27,12 +27,10 @@ const create = (req, res) => {
 
   return sequelize.models.addresses
     .create(data)
-    .then((r) => {
-      return res.status(201).send({
-        statusCode: 201,
-        data: r,
-        error: null
-      })
+    .then(() => {
+      return res
+        .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
+        .send(messageTypes.SUCCESSFUL_CREATED)
     })
     .catch((e) => {
       return httpError(e, res)
@@ -70,13 +68,9 @@ const update = (req, res) => {
     })
     .then((r) => {
       return r.update(data).then(() => {
-        return res.status(200).send({
-          statusCode: 200,
-          data: {
-            message: 'بروز رسانی با موفقعیت انجام شد'
-          },
-          error: null
-        })
+        return res
+          .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+          .send(messageTypes.SUCCESSFUL_UPDATE)
       })
     })
     .catch((e) => {
@@ -141,13 +135,9 @@ const softDelete = (req, res) => {
       }
     })
     .then(() => {
-      return res.status(200).send({
-        statusCode: 200,
-        data: {
-          message: 'با موفقعیت پاک شد'
-        },
-        error: null
-      })
+      return res
+        .status(messageTypes.SUCCESSFUL_DELETE.statusCode)
+        .send(messageTypes.SUCCESSFUL_DELETE)
     })
     .catch((e) => {
       return httpError(e, res)

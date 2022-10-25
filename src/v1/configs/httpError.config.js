@@ -2,8 +2,24 @@ const errorTypes = require('../configs/errorTypes.config')
 
 const Config = (err, res = null) => {
   if (err?.statusCode && res !== null)
-    return res.status(err?.statusCode).send(err)
-  else if (err?.statusCode) return err
+    return res.status(err?.statusCode).send({
+      statusCode: err?.statusCode,
+      data: null,
+      error: {
+        message: err?.message,
+        details: []
+      }
+    })
+  else if (err?.statusCode)
+    return {
+      statusCode: err?.statusCode,
+      data: null,
+      error: {
+        message: err?.message,
+        details: []
+      }
+    }
+
   const details = []
   for (const entity in errorTypes) {
     console.log(String(err))

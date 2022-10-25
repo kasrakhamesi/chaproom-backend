@@ -11,7 +11,7 @@ const paginate = (query, { page, pageSize }) => {
   }
 }
 
-const paging = (sequelizeResult, page, pageSize) => {
+const paging = (tableName, sequelizeResult, page, pageSize) => {
   const totalCountLeft = _.isEmpty(sequelizeResult.rows)
     ? 0
     : sequelizeResult.count - page <= 0
@@ -30,7 +30,7 @@ const paging = (sequelizeResult, page, pageSize) => {
     totalCount: sequelizeResult.count,
     totalPageLeft: totalPageLeft,
     totalCountLeft,
-    data: sequelizeResult.rows
+    [tableName]: sequelizeResult.rows
   }
 }
 
@@ -38,6 +38,20 @@ class Restful {
   #model
   constructor(model) {
     this.#model = model
+  }
+
+  #generateNewTableName = () => {
+    const tableName = this.#model.tableName
+    let newTableName = ''
+    for (let k = 0; k < tableName.length; k++) {
+      if (tableName[k] === '_') {
+        k++
+        newTableName += String(tableName[k]).toUpperCase()
+        continue
+      }
+      newTableName += tableName[k]
+    }
+    return newTableName
   }
 
   /*
@@ -107,7 +121,7 @@ class Restful {
             { page, pageSize }
           )
         )
-        resGet = paging(resGet, page, pageSize)
+        resGet = paging(this.#generateNewTableName(), resGet, page, pageSize)
       }
 
       return {

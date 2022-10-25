@@ -12,10 +12,10 @@ const findAll = async (req, res) => {
       sequelize.models.addresses
     )
 
-    const newWhere = {...where , userId}
+    const newWhere = { ...where, userId }
 
     const r = await addresses.Get({
-      where:newWhere,
+      where: newWhere,
       order,
       pagination: {
         active: true,

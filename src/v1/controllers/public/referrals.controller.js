@@ -12,7 +12,7 @@ const increaseView = (req, res) => {
         viewCount: r?.viewCount + 1
       }).then(() => {
         return res
-          .status(messageTypes.SUCCESSFUL_DELETE.SUCCESSFUL_UPDATE)
+          .status(messageTypes.SUCCESSFUL_UPDATE)
           .send(messageTypes.SUCCESSFUL_UPDATE)
       })
     })

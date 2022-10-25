@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       status: {
-        type: DataTypes.ENUM('rejected', 'pending', 'approved'),
+        type: DataTypes.ENUM('successful', 'pending', 'unsuccessful'),
         allowNull: false
       },
       change: {

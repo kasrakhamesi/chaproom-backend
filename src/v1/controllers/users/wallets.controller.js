@@ -1,6 +1,6 @@
 const { sequelize } = require('../../models')
-const { gateways } = require('../../libs')
-const { httpError, errorTypes } = require('../../configs')
+const { gateways, users } = require('../../libs')
+const { httpError, errorTypes, messageTypes } = require('../../configs')
 require('dotenv').config()
 
 const withdrawal = async (req, res) => {
@@ -18,25 +18,12 @@ const withdrawal = async (req, res) => {
       userId
     }
 
-    const userTransactions = await sequelize.models.transactions.findAll({
-      where: {
-        userId: payment?.userId,
-        status: 'approved'
-      }
-    })
+    const userWallet = await users.getBalance(userId)
 
-    let incoming = 0
-    let outgoing = 0
+    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
-    for (const transaction of userTransactions) {
-      if (transaction?.change === 'increase')
-        incoming += parseInt(transaction?.amount)
-      else outgoing += parseInt(transaction?.amount)
-    }
-
-    const balance = incoming - outgoing
-
-    if (balance < amount) return httpError(errorTypes.INSUFFICIENT_FUNDS, res)
+    if (userWallet.data.balance < amount)
+      return httpError(errorTypes.INSUFFICIENT_FUNDS, res)
 
     const t = await sequelize.transaction()
 
@@ -50,8 +37,8 @@ const withdrawal = async (req, res) => {
         withdrawalId: r?.id,
         type: 'withdrawal',
         change: 'decrease',
-        balance,
-        balanceAfter: balance - amount,
+        balance: userWallet.data.balance,
+        balanceAfter: userWallet.data.balance - amount,
         status: 'pending',
         amount,
         description: 'برداشت وجه'
@@ -59,13 +46,11 @@ const withdrawal = async (req, res) => {
       { transaction: t }
     )
 
-    await transaction.commit()
+    await t.commit()
 
-    res.status(201).send({
-      statusCode: 201,
-      data: r,
-      error: null
-    })
+    res
+      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
+      .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
     return httpError(e, res)
   }
@@ -102,6 +87,7 @@ const deposit = async (req, res) => {
     return res.status(201).send({
       statusCode: 201,
       data: {
+        message: 'صفحه پرداخت با موفقعیت ساخته شد',
         paymentUrl: payment?.url,
         amount
       },

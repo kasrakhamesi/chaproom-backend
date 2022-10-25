@@ -84,7 +84,10 @@ const create = async (req, res) => {
     }
 
     const r = await users.createOrder(userId, totalPrice, 0, folders, data)
-    return res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 201) return res.status(r?.statusCode).send(r)
+    return res
+      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
+      .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
     console.log(e)
     return httpError(e, res)
@@ -250,7 +253,7 @@ const update = async (req, res) => {
         change: 'increase',
         balance: userWallet?.data?.balance,
         balanceAfter: userWallet?.data?.balance + order?.amount,
-        status: 'approved',
+        status: 'successful',
         amount: order?.amount,
         description: 'لغو کردن سفارش توسط کاربر'
       },

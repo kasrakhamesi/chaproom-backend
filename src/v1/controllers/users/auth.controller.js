@@ -129,7 +129,6 @@ const login = (req, res) => {
           ...r?.dataValues,
           walletBalance: r?.balance - r?.marketingBalance,
           avatar: null,
-
           token: { access: accessToken }
         },
         error: null

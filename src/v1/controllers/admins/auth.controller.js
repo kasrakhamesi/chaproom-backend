@@ -22,6 +22,7 @@ const login = (req, res) => {
         statusCode: 200,
         data: {
           ...r?.dataValues,
+          avatar: null,
           token: { access: accessToken }
         },
         error: null

@@ -1,7 +1,7 @@
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('affiliates', {
+    await queryInterface.createTable('cooperations', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -21,6 +21,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      status: {
+        type: Sequelize.ENUM('pending', 'approved', 'rejected'),
+        defaultValue: 'pending',
+        allowNull: false
+      },
       createdAt: {
         allowNull: true,
         type: Sequelize.DATE
@@ -32,6 +37,6 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('affiliates')
+    await queryInterface.dropTable('cooperations')
   }
 }

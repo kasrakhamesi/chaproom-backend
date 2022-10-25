@@ -12,6 +12,13 @@ const Types = {
       message: 'با موفقعیت حذف شد'
     },
     error: null
+  },
+  SUCCESSFUL_CREATED: {
+    statusCode: 201,
+    data: {
+      message: 'با موفقعیت ساخته شد'
+    },
+    error: null
   }
 }
 

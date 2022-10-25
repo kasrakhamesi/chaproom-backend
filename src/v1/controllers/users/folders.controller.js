@@ -1,4 +1,4 @@
-const { httpError } = require('../../configs')
+const { httpError, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 
 const create = async (req, res) => {
@@ -105,11 +105,9 @@ const create = async (req, res) => {
       ]
     })
 
-    return res.status(201).send({
-      statusCode: 201,
-      data: r,
-      error: null
-    })
+    res
+      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
+      .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
     return httpError(e?.message || String(e), res)
   }

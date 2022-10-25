@@ -15,16 +15,12 @@ const swaggerDocuments = {
 }
 
 app.use('/v1', require('./src/v1/routes'))
-app.use(
-  '/v1/users/api-docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocuments.users)
+app.use('/v1/users/api-docs', swaggerUi.serve, (...args) =>
+  swaggerUi.setup(swaggerDocuments.users)(...args)
 )
 
-app.use(
-  '/v1/admins/api-docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDocuments.admins)
+app.use('/v1/admins/api-docs', swaggerUi.serve, (...args) =>
+  swaggerUi.setup(swaggerDocuments.admins)(...args)
 )
 
 app.use('*', (req, res) => {

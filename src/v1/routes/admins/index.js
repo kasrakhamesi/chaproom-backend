@@ -10,5 +10,9 @@ const adminsPassport = passport.adminsPassport.authenticate('jwt', {
 router.use(passport.adminsPassport.initialize())
 
 router.use('/auth', require('./auth.route'))
+router.use('/users', adminsPassport, require('./users.route'))
+router.use('/addresses', adminsPassport, require('./addresses.route'))
+router.use('/cooperations', adminsPassport, require('./cooperations.route'))
+router.use('/withdrawals', adminsPassport, require('./withdrawals.route'))
 
 module.exports = router
