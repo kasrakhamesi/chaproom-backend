@@ -26,6 +26,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      owner: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       status: {
         type: Sequelize.ENUM(
           'pending',

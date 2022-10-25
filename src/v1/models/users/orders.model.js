@@ -30,12 +30,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.ENUM(
-          'pending_payment',
+          'payment_pending',
           'pending',
           'approved',
           'rejected',
           'canceled',
-          'hold'
+          'sent'
         ),
         allowNull: false
       },

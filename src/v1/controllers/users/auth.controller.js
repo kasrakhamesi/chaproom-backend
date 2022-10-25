@@ -28,6 +28,20 @@ const register = async (req, res) => {
   }
 }
 
+const resendCode = async (req, res) => {
+  try {
+    const { phoneNumber } = req.body
+
+    const r = await authentications.sms.send({
+      phoneNumber,
+      registerData: data
+    })
+    return res.status(r?.statusCode).send(r)
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
 const registerConfirm = async (req, res) => {
   try {
     const { phoneNumber, code } = req.body
@@ -56,6 +70,8 @@ const registerConfirm = async (req, res) => {
     const t = await sequelize.transaction()
 
     const r = await sequelize.models.users.create(data, { transaction: t })
+
+    delete r.password
 
     const discountCodes = await uniqueGenerates.discountCode(2)
 

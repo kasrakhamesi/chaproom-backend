@@ -32,12 +32,12 @@ module.exports = {
         },
         status: {
           type: Sequelize.ENUM(
-            'pending_payment',
+            'payment_pending',
             'pending',
             'approved',
             'rejected',
             'canceled',
-            'hold'
+            'sent'
           ),
           allowNull: false
         },

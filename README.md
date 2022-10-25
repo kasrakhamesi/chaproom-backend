@@ -29,3 +29,5 @@ npm start
 ## API Documentation
 
 - [Users Swagger - Rest API](http://localhost:3000/v1/users/api-docs)
+
+- [Admins Swagger - Rest API](http://localhost:3000/v1/admins/api-docs)

@@ -91,6 +91,10 @@ const callback = async (req, res) => {
     if (submitOrderResult !== null)
       return res.status(submitOrderResult.statusCode).send(submitOrderResult)
 
+    return res.redirect(
+      `https://localhost:3000/dashboard?isDeposit=true&isSuccessful=true&paymentId=${payment?.id}&amount=${payment?.amount}`
+    )
+
     res.status(200).send({
       statusCode: 200,
       data: {

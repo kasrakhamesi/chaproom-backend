@@ -119,7 +119,7 @@ const submitOrder = async (
     where: {
       userId,
       paymentId,
-      status: 'pending_payment'
+      status: 'payment_pending'
     }
   })
 

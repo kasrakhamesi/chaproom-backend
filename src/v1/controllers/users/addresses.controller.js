@@ -5,6 +5,7 @@ const addresses = new restful(sequelize.models.addresses)
 
 const create = (req, res) => {
   const {
+    label,
     recipientName,
     recipientPhoneNumber,
     recipientPostalCode,
@@ -16,6 +17,7 @@ const create = (req, res) => {
   const userId = req?.user[0]?.id
 
   const data = {
+    label,
     recipientName,
     recipientPhoneNumber,
     recipientPostalCode,
@@ -42,6 +44,7 @@ const update = (req, res) => {
   const userId = req?.user[0]?.id
 
   const {
+    label,
     recipientName,
     recipientPhoneNumber,
     recipientPostalCode,
@@ -51,6 +54,7 @@ const update = (req, res) => {
   } = req.body
 
   const data = {
+    label,
     recipientName,
     recipientPhoneNumber,
     recipientPostalCode,

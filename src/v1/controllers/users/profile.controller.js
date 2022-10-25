@@ -1,14 +1,20 @@
 const { httpError, errorTypes, messageTypes } = require('../../configs')
+const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const bcrypt = require('bcrypt')
 
 const update = (req, res) => {
   const { name, password } = req.body
   const userId = req?.user[0]?.id
-  const data = {
-    name,
-    password
-  }
+  const data =
+    password === '' || password === null
+      ? {
+          name
+        }
+      : {
+          password,
+          name
+        }
   return sequelize.models.users
     .findOne({
       where: {
@@ -18,9 +24,17 @@ const update = (req, res) => {
     .then((r) => {
       if (!r) return httpError(errorTypes.INVALID_PASSWORD, res)
       return r.update(data).then(() => {
-        return res
-          .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
-          .send(messageTypes.SUCCESSFUL_UPDATE)
+        const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
+        return res.status(messageTypes.SUCCESSFUL_UPDATE.statusCode).send({
+          statusCode: messageTypes.SUCCESSFUL_UPDATE.statusCode,
+          data: {
+            message: messageTypes.SUCCESSFUL_UPDATE.data.message,
+            token: {
+              access: accessToken
+            }
+          },
+          error: null
+        })
       })
     })
     .catch((e) => {

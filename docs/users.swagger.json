@@ -1784,7 +1784,6 @@
         }
       }
     },
-
     "/users/transactions": {
       "get": {
         "tags": ["Users Transactions"],
@@ -1831,7 +1830,7 @@
                       "id": 1,
                       "orderId": null,
                       "type": "deposit",
-                      "status": "approved",
+                      "status": "successful",
                       "change": "increase",
                       "amount": 10000,
                       "description": "افزایش موجودی کیف پول",
@@ -1843,7 +1842,7 @@
                       "id": 2,
                       "orderId": 3,
                       "type": "order",
-                      "status": "approved",
+                      "status": "unsuccessful",
                       "change": "decrease",
                       "amount": 10000,
                       "description": "ثبت سفارش",
@@ -2050,6 +2049,7 @@
     "UsersAddresses": {
       "type": "object",
       "properties": {
+        "label": { "type": "string", "example": "خانه" },
         "recipientName": { "type": "string", "example": "کسری تحویل میگیره" },
         "recipientPhoneNumber": {
           "type": "string",

@@ -571,6 +571,216 @@
           }
         }
       }
+    },
+    "/users/orders/id/{id}": {
+      "get": {
+        "tags": ["Users Orders"],
+        "summary": "get one of user order from order id",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "orderId": null,
+                  "type": "deposit",
+                  "status": "approved",
+                  "change": "increase",
+                  "amount": 10000,
+                  "description": "افزایش موجودی کیف پول",
+                  "createdAt": "2022-10-19T22:36:39.000Z",
+                  "updatedAt": "2022-10-19T22:36:39.000Z",
+                  "deletedAt": null
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users Orders"],
+        "summary": "update or change order data",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Orders" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "orderId": null,
+                  "type": "deposit",
+                  "status": "approved",
+                  "change": "increase",
+                  "amount": 10000,
+                  "description": "افزایش موجودی کیف پول",
+                  "createdAt": "2022-10-19T22:36:39.000Z",
+                  "updatedAt": "2022-10-19T22:36:39.000Z",
+                  "deletedAt": null
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/orders": {
+      "get": {
+        "tags": ["Users Orders"],
+        "summary": "get all users orders",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 2,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "transactions": [
+                    {
+                      "id": 1,
+                      "orderId": null,
+                      "type": "deposit",
+                      "status": "successful",
+                      "change": "increase",
+                      "amount": 10000,
+                      "description": "افزایش موجودی کیف پول",
+                      "createdAt": "2022-10-19T22:36:39.000Z",
+                      "updatedAt": "2022-10-19T22:36:39.000Z",
+                      "deletedAt": null
+                    },
+                    {
+                      "id": 2,
+                      "orderId": 3,
+                      "type": "order",
+                      "status": "unsuccessful",
+                      "change": "decrease",
+                      "amount": 10000,
+                      "description": "ثبت سفارش",
+                      "createdAt": "2022-10-19T22:36:39.000Z",
+                      "updatedAt": "2022-10-19T22:36:39.000Z",
+                      "deletedAt": null
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
 
@@ -600,6 +810,20 @@
         },
         "description": { "type": "string", "example": "این یک توضیح است" },
         "trackingNumber": { "type": "string", "example": "kasra" }
+      }
+    },
+    "Orders": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "rejected",
+          "enum": ["approved", "rejected", "sent"]
+        },
+        "sendMethod": { "type": "string", "example": "پست پیشتاز" },
+        "description": { "type": "string", "example": "این یک توضیح است" },
+        "trackingNumber": { "type": "string", "example": "kasra" },
+        "notFinishingReason": { "type": "string", "example": null }
       }
     }
   }

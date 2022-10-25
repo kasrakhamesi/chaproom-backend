@@ -37,7 +37,7 @@ const create = async (req, res) => {
       recipientDeliveryProvince: address?.recipientDeliveryProvince,
       recipientDeliveryCity: address?.recipientDeliveryCity,
       recipientDeliveryAddress: address?.recipientDeliveryAddress,
-      status: 'pending_payment',
+      status: 'payment_pending',
       amount: 15000
     }
 
