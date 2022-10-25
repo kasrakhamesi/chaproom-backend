@@ -15,7 +15,6 @@ module.exports = {
       {
         roleId: 1,
         name: 'کسری',
-        username: 'kasra',
         password: 'kasra',
         phoneNumber: '09385667274'
       }
@@ -32,7 +31,6 @@ module.exports = {
     await queryInterface.bulkDelete('admins', {
       roleId: 1,
       name: 'کسری',
-      username: 'kasra',
       password: 'kasra',
       phoneNumber: '09385667274'
     })

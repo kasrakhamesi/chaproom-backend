@@ -8,7 +8,7 @@ const StrategyJwt = passportJwt.Strategy
 
 const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
-/*
+
 adminsPassport.use(
   new StrategyJwt(
     {
@@ -19,43 +19,14 @@ adminsPassport.use(
       return sequelize.models.admins
         .findAll({
           where: {
-            id: jwtPayLoad.id,
-            roleId: jwtPayLoad.roleId,
-            username: jwtPayLoad.username,
-            email: jwtPayLoad.email,
-            phone: jwtPayLoad.phone
+            id: jwtPayLoad.id
           },
-          include: {
-            model: sequelize.models.admins_roles,
-            as: 'role',
-            include: {
-              model: sequelize.models.admins_permissions,
-              as: 'permissions',
-              through: {
-                attributes: {
-                  exclude: ['createdAt', 'updatedAt', 'permId', 'roleId']
-                }
-              }
-            }
+          attributes: {
+            exclude: ['password']
           }
         })
-        .then((result) => {
-          const adminsInfo = result.map((item) => {
-            return {
-              id: item.id,
-              role: item.role,
-              name: item.name,
-              username: item.username,
-              password: item.password,
-              last_login: item.last_login,
-              email: item.email,
-              phone: item.phone,
-              activated: item.activated,
-              createdAt: item.createdAt,
-              updatedAt: item.updatedAt
-            }
-          })
-          return done(null, adminsInfo)
+        .then((r) => {
+          return done(null, r)
         })
         .catch((err) => {
           return done(err)
@@ -63,7 +34,7 @@ adminsPassport.use(
     }
   )
 )
-*/
+
 usersPassport.use(
   new StrategyJwt(
     {

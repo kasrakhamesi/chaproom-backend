@@ -18,6 +18,7 @@ const findOne = async (req, res) => {
           'usageLimit',
           'expireAt',
           'timesUsed',
+          'userMarketing',
           'description'
         ]
       }

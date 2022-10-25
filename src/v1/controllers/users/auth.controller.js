@@ -3,21 +3,29 @@ const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
 const { uniqueGenerates } = require('../../libs')
-
 const bcrypt = require('bcrypt')
 
-const register = (req, res) => {
-  const { phoneNumber, name, password, referralSlug } = req.body
-  const data = { phoneNumber, name, password, referralSlug }
+const register = async (req, res) => {
+  try {
+    const { phoneNumber, name, password, referralSlug } = req.body
+    const data = { phoneNumber, name, password, referralSlug }
 
-  return authentications.sms
-    .send({ phoneNumber, registerData: data })
-    .then((r) => {
-      return res.status(r?.statusCode).send(r)
+    const user = await sequelize.models.users.findOne({
+      where: {
+        phoneNumber
+      }
     })
-    .catch((e) => {
-      return httpError(e, res)
+
+    if (user) return httpError(errorTypes.USER_EXIST_ERROR, res)
+
+    const r = await authentications.sms.send({
+      phoneNumber,
+      registerData: data
     })
+    return res.status(r?.statusCode).send(r)
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 const registerConfirm = async (req, res) => {
@@ -37,7 +45,7 @@ const registerConfirm = async (req, res) => {
       password: auth?.data?.registerData?.password
     }
 
-    const referralSlug = auth?.data?.registerData?.referralSlug
+    const referralSlug = auth?.data?.registerData?.referralSlug || ''
 
     const referrals = await sequelize.models.referrals.findOne({
       where: {
@@ -89,6 +97,7 @@ const registerConfirm = async (req, res) => {
       data: {
         ...r?.dataValues,
         walletBalance: r?.balance - r?.marketingBalance,
+        avatar: null,
         token: { access: accessToken }
       },
       error: null
@@ -119,6 +128,8 @@ const login = (req, res) => {
         data: {
           ...r?.dataValues,
           walletBalance: r?.balance - r?.marketingBalance,
+          avatar: null,
+
           token: { access: accessToken }
         },
         error: null

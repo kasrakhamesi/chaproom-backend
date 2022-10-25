@@ -18,6 +18,7 @@ router.use('/profile', usersPassport, require('./profile.route'))
 router.use('/transactions', usersPassport, require('./transactions.route'))
 router.use('/orders', usersPassport, require('./orders.route'))
 router.use('/marketing', usersPassport, require('./marketing.route'))
+router.use('/dashboard', usersPassport, require('./dashboard.route'))
 router.use('/payments', require('./payments.route'))
 
 module.exports = router

@@ -1,15 +1,12 @@
 const jsonwebtoken = require('jsonwebtoken')
 const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
-const userRefreshToken = 'refresh'
 
-module.exports.adminJwt = ({ id, roleId, phoneNumber, password }) => {
+const generateAdminJwt = ({ id, phoneNumber }) => {
   return jsonwebtoken.sign(
     {
       id,
-      roleId,
       phoneNumber,
-      password,
       isAdmin: true
     },
     adminAccess,
@@ -33,4 +30,4 @@ const decodeJwt = (encodedString, isAdmin = true) => {
   return jsonwebtoken.decode(encodedString, isAdmin ? adminAccess : userAccess)
 }
 
-module.exports = { generateUserJwt, decodeJwt }
+module.exports = { generateUserJwt, generateAdminJwt, decodeJwt }

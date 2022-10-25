@@ -98,9 +98,13 @@ const Types = {
     statusCode: 400,
     message: 'کد تایید باید بصورت عدد وارد شود'
   },
-  INVALID_OTP_TYPE: {
+  INVALID_PHONE_FORMAT: {
     statusCode: 400,
-    message: 'کد تایید باید بصورت عدد وارد شود'
+    message: 'فرمت شماره تلفن اشتباه میباشد'
+  },
+  USER_EXIST_ERROR: {
+    statusCode: 400,
+    message: 'این شماره تلفن قبلا در سیستم ثبت شده است'
   }
 }
 

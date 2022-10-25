@@ -8,7 +8,67 @@
   "host": "localhost:3000",
   "basePath": "/v1",
   "schemes": ["http", "https"],
-  "paths": {},
+  "paths": {
+    "/admins/auth/login": {
+      "post": {
+        "tags": ["Admins Auth ( Login & ... )"],
+        "summary": "Login admin",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/AdminsLogin" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "isSuccess": true,
+                  "message": "کد ارسال شد",
+                  "phoneNumber": "09385667274",
+                  "expireAt": "2022-10-17T20:31:30.629Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
 
   "securityDefinitions": {
     "bearerAuth": {
@@ -19,10 +79,11 @@
     }
   },
   "definitions": {
-    "َAffiliates": {
+    "AdminsLogin": {
       "type": "object",
       "properties": {
-        "phoneNumber": { "type": "string", "example": "09385667274" }
+        "phoneNumber": { "type": "string", "example": "09385667274" },
+        "password": { "type": "string", "example": "kasra" }
       }
     }
   }

@@ -1,26 +1,35 @@
 const { httpError, errorTypes } = require('../../configs')
+const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
 
-const login = async (req, res) => {
-  try {
-    const { phoneNumber, password } = req.body
-    const admin = await sequelize.models.admins.findOne({
+const login = (req, res) => {
+  const { phoneNumber, password } = req.body
+  return sequelize.models.admins
+    .findOne({
       where: {
         phoneNumber,
         password
+      },
+      attributes: {
+        exclude: ['password']
       }
     })
-    if (!admin) return httpError(errorTypes.INVALID_USERNAME_PASSWORD, res)
-
-    res.status(200).send({
-      statusCode: 200,
-      data: admin,
-      error: null
+    .then((r) => {
+      if (!r) httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
+      const accessToken = authorize.generateAdminJwt(r?.id, r?.phoneNumber)
+      return res.status(200).send({
+        statusCode: 200,
+        data: {
+          ...r?.dataValues,
+          token: { access: accessToken }
+        },
+        error: null
+      })
     })
-  } catch (e) {
-    return httpError(e, res)
-  }
+    .catch((e) => {
+      return httpError(e, res)
+    })
 }
 
 const loginConfirm = (req, res) => {}

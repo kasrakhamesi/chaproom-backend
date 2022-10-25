@@ -135,7 +135,7 @@
     "/users/auth/login": {
       "post": {
         "tags": ["Users Auth ( Login & Register & ... )"],
-        "summary": "Login exist user",
+        "summary": "Login user",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -197,9 +197,9 @@
         }
       }
     },
-    "/users/profile/dashboard": {
+    "/users/dashboard": {
       "get": {
-        "tags": ["Users Profile"],
+        "tags": ["Users Dashboard"],
         "summary": "get dashboard",
         "consumes": ["application/json"],
         "produces": ["application/json"],
@@ -229,7 +229,7 @@
                   "updatedAt": "2022-10-19T22:36:39.000Z",
                   "deletedAt": null,
                   "walletBalance": 10000,
-                  "orders": [
+                  "inProgressOrders": [
                     {
                       "id": 3,
                       "status": "pending",
@@ -428,14 +428,31 @@
                   "color": "رنگی",
                   "side": "تک رو",
                   "size": "A4",
-                  "countOfPages": 8,
-                  "uploadedPages": 6,
-                  "binding": "من صحافی میخواهم",
-                  "numberOfCopies": 5,
+                  "countOfPages": 6,
+                  "uploadedPages": 2,
+                  "binding": "میخواهم صحافی بشود",
+                  "numberOfCopies": 6,
                   "description": "این یک توضیح است",
-                  "shipmentPrice": "5000",
-                  "amount": "5000",
-                  "files": [{ "id": 1 }]
+                  "shipmentPrice": 20000,
+                  "summary": "تست / تست / تست / تست / تست",
+                  "countOfFiles": 1,
+                  "filesUrl": "https://google.com",
+                  "amount": 10000,
+                  "telegramUploadFile": false,
+                  "whatsappUploadFile": false,
+                  "createdAt": "2022-10-22T19:49:22.000Z",
+                  "updatedAt": "2022-10-22T19:49:22.000Z",
+                  "files": [
+                    {
+                      "id": 1,
+                      "uploadedFileName": "f.pdf",
+                      "fileName": "f.pdf",
+                      "fileUrl": "https://google.com/f.pdf",
+                      "pageCount": 2,
+                      "createdAt": "2022-10-22T19:49:13.000Z",
+                      "updatedAt": "2022-10-22T19:49:13.000Z"
+                    }
+                  ]
                 },
                 "error": null
               }
@@ -489,30 +506,39 @@
             "examples": {
               "application/json": {
                 "statusCode": 200,
-                "data": {
-                  "id": 1,
-                  "color": "رنگی",
-                  "side": "تک رو",
-                  "size": "A4",
-                  "countOfPages": 8,
-                  "uploadedPages": 6,
-                  "binding": "من صحافی میخواهم",
-                  "numberOfCopies": 5,
-                  "description": "این یک توضیح است",
-                  "shipmentPrice": "5000",
-                  "amount": "5000",
-                  "files": [
-                    {
-                      "id": 1,
-                      "uploadedFileName": "CV-4.pdf",
-                      "fileName": "CV-4.pdf",
-                      "fileUrl": "are",
-                      "pageCount": 1,
-                      "createdAt": "2022-10-12T10:51:37.000Z",
-                      "updatedAt": "2022-10-12T10:51:37.000Z"
-                    }
-                  ]
-                },
+                "data": [
+                  {
+                    "id": 1,
+                    "color": "رنگی",
+                    "side": "تک رو",
+                    "size": "A4",
+                    "countOfPages": 6,
+                    "uploadedPages": 2,
+                    "binding": "میخواهم صحافی بشود",
+                    "numberOfCopies": 6,
+                    "description": "این یک توضیح است",
+                    "shipmentPrice": 20000,
+                    "summary": "تست / تست / تست / تست / تست",
+                    "countOfFiles": 1,
+                    "filesUrl": "https://google.com",
+                    "amount": 10000,
+                    "telegramUploadFile": false,
+                    "whatsappUploadFile": false,
+                    "createdAt": "2022-10-22T19:49:22.000Z",
+                    "updatedAt": "2022-10-22T19:49:22.000Z",
+                    "files": [
+                      {
+                        "id": 1,
+                        "uploadedFileName": "f.pdf",
+                        "fileName": "f.pdf",
+                        "fileUrl": "https://google.com/f.pdf",
+                        "pageCount": 2,
+                        "createdAt": "2022-10-22T19:49:13.000Z",
+                        "updatedAt": "2022-10-22T19:49:13.000Z"
+                      }
+                    ]
+                  }
+                ],
                 "error": null
               }
             }
@@ -613,7 +639,7 @@
     "/users/folders/id/{id}": {
       "put": {
         "tags": ["Users Folders"],
-        "summary": "edit exist folder",
+        "summary": "edit folder",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -644,28 +670,7 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "id": 1,
-                  "color": "رنگی",
-                  "side": "تک رو",
-                  "size": "A4",
-                  "countOfPages": 8,
-                  "uploadedPages": 6,
-                  "binding": "من صحافی میخواهم",
-                  "numberOfCopies": 5,
-                  "description": "این یک توضیح است",
-                  "shipmentPrice": 5000,
-                  "amount": 5000,
-                  "files": [
-                    {
-                      "id": 1,
-                      "uploadedFileName": "CV-4.pdf",
-                      "fileName": "CV-4.pdf",
-                      "fileUrl": "are",
-                      "pageCount": 1,
-                      "createdAt": "2022-10-12T10:51:37.000Z",
-                      "updatedAt": "2022-10-12T10:51:37.000Z"
-                    }
-                  ]
+                  "message": "با موفقعیت آپدیت شد"
                 },
                 "error": null
               }
@@ -717,12 +722,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": { "$ref": "#/definitions/UsersFolders" }
           }
         ],
         "responses": {
@@ -736,14 +735,31 @@
                   "color": "رنگی",
                   "side": "تک رو",
                   "size": "A4",
-                  "countOfPages": 8,
-                  "uploadedPages": 6,
-                  "binding": "من صحافی میخواهم",
-                  "numberOfCopies": 5,
+                  "countOfPages": 6,
+                  "uploadedPages": 2,
+                  "binding": "میخواهم صحافی بشود",
+                  "numberOfCopies": 6,
                   "description": "این یک توضیح است",
-                  "shipmentPrice": 5000,
-                  "price": 5000,
-                  "files": [{ "id": 1 }]
+                  "shipmentPrice": 20000,
+                  "summary": "تست / تست / تست / تست / تست",
+                  "countOfFiles": 1,
+                  "filesUrl": "https://google.com",
+                  "amount": 10000,
+                  "telegramUploadFile": false,
+                  "whatsappUploadFile": false,
+                  "createdAt": "2022-10-22T19:49:22.000Z",
+                  "updatedAt": "2022-10-22T19:49:22.000Z",
+                  "files": [
+                    {
+                      "id": 1,
+                      "uploadedFileName": "f.pdf",
+                      "fileName": "f.pdf",
+                      "fileUrl": "https://google.com/f.pdf",
+                      "pageCount": 2,
+                      "createdAt": "2022-10-22T19:49:13.000Z",
+                      "updatedAt": "2022-10-22T19:49:13.000Z"
+                    }
+                  ]
                 },
                 "error": null
               }
@@ -1753,7 +1769,6 @@
                         "type": "percentage",
                         "value": "5",
                         "active": true,
-                        "userMarketing": true,
                         "createdAt": "2022-10-19T21:33:07.000Z",
                         "updatedAt": "2022-10-19T21:33:07.000Z"
                       },
@@ -1762,7 +1777,6 @@
                         "type": "percentage",
                         "value": "10",
                         "active": true,
-                        "userMarketing": true,
                         "createdAt": "2022-10-19T21:33:07.000Z",
                         "updatedAt": "2022-10-19T21:33:07.000Z"
                       }

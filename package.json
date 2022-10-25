@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "rebuild": "cd ./src/v1/ && npx sequelize db:migrate:undo:all && npx sequelize db:migrate && cd ../.. && nodemon index.js",
+    "rebuild": "cd ./src/v1/ && npx sequelize db:migrate:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all && cd ../.. && nodemon index.js",
     "dev": "cd ./src/v1/ && npx sequelize db:migrate && cd ../.. && nodemon index.js",
     "start": "cd ./src/v1/ && npx sequelize db:migrate && cd ../.. && node index.js"
   },
@@ -26,6 +26,7 @@
     "passport-jwt": "^4.0.0",
     "pdf-page-counter": "^1.0.3",
     "pdfjs-dist": "^2.16.105",
+    "pm2": "^5.2.2",
     "request-promise": "^4.2.6",
     "sequelize": "^6.21.4",
     "swagger-jsdoc": "^6.2.5",

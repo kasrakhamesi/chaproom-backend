@@ -112,7 +112,7 @@ class Restful {
 
       return {
         statusCode: 200,
-        data: resGet,
+        data: _.isEmpty(resGet) ? [] : resGet,
         error: null
       }
     } catch (e) {

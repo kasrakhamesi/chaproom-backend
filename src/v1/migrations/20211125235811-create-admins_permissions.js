@@ -13,7 +13,7 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false
         },
-        permDescription: {
+        description: {
           type: Sequelize.STRING,
           allowNull: false
         },

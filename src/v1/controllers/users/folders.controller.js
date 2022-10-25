@@ -81,7 +81,7 @@ const create = async (req, res) => {
         id: createdFolders?.id
       },
       attributes: {
-        exclude: ['userId']
+        exclude: ['userId', 'used']
       },
       include: [
         {
@@ -174,7 +174,7 @@ const findAll = (req, res) => {
         used: false
       },
       attributes: {
-        exclude: ['userId']
+        exclude: ['userId', 'used']
       },
       include: [
         {
@@ -215,11 +215,10 @@ const findOne = (req, res) => {
     .findOne({
       where: {
         userId,
-        id,
-        used: false
+        id // #TODO USED : FALSE
       },
       attributes: {
-        exclude: ['userId']
+        exclude: ['userId', 'used']
       },
       include: [
         {
@@ -243,7 +242,7 @@ const findOne = (req, res) => {
       ]
     })
     .then((r) => {
-      return res.staus(200).send({
+      return res.status(200).send({
         statusCode: 200,
         data: r,
         error: null
@@ -265,7 +264,7 @@ const hardDelete = (req, res) => {
       }
     })
     .then((r) => {
-      return res.staus(200).send({
+      return res.status(200).send({
         statusCode: 200,
         data: r,
         error: null

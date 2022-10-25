@@ -9,13 +9,22 @@ app.use(cors())
 app.use(logger('dev'))
 
 const swaggerUi = require('swagger-ui-express')
-const swaggerUserDocument = require('./docs/users.swagger.json')
+const swaggerDocuments = {
+  users: require('./docs/users.swagger.json'),
+  admins: require('./docs/admins.swagger.json')
+}
 
 app.use('/v1', require('./src/v1/routes'))
 app.use(
   '/v1/users/api-docs',
   swaggerUi.serve,
-  swaggerUi.setup(swaggerUserDocument)
+  swaggerUi.setup(swaggerDocuments.users)
+)
+
+app.use(
+  '/v1/admins/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocuments.admins)
 )
 
 app.use('*', (req, res) => {

@@ -20,14 +20,6 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false
         },
-        username: {
-          type: Sequelize.STRING,
-          unique: {
-            args: true,
-            msg: 'This username is already registered.'
-          },
-          allowNull: false
-        },
         password: {
           type: Sequelize.STRING,
           allowNull: false
@@ -59,9 +51,6 @@ module.exports = {
       })
       .then(() =>
         queryInterface.addIndex('admins', ['phoneNumber'], { unique: true })
-      )
-      .then(() =>
-        queryInterface.addIndex('admins', ['username'], { unique: true })
       )
   },
   down: async (queryInterface, Sequelize) => {
