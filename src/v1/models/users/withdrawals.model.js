@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      owner: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       status: {
         type: DataTypes.ENUM(
           'pending',

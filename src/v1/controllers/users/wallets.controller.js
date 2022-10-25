@@ -5,25 +5,23 @@ require('dotenv').config()
 
 const withdrawal = async (req, res) => {
   try {
-    const { iban, amount } = req.body
-
-    if (typeof amount !== 'number')
-      return httpError(errorTypes.INVALID_AMOUNT_TYPE, res)
+    const { iban, owner } = req.body
 
     const userId = req?.user[0]?.id
-
-    const data = {
-      iban: String(iban),
-      amount,
-      userId
-    }
 
     const userWallet = await users.getBalance(userId)
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
-    if (userWallet.data.balance < amount)
+    if (userWallet.data.balance === 0)
       return httpError(errorTypes.INSUFFICIENT_FUNDS, res)
+
+    const data = {
+      iban: String(iban),
+      owner,
+      amount: userWallet.data.balance,
+      userId
+    }
 
     const t = await sequelize.transaction()
 

@@ -1979,8 +1979,8 @@
     "UsersWithdrawal": {
       "type": "object",
       "properties": {
-        "iban": { "type": "string", "example": "123123123123132" },
-        "amount": { "type": "int", "example": 2000 }
+        "owner": { "type": "string", "example": "کسری" },
+        "iban": { "type": "string", "example": "123123123123132" }
       }
     },
     "UsersFolders": {
