@@ -21,11 +21,12 @@ const upload = async (req, res) => {
       return httpError(errorTypes.INVALID_PDF_DOCX_FORMAT, res)
 
     let filePath = `./src/v1/storages/files/${attachment.name}`
-
+    let num = 0
     if (fs.existsSync(filePath)) {
       for (let k = 0; k < 100000000000; k++) {
         if (fs.existsSync(`./src/v1/storages/files/${k}${attachment.name}`))
           continue
+        num = k
         filePath = `./src/v1/storages/files/${k}${attachment.name}`
         break
       }
@@ -37,18 +38,48 @@ const upload = async (req, res) => {
 
     const r = await sequelize.models.files.create({
       userId,
-      uploadedFileName: attachment.name,
-      fileName: attachment.name,
+      uploadedFileName: attachment.name + num,
+      fileName: attachment.name + num,
       pageCount: rCounter.data || 0,
       fileUrl: 'https://google.com/' + attachment.name
     })
 
-    res
-      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
-      .send(messageTypes.SUCCESSFUL_CREATED)
+    res.status(201).send({
+      statusCode: 201,
+      data: {
+        message: messageTypes.SUCCESSFUL_CREATED.data.message,
+        id: r?.id,
+        fileName: r?.fileName,
+        pageCount: r?.pageCount,
+        fileUrl: r?.fileUrl
+      },
+      error: null
+    })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }
 
-module.exports = { upload }
+const hardDelete = async (req, res) => {
+  const { id } = req.params
+
+  const userId = req?.user[0]?.id
+  return sequelize.models.files
+    .destroy({
+      where: {
+        id,
+        userId
+      }
+    })
+    .then(() => {
+      return res
+        .status(messageTypes.SUCCESSFUL_DELETE.statusCode)
+        .send(messageTypes.SUCCESSFUL_DELETE)
+    })
+    .catch((e) => {
+      return httpError(e, res)
+    })
+}
+
+module.exports = { upload, hardDelete }

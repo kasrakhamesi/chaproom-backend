@@ -140,17 +140,36 @@ const check = async ({
 
     if (_.isEmpty(verifyData)) return httpError(errorTypes.INVALID_OTP)
 
-    await verifyData.update({
-      used: true
-    })
+    const passwordResetToken = uniqueGenerates.passwordResetToken(
+      creatorId ? creatorId : 0
+    )
+
+    const updateData = isPasswordReset
+      ? {
+          passwordResetToken,
+          used: true
+        }
+      : {
+          used: true
+        }
+
+    await verifyData.update(updateData)
+
+    const data = isPasswordReset
+      ? {
+          passwordResetToken,
+          isSuccess: true,
+          message: 'کد با موفقعیت تایید شد'
+        }
+      : {
+          registerData: JSON.parse(JSON.parse(verifyData?.registerData)),
+          isSuccess: true,
+          message: 'کد با موفقعیت تایید شد'
+        }
 
     return {
       statusCode: 200,
-      data: {
-        registerData: JSON.parse(JSON.parse(verifyData?.registerData)),
-        isSuccess: true,
-        message: 'کد با موفقعیت تایید شد'
-      },
+      data,
       error: null
     }
   } catch (e) {

@@ -1,4 +1,4 @@
-const { httpError, errorTypes } = require('../../configs')
+const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
@@ -32,9 +32,22 @@ const resendCode = async (req, res) => {
   try {
     const { phoneNumber } = req.body
 
+    const previousSmsRequest = await sequelize.models.verifies.findOne({
+      where: {
+        phoneNumber
+      },
+      order: [['id', 'DESC']]
+    })
+
+    if (!previousSmsRequest)
+      return httpError(errorTypes.RESEND_CODE_DATA_NOT_FOUND, res)
+
     const r = await authentications.sms.send({
       phoneNumber,
-      registerData: data
+      registerData:
+        previousSmsRequest?.registerData !== null
+          ? previousSmsRequest?.registerData
+          : null
     })
     return res.status(r?.statusCode).send(r)
   } catch (e) {
@@ -160,13 +173,16 @@ const passwordReset = async (req, res) => {
     const { phoneNumber } = req.body
 
     const user = await sequelize.models.users.findOne({
-      phoneNumber
+      where: {
+        phoneNumber
+      }
     })
 
     if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
 
     const r = await authentications.sms.send({
       phoneNumber,
+      creatorId: user?.id,
       isPasswordReset: true
     })
 
@@ -176,12 +192,64 @@ const passwordReset = async (req, res) => {
   }
 }
 
-const passwordResetConfirm = (req, res) => {}
+const passwordResetConfirmCode = (req, res) => {
+  const { code, phoneNumber } = req.body
+  return authentications.sms
+    .check({ code, phoneNumber, isPasswordReset: true })
+    .then((r) => {
+      return res.status(r?.statusCode).send(r)
+    })
+    .catch((e) => {
+      return httpError(e, res)
+    })
+}
+
+const passwordResetSubmit = (req, res) => {
+  const { passwordResetToken, newPassword } = req.body
+  if (!passwordResetToken || _.isEmpty(passwordResetToken))
+    return httpError(errorTypes.CANT_PASSWORD_RESET, res)
+
+  if (!newPassword || _.isEmpty(newPassword))
+    return httpError(errorTypes.MISSING_PASSWORD, res)
+  return sequelize.models.verifies
+    .findOne({
+      where: {
+        passwordResetToken
+      }
+    })
+    .then((r) => {
+      if (!r) return httpError(errorTypes.CANT_PASSWORD_RESET, res)
+      return sequelize.models.users
+        .update(
+          {
+            password: newPassword
+          },
+          {
+            where: {
+              id: r?.userId,
+              phoneNumber: r?.phoneNumber
+            }
+          }
+        )
+        .then(() => {
+          return r.update({ passwordResetToken: null }).then(() => {
+            return res
+              .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+              .send(messageTypes.SUCCESSFUL_UPDATE)
+          })
+        })
+    })
+    .catch((e) => {
+      return httpError(e, res)
+    })
+}
 
 module.exports = {
   register,
   login,
   registerConfirm,
   passwordReset,
-  passwordResetConfirm
+  passwordResetConfirmCode,
+  passwordResetSubmit,
+  resendCode
 }

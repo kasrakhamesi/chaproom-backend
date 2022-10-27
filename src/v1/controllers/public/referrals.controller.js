@@ -5,14 +5,14 @@ const increaseView = (req, res) => {
   const { slug } = req.body
 
   return sequelize.models.referrals
-    .findOne({ slug })
+    .findOne({ where: { slug } })
     .then((r) => {
       if (!r) return httpError(errorTypes.SLUG_NOT_FOUND, res)
       r.update({
         viewCount: r?.viewCount + 1
       }).then(() => {
         return res
-          .status(messageTypes.SUCCESSFUL_UPDATE)
+          .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
           .send(messageTypes.SUCCESSFUL_UPDATE)
       })
     })

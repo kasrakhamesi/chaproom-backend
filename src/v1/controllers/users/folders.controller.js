@@ -1,41 +1,38 @@
-const { httpError, messageTypes } = require('../../configs')
+const { httpError, messageTypes, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 
 const create = async (req, res) => {
-  console.log(req.body)
-
-  const {
-    color,
-    side,
-    size,
-    countOfPages,
-    uploadedPages,
-    binding,
-    numberOfCopies,
-    description,
-    shipmentPrice,
-    amount,
-    files
-  } = req.body
-
-  const userId = req?.user[0]?.id
-
-  const data = {
-    color,
-    side,
-    size,
-    countOfPages,
-    uploadedPages,
-    binding,
-    numberOfCopies,
-    description,
-    shipmentPrice,
-    amount,
-    userId
-  }
-
   try {
-    if (files.length === 0) throw new Error('files not found')
+    const shipmentPrice = 5000
+    const amount = 7000
+    const {
+      color,
+      side,
+      size,
+      countOfPages,
+      uploadedPages,
+      numberOfCopies,
+      description,
+      binding,
+      files
+    } = req.body
+
+    const userId = req?.user[0]?.id
+
+    const data = {
+      color,
+      side,
+      size,
+      countOfPages,
+      uploadedPages,
+      numberOfCopies,
+      description,
+      shipmentPrice,
+      amount,
+      userId
+    }
+
+    if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
     const findedFiles = await sequelize.models.files.findAll({
       where: {
@@ -49,15 +46,22 @@ const create = async (req, res) => {
         ids.push(entity?.id)
     }
 
-    if (ids.length === 0)
-      throw new Error('files length should be greater than 0')
+    if (ids.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
-    data.summary = 'تست / تست / تست / تست / تست'
     data.countOfFiles = ids.length
     data.filesUrl = 'https://google.com'
 
     const t = await sequelize.transaction()
 
+    if (binding && !_.isEmpty(binding)) {
+      binding.userId = userId
+
+      const createBindings = await sequelize.models.bindings.create(binding, {
+        transaction: t
+      })
+
+      data.bindingId = createBindings?.id
+    }
     const createdFolders = await sequelize.models.folders.create(data, {
       transaction: t
     })
@@ -74,36 +78,6 @@ const create = async (req, res) => {
     }
 
     await t.commit()
-
-    const r = await sequelize.models.folders.findOne({
-      where: {
-        userId,
-        id: createdFolders?.id
-      },
-      attributes: {
-        exclude: ['userId', 'used']
-      },
-      include: [
-        {
-          model: sequelize.models.files,
-          as: 'files',
-          attributes: {
-            exclude: ['userId', 'folder_files']
-          },
-          through: {
-            attributes: {
-              exclude: [
-                'userId',
-                'createdAt',
-                'updatedAt',
-                'fileId',
-                'folderId'
-              ]
-            }
-          }
-        }
-      ]
-    })
 
     res
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
@@ -123,11 +97,9 @@ const update = (req, res) => {
     size,
     countOfPages,
     uploadedPages,
-    binding,
     numberOfCopies,
     description,
-    shipmentPrice,
-    price,
+    binding,
     files
   } = req.body
 
@@ -137,13 +109,61 @@ const update = (req, res) => {
     size,
     countOfPages,
     uploadedPages,
-    binding,
     numberOfCopies,
-    description,
-    shipmentPrice,
-    price,
-    files
+    description
   }
+
+  return sequelize.models.folders
+    .findOne(
+      {
+        where: {
+          userId,
+          id
+        }
+      },
+      {
+        include: [
+          {
+            model: sequelize.models.bindings
+          },
+          {
+            model: sequelize.models.files
+          }
+        ]
+      }
+    )
+    .then((r) => {
+      if (!r) return httpError(errorTypes.FOLDER_NOT_FOUND, res)
+
+      const filesId = []
+      files.forEach((item) => {
+        filesId.push(item.id)
+      })
+
+      r.setBindings(binding)
+      r.setFiles(filesId, { through: { userId } })
+      r.set(data)
+
+      return sequelize.transaction((t) => {
+        return r
+          .save({
+            transaction: t
+          })
+          .then((r) => {
+            r.save()
+          })
+      })
+    })
+    .then(() => {
+      return res
+        .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+        .send(messageTypes.SUCCESSFUL_UPDATE)
+    })
+    .catch((e) => {
+      console.log(e)
+      return httpError(e, res)
+    })
+
   return sequelize.models.folders
     .update(data, {
       where: {
@@ -168,13 +188,19 @@ const findAll = (req, res) => {
   return sequelize.models.folders
     .findAll({
       where: {
-        userId,
-        used: false
+        userId
+        // TODO used: false
       },
       attributes: {
-        exclude: ['userId', 'used']
+        exclude: ['userId', 'bindingId', 'used']
       },
       include: [
+        {
+          model: sequelize.models.bindings,
+          attributes: {
+            exclude: ['userId']
+          }
+        },
         {
           model: sequelize.models.files,
           attributes: {
@@ -216,9 +242,15 @@ const findOne = (req, res) => {
         id // #TODO USED : FALSE
       },
       attributes: {
-        exclude: ['userId', 'used']
+        exclude: ['userId', 'bindingId', 'used']
       },
       include: [
+        {
+          model: sequelize.models.bindings,
+          attributes: {
+            exclude: ['userId']
+          }
+        },
         {
           model: sequelize.models.files,
           as: 'files',
@@ -261,12 +293,10 @@ const hardDelete = (req, res) => {
         userId
       }
     })
-    .then((r) => {
-      return res.status(200).send({
-        statusCode: 200,
-        data: r,
-        error: null
-      })
+    .then(() => {
+      return res
+        .status(messageTypes.SUCCESSFUL_DELETE.statusCode)
+        .send(messageTypes.SUCCESSFUL_DELETE)
     })
     .catch((e) => {
       return httpError(e, res)

@@ -35,7 +35,7 @@ module.exports = {
           'pending',
           'rejected',
           'approved',
-          'pending_confirmation'
+          'confirmation_pending'
         ),
         defaultValue: 'pending',
         allowNull: false

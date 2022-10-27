@@ -13,6 +13,7 @@ router.use(
 const { users } = require('../../controllers')
 
 //router.use('/media', express.static('./app/v1/storages'))
+router.delete('/id/:id', users.files.hardDelete)
 router.post('/', users.files.upload)
 
 module.exports = router

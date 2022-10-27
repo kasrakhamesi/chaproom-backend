@@ -32,8 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM(
           'payment_pending',
           'pending',
-          'approved',
-          'rejected',
+          'preparing',
           'canceled',
           'sent'
         ),
@@ -43,12 +42,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      sendMethod: {
+      postageMethod: {
         type: DataTypes.STRING,
         defaultValue: 'پست پیشتاز',
         allowNull: true
       },
-      postFee: {
+      postageFee: {
         type: DataTypes.BIGINT.UNSIGNED,
         defaultValue: 20000,
         allowNull: true
@@ -97,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true
       },
-      notFinishingReason: {
+      cancelReason: {
         type: DataTypes.STRING,
         allowNull: true
       },

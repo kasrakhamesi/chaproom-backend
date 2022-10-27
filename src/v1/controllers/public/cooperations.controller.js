@@ -1,4 +1,4 @@
-const { httpError } = require('../../configs')
+const { httpError, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 
 const create = (req, res) => {
@@ -6,12 +6,8 @@ const create = (req, res) => {
   const data = { phoneNumber }
   return sequelize.models.cooperation.create(data).then((r) => {
     return res
-      .status(201)
-      .send({
-        statusCode: 201,
-        data: r,
-        error: null
-      })
+      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
+      .send(messageTypes.SUCCESSFUL_CREATED)
       .catch((e) => {
         return httpError(e, res)
       })

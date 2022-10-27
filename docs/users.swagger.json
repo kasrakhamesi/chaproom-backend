@@ -9,6 +9,184 @@
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {
+    "/users/auth/password-reset": {
+      "post": {
+        "tags": ["Users Auth ( Login & Register & ... )"],
+        "summary": "check user account and Send confirmation code for password reset",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersPasswordReset" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "isSuccess": true,
+                  "message": "کد ارسال شد",
+                  "phoneNumber": "09385667274",
+                  "expireAt": "2022-10-17T20:31:30.629Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این اکانت قبلا ساخته شده بود ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users Auth ( Login & Register & ... )"],
+        "summary": "submit password reset after confirm code",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UsersSubmitPasswordReset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "application/json": {
+                  "statusCode": 200,
+                  "data": {
+                    "message": "با موفقعیت آپدیت شد"
+                  },
+                  "error": null
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "newPassword": [" رمز عبور وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این یک خطا است  ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/auth/password-reset/confirm-code": {
+      "post": {
+        "tags": ["Users Auth ( Login & Register & ... )"],
+        "summary": "check confirmation code for password reset",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UsersCheckConfirmationPasswordResetCode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "isSuccess": true,
+                  "message": "کد ارسال شد",
+                  "phoneNumber": "09385667274",
+                  "expireAt": "2022-10-17T20:31:30.629Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این اکانت قبلا ساخته شده بود ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/auth/register": {
       "post": {
         "tags": ["Users Auth ( Login & Register & ... )"],
@@ -21,6 +199,65 @@
             "name": "body",
             "required": true,
             "schema": { "$ref": "#/definitions/UsersRegister" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "isSuccess": true,
+                  "message": "کد ارسال شد",
+                  "phoneNumber": "09385667274",
+                  "expireAt": "2022-10-17T20:31:30.629Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این اکانت قبلا ساخته شده بود ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/auth/resend-code": {
+      "post": {
+        "tags": ["Users Auth ( Login & Register & ... )"],
+        "summary": "Resend confirmation code for user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UsersResendCode" }
           }
         ],
         "responses": {
@@ -380,6 +617,29 @@
         }
       }
     },
+    "/users/files/id/{id}": {
+      "delete": {
+        "tags": ["Users Files"],
+        "summary": "Delete file",
+        "consumes": ["multipart/form-data"],
+        "produces": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      }
+    },
     "/users/files": {
       "post": {
         "tags": ["Users Files"],
@@ -488,32 +748,69 @@
                 "data": [
                   {
                     "id": 1,
-                    "color": "رنگی",
-                    "side": "تک رو",
-                    "size": "A4",
+                    "color": "full_color",
+                    "side": "single_sided",
+                    "size": "a4",
                     "countOfPages": 6,
                     "uploadedPages": 2,
-                    "binding": "میخواهم صحافی بشود",
                     "numberOfCopies": 6,
                     "description": "این یک توضیح است",
-                    "shipmentPrice": 20000,
-                    "summary": "تست / تست / تست / تست / تست",
+                    "shipmentPrice": 5000,
                     "countOfFiles": 1,
                     "filesUrl": "https://google.com",
-                    "amount": 10000,
+                    "amount": 7000,
                     "telegramUploadFile": false,
                     "whatsappUploadFile": false,
-                    "createdAt": "2022-10-22T19:49:22.000Z",
-                    "updatedAt": "2022-10-22T19:49:22.000Z",
+                    "createdAt": "2022-10-26T22:44:44.000Z",
+                    "updatedAt": "2022-10-26T22:44:44.000Z",
+                    "binding": {
+                      "id": 2,
+                      "type": "stapler",
+                      "method": "each_file_separated",
+                      "numberOfFiles": 1,
+                      "coverColor": "colorful",
+                      "createdAt": "2022-10-26T22:44:44.000Z",
+                      "updatedAt": "2022-10-26T22:44:44.000Z"
+                    },
                     "files": [
                       {
                         "id": 1,
-                        "uploadedFileName": "f.pdf",
-                        "fileName": "f.pdf",
+                        "uploadedFileName": "f.pdf3",
+                        "fileName": "f.pdf3",
                         "fileUrl": "https://google.com/f.pdf",
                         "pageCount": 2,
-                        "createdAt": "2022-10-22T19:49:13.000Z",
-                        "updatedAt": "2022-10-22T19:49:13.000Z"
+                        "createdAt": "2022-10-26T22:41:56.000Z",
+                        "updatedAt": "2022-10-26T22:41:56.000Z"
+                      }
+                    ]
+                  },
+                  {
+                    "id": 2,
+                    "color": "full_color",
+                    "side": "single_sided",
+                    "size": "a4",
+                    "countOfPages": 6,
+                    "uploadedPages": 2,
+                    "numberOfCopies": 6,
+                    "description": "این یک توضیح است",
+                    "shipmentPrice": 5000,
+                    "countOfFiles": 1,
+                    "filesUrl": "https://google.com",
+                    "amount": 7000,
+                    "telegramUploadFile": false,
+                    "whatsappUploadFile": false,
+                    "createdAt": "2022-10-26T22:54:01.000Z",
+                    "updatedAt": "2022-10-26T22:54:01.000Z",
+                    "binding": null,
+                    "files": [
+                      {
+                        "id": 1,
+                        "uploadedFileName": "f.pdf3",
+                        "fileName": "f.pdf3",
+                        "fileUrl": "https://google.com/f.pdf",
+                        "pageCount": 2,
+                        "createdAt": "2022-10-26T22:41:56.000Z",
+                        "updatedAt": "2022-10-26T22:41:56.000Z"
                       }
                     ]
                   }
@@ -712,32 +1009,39 @@
                 "statusCode": 200,
                 "data": {
                   "id": 1,
-                  "color": "رنگی",
-                  "side": "تک رو",
-                  "size": "A4",
+                  "color": "full_color",
+                  "side": "single_sided",
+                  "size": "a4",
                   "countOfPages": 6,
                   "uploadedPages": 2,
-                  "binding": "میخواهم صحافی بشود",
                   "numberOfCopies": 6,
                   "description": "این یک توضیح است",
-                  "shipmentPrice": 20000,
-                  "summary": "تست / تست / تست / تست / تست",
+                  "shipmentPrice": 5000,
                   "countOfFiles": 1,
                   "filesUrl": "https://google.com",
-                  "amount": 10000,
+                  "amount": 7000,
                   "telegramUploadFile": false,
                   "whatsappUploadFile": false,
-                  "createdAt": "2022-10-22T19:49:22.000Z",
-                  "updatedAt": "2022-10-22T19:49:22.000Z",
+                  "createdAt": "2022-10-26T22:44:44.000Z",
+                  "updatedAt": "2022-10-26T22:44:44.000Z",
+                  "binding": {
+                    "id": 2,
+                    "type": "stapler",
+                    "method": "each_file_separated",
+                    "numberOfFiles": 1,
+                    "coverColor": "colorful",
+                    "createdAt": "2022-10-26T22:44:44.000Z",
+                    "updatedAt": "2022-10-26T22:44:44.000Z"
+                  },
                   "files": [
                     {
                       "id": 1,
-                      "uploadedFileName": "f.pdf",
-                      "fileName": "f.pdf",
+                      "uploadedFileName": "f.pdf3",
+                      "fileName": "f.pdf3",
                       "fileUrl": "https://google.com/f.pdf",
                       "pageCount": 2,
-                      "createdAt": "2022-10-22T19:49:13.000Z",
-                      "updatedAt": "2022-10-22T19:49:13.000Z"
+                      "createdAt": "2022-10-26T22:41:56.000Z",
+                      "updatedAt": "2022-10-26T22:41:56.000Z"
                     }
                   ]
                 },
@@ -1283,7 +1587,7 @@
           }
         ],
         "responses": {
-          "2010": {
+          "200": {
             "description": "OK",
             "examples": {
               "application/json": {
@@ -1614,10 +1918,9 @@
             "description": "OK",
             "examples": {
               "application/json": {
-                "statusCode": 200,
+                "statusCode": 201,
                 "data": {
-                  "id": 4,
-                  "phoneNumber": "09385667274"
+                  "message": "درخواست شما با موفقعیت ثبت شد"
                 },
                 "error": null
               }
@@ -1943,6 +2246,32 @@
     }
   },
   "definitions": {
+    "UsersSubmitPasswordReset": {
+      "type": "object",
+      "properties": {
+        "newPassword": { "type": "string", "example": "09385667274" },
+        "passwordResetToken": { "type": "string", "example": "A787878C" }
+      }
+    },
+    "UsersCheckConfirmationPasswordResetCode": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" },
+        "code": { "type": "int", "example": 787878 }
+      }
+    },
+    "UsersPasswordReset": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" }
+      }
+    },
+    "UsersResendCode": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" }
+      }
+    },
     "Cooperation": {
       "type": "object",
       "properties": {
@@ -1985,16 +2314,55 @@
     "UsersFolders": {
       "type": "object",
       "properties": {
-        "color": { "type": "string", "example": "رنگی" },
-        "side": { "type": "string", "example": "تک رو" },
-        "size": { "type": "string", "example": "A4" },
+        "color": {
+          "type": "string",
+          "example": "full_color",
+          "enum": ["black_and_white", "full_color", "normal_color"]
+        },
+        "side": {
+          "type": "string",
+          "example": "single_sided",
+          "enum": [
+            "single_sided",
+            "double_sided",
+            "single_sided_glossy",
+            "double_sided_glossy"
+          ]
+        },
+        "size": {
+          "type": "string",
+          "example": "a4",
+          "enum": ["a4", "a3", "a5"]
+        },
         "countOfPages": { "type": "int", "example": 6 },
         "uploadedPages": { "type": "int", "example": 2 },
-        "binding": { "type": "string", "example": "میخواهم صحافی بشود" },
         "numberOfCopies": { "type": "int", "example": 6 },
         "description": { "type": "string", "example": "این یک توضیح است" },
-        "shipmentPrice": { "type": "int", "example": 20000 },
-        "amount": { "type": "int", "example": 10000 },
+        "binding": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "example": "stapler",
+              "enum": ["spring_normal", "spring_papco", "stapler"]
+            },
+            "method": {
+              "type": "string",
+              "example": "each_file_separated",
+              "enum": [
+                "each_file_separated",
+                "all_files_together",
+                "number_of_file"
+              ]
+            },
+            "coverColor": {
+              "type": "string",
+              "example": "colorful",
+              "enum": ["colorful", "black_and_white"]
+            },
+            "numberOfFiles": { "type": "int", "example": 1 }
+          }
+        },
         "files": {
           "type": "array",
           "items": { "type": "int", "example": { "id": 1 } }

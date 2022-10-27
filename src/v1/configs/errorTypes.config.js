@@ -26,11 +26,11 @@ const Types = {
   INVALID_AMOUNT_TYPE: {
     statusCode: 400,
     message:
-      'مبلغ وارد شده اشتباه میباشد.لطفا مبلغ مورد نظر را بصورت عددی وارد کنید'
+      'مبلغ وارد شده اشتباه میباشد\nلطفا مبلغ مورد نظر را بصورت عددی وارد کنید'
   },
   GATEWAY_ERROR: {
     statusCode: 400,
-    message: 'درگاه پرداخت مشکل دارد.لطفا بعدا امتحان کنید'
+    message: 'درگاه پرداخت مشکل دارد\nلطفا بعدا امتحان کنید'
   },
   PAYMENT_FAILED: {
     statusCode: 400,
@@ -42,7 +42,7 @@ const Types = {
   },
   PAYMENT_VERIFICATION_FAILED: {
     statusCode: 400,
-    message: 'پرداخت شما تایید نشد.مبلغ تا 72 ساعت به حساب شما بازمیگردد'
+    message: 'پرداخت شما تایید نشد\nمبلغ تا 72 ساعت به حساب شما بازمیگردد'
   },
   INVALID_ADDRESS: {
     statusCode: 400,
@@ -71,7 +71,7 @@ const Types = {
   },
   INVALID_OTP: {
     statusCode: 400,
-    message: 'کد یکبار مصرف شما اشتباه است.لطفا مجددا کد را وارد کنید'
+    message: 'کد یکبار مصرف شما اشتباه است\nلطفا مجددا کد را وارد کنید'
   },
   DISCOUNT_CODE_NOT_FOUND: {
     statusCode: 400,
@@ -109,6 +109,28 @@ const Types = {
   STATUS_NOT_ALLOWED: {
     statusCode: 400,
     message: 'وضعیت ثبت شده قابل پزیرش نیست'
+  },
+  MISSING_FILE: {
+    statusCode: 400,
+    message: 'فایل یافت نشد'
+  },
+  RESEND_CODE_DATA_NOT_FOUND: {
+    statusCode: 400,
+    message:
+      'درخواستی برای ارسال کد تایید به این شماره وجود ندارد\nلطفا مجددا لاگین  کنید'
+  },
+  CANT_PASSWORD_RESET: {
+    statusCode: 400,
+    message:
+      'امکان تغییر رمزعبور وجود ندارد\nلطفا مجددا رمزعبور خود را تغییر دهید'
+  },
+  MISSING_PASSWORD: {
+    statusCode: 400,
+    message: 'لطفا رمزعبور خود را وارد کنید'
+  },
+  FOLDER_NOT_FOUND: {
+    statusCode: 400,
+    message: 'پوشه پیدا نشد'
   }
 }
 

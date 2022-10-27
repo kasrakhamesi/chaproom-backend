@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       folders.belongsToMany(models.orders, {
         through: 'order_folders'
       })
+      folders.belongsTo(models.bindings)
     }
   }
   folders.init(
@@ -23,16 +24,25 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
+      bindingId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
       color: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('black_and_white', 'full_color', 'normal_color'),
         allowNull: false
       },
       side: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM(
+          'single_sided',
+          'double_sided',
+          'single_sided_glossy',
+          'double_sided_glossy'
+        ),
         allowNull: false
       },
       size: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('a4', 'a5', 'a3'),
         allowNull: false
       },
       countOfPages: {
@@ -41,10 +51,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       uploadedPages: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true
-      },
-      binding: {
-        type: DataTypes.TEXT('medium'),
         allowNull: true
       },
       numberOfCopies: {
@@ -57,10 +63,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       shipmentPrice: {
         type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
-      },
-      summary: {
-        type: DataTypes.TEXT,
         allowNull: false
       },
       countOfFiles: {

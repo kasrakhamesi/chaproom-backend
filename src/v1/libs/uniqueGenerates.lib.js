@@ -32,4 +32,9 @@ const discountCode = async (number = 1) => {
 const randomNumber = () =>
   String(Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000)
 
-module.exports = { discountCode, randomNumber }
+const passwordResetToken = (userId) =>
+  `H${userId}${String(
+    Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000
+  )}B`
+
+module.exports = { discountCode, randomNumber, passwordResetToken }

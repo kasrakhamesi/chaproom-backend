@@ -15,16 +15,28 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false
       },
+      bindingId: {
+        type: Sequelize.BIGINT.UNSIGNED,
+        references: { model: 'bindings', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: true
+      },
       color: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('black_and_white', 'full_color', 'normal_color'),
         allowNull: false
       },
       side: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM(
+          'single_sided',
+          'double_sided',
+          'single_sided_glossy',
+          'double_sided_glossy'
+        ),
         allowNull: false
       },
       size: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('a4', 'a5', 'a3'),
         allowNull: false
       },
       countOfPages: {
@@ -33,10 +45,6 @@ module.exports = {
       },
       uploadedPages: {
         type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true
-      },
-      binding: {
-        type: Sequelize.TEXT('medium'),
         allowNull: true
       },
       numberOfCopies: {
@@ -49,10 +57,6 @@ module.exports = {
       },
       shipmentPrice: {
         type: Sequelize.BIGINT.UNSIGNED,
-        allowNull: false
-      },
-      summary: {
-        type: Sequelize.TEXT,
         allowNull: false
       },
       countOfFiles: {
