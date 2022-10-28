@@ -12,6 +12,6 @@ router.post('/register/confirm', users.auth.registerConfirm)
 
 router.post('/password-reset', users.auth.passwordReset)
 router.post('/password-reset/confirm-code', users.auth.passwordResetConfirmCode)
-router.put('/password-reset/confirm-code', users.auth.passwordResetSubmit)
+router.put('/password-reset', users.auth.passwordResetSubmit)
 
 module.exports = router

@@ -116,17 +116,11 @@ const priceCalculator = async (req, res) => {
       attributes: ['balance']
     })
 
-    let foldersPrice = 0
-
-    folders.map((item) => (foldersPrice += item.amount))
-
     const data = {
       discount: null,
-      user,
+      userBalance: user?.balance,
       folders,
-      payableAmountWithGateway: 2000,
-      postFee: 20000,
-      totalPrice: foldersPrice + 20000
+      postageFee: 20000
     }
 
     return res.status(200).send({
@@ -154,7 +148,7 @@ const findAll = async (req, res) => {
     const r = await orders.Get({
       where: newWhere,
       order,
-      attributes: ['id', 'status', 'notFinishingReason', 'amount', 'createdAt'],
+      attributes: ['id', 'status', 'cancelReason', 'amount', 'createdAt'],
       pagination: {
         active: true,
         page,
@@ -222,14 +216,10 @@ const findOne = (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { status, notFinishingReason } = req.body
-    if (status !== 'canceled')
-      return httpError(errorTypes.USER_ONLY_CAN_CANCEL_ORDER, res)
-
     const userId = req?.user[0]?.id
     const { id } = req.params
 
-    const data = { status, notFinishingReason }
+    const data = { status: 'canceled', cancelReason: 'لغو شخصی' }
     const t = await sequelize.transaction()
 
     const order = await sequelize.models.orders.findOne({

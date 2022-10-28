@@ -1,5 +1,31 @@
 const { httpError, messageTypes, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const _ = require('lodash')
+
+const extractBinding = (binding) => {
+  if (binding === null) return null
+
+  let { type, method, numberOfFiles, coverColor } = binding
+
+  if (!type && !method && !numberOfFiles && !coverColor) return null
+
+  if (type !== 'spring_normal' && type !== 'spring_papco' && type !== 'stapler')
+    type = null
+  if (
+    method !== 'each_file_separated' &&
+    method !== 'all_files_together' &&
+    method !== 'number_of_file'
+  )
+    method = null
+  if (coverColor !== 'black_and_white' && coverColor !== 'colorful')
+    coverColor = null
+  return JSON.stringify({
+    type,
+    method,
+    numberOfFiles: parseInt(numberOfFiles) || null,
+    coverColor
+  })
+}
 
 const create = async (req, res) => {
   try {
@@ -10,7 +36,6 @@ const create = async (req, res) => {
       side,
       size,
       countOfPages,
-      uploadedPages,
       numberOfCopies,
       description,
       binding,
@@ -24,10 +49,11 @@ const create = async (req, res) => {
       side,
       size,
       countOfPages,
-      uploadedPages,
+      uploadedPages: 5,
       numberOfCopies,
       description,
       shipmentPrice,
+      binding: extractBinding(binding),
       amount,
       userId
     }
@@ -53,15 +79,6 @@ const create = async (req, res) => {
 
     const t = await sequelize.transaction()
 
-    if (binding && !_.isEmpty(binding)) {
-      binding.userId = userId
-
-      const createBindings = await sequelize.models.bindings.create(binding, {
-        transaction: t
-      })
-
-      data.bindingId = createBindings?.id
-    }
     const createdFolders = await sequelize.models.folders.create(data, {
       transaction: t
     })
@@ -83,6 +100,7 @@ const create = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
+    console.log(e)
     return httpError(e?.message || String(e), res)
   }
 }
@@ -96,87 +114,83 @@ const update = (req, res) => {
     side,
     size,
     countOfPages,
-    uploadedPages,
     numberOfCopies,
     description,
     binding,
     files
   } = req.body
 
+  if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+
   const data = {
     color,
     side,
     size,
     countOfPages,
-    uploadedPages,
+    uploadedPages: 4,
+    binding: extractBinding(binding),
     numberOfCopies,
     description
   }
 
-  return sequelize.models.folders
-    .findOne(
-      {
-        where: {
-          userId,
-          id
-        }
-      },
-      {
-        include: [
+  return sequelize.models.files
+    .findAll({
+      where: {
+        userId
+      }
+    })
+    .then((rFiles) => {
+      const filesId = []
+      for (const entity of files) {
+        if (rFiles.findIndex((item) => item.id !== entity.id) === -1)
+          filesId.push(entity?.id)
+      }
+
+      if (filesId.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+
+      return sequelize.models.folders
+        .findOne(
           {
-            model: sequelize.models.bindings
+            where: {
+              userId,
+              id
+            }
           },
           {
-            model: sequelize.models.files
+            include: [
+              {
+                model: sequelize.models.bindings
+              },
+              {
+                model: sequelize.models.files
+              }
+            ]
           }
-        ]
-      }
-    )
-    .then((r) => {
-      if (!r) return httpError(errorTypes.FOLDER_NOT_FOUND, res)
+        )
+        .then((r) => {
+          if (!r) return httpError(errorTypes.FOLDER_NOT_FOUND, res)
 
-      const filesId = []
-      files.forEach((item) => {
-        filesId.push(item.id)
-      })
+          r.setFiles(filesId, { through: { userId } })
+          r.set(data)
 
-      r.setBindings(binding)
-      r.setFiles(filesId, { through: { userId } })
-      r.set(data)
-
-      return sequelize.transaction((t) => {
-        return r
-          .save({
-            transaction: t
+          return sequelize.transaction((t) => {
+            return r
+              .save({
+                transaction: t
+              })
+              .then((r) => {
+                r.save()
+              })
           })
-          .then((r) => {
-            r.save()
-          })
-      })
-    })
-    .then(() => {
-      return res
-        .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
-        .send(messageTypes.SUCCESSFUL_UPDATE)
-    })
-    .catch((e) => {
-      console.log(e)
-      return httpError(e, res)
-    })
-
-  return sequelize.models.folders
-    .update(data, {
-      where: {
-        userId,
-        id
-      }
-    })
-    .then((r) => {
-      return res.status(200).send({
-        statusCode: 200,
-        data: r,
-        error: null
-      })
+        })
+        .then(() => {
+          return res
+            .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+            .send(messageTypes.SUCCESSFUL_UPDATE)
+        })
+        .catch((e) => {
+          return httpError(e, res)
+        })
     })
     .catch((e) => {
       return httpError(e, res)
@@ -192,15 +206,9 @@ const findAll = (req, res) => {
         // TODO used: false
       },
       attributes: {
-        exclude: ['userId', 'bindingId', 'used']
+        exclude: ['userId', 'used']
       },
       include: [
-        {
-          model: sequelize.models.bindings,
-          attributes: {
-            exclude: ['userId']
-          }
-        },
         {
           model: sequelize.models.files,
           attributes: {
@@ -223,11 +231,18 @@ const findAll = (req, res) => {
     .then((r) => {
       return res.status(200).send({
         statusCode: 200,
-        data: r,
+        data: r.map((item) => {
+          if (item?.binding !== null) {
+            item.binding = JSON.parse(item?.binding)
+            return item
+          }
+          return item
+        }),
         error: null
       })
     })
     .catch((e) => {
+      console.log(e)
       return httpError(e, res)
     })
 }
@@ -242,15 +257,9 @@ const findOne = (req, res) => {
         id // #TODO USED : FALSE
       },
       attributes: {
-        exclude: ['userId', 'bindingId', 'used']
+        exclude: ['userId', 'used']
       },
       include: [
-        {
-          model: sequelize.models.bindings,
-          attributes: {
-            exclude: ['userId']
-          }
-        },
         {
           model: sequelize.models.files,
           as: 'files',
@@ -272,6 +281,8 @@ const findOne = (req, res) => {
       ]
     })
     .then((r) => {
+      if (r?.binding !== null) r.binding = JSON.parse(r?.binding)
+
       return res.status(200).send({
         statusCode: 200,
         data: r,

@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       folders.belongsToMany(models.orders, {
         through: 'order_folders'
       })
-      folders.belongsTo(models.bindings)
     }
   }
   folders.init(
@@ -24,8 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      bindingId: {
-        type: DataTypes.BIGINT.UNSIGNED,
+      binding: {
+        type: DataTypes.JSON,
+        defaultValue: null,
         allowNull: true
       },
       color: {

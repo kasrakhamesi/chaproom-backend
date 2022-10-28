@@ -12,7 +12,7 @@ const findAll = async (req, res) => {
     )
 
     const r = await orders.Get({
-      attributes: ['id', 'createdAt', 'amount', 'status', 'notFinishingReason'],
+      attributes: ['id', 'createdAt', 'amount', 'status', 'cancelReason'],
       where,
       order,
       pagination: {
@@ -44,12 +44,12 @@ const findOne = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const { status, sendMethod, trackingNumber, notFinishingReason } = req.body
+    const { status, sendMethod, trackingNumber, cancelReason } = req.body
 
     const data = {
       status,
       trackingNumber,
-      notFinishingReason,
+      cancelReason,
       sendMethod
     }
 

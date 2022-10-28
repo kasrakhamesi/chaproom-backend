@@ -26,7 +26,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      owner: {
+      accountHolderName: {
         type: Sequelize.STRING,
         allowNull: false
       },

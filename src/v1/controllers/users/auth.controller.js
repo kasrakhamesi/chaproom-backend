@@ -3,6 +3,7 @@ const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
 const { uniqueGenerates } = require('../../libs')
+const _ = require('lodash')
 const bcrypt = require('bcrypt')
 
 const register = async (req, res) => {
@@ -150,7 +151,7 @@ const login = (req, res) => {
       }
     })
     .then((r) => {
-      if (!r) httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
+      if (!r) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
       const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
       return res.status(200).send({
         statusCode: 200,
@@ -204,44 +205,42 @@ const passwordResetConfirmCode = (req, res) => {
     })
 }
 
-const passwordResetSubmit = (req, res) => {
-  const { passwordResetToken, newPassword } = req.body
-  if (!passwordResetToken || _.isEmpty(passwordResetToken))
-    return httpError(errorTypes.CANT_PASSWORD_RESET, res)
+const passwordResetSubmit = async (req, res) => {
+  try {
+    const { passwordResetToken, newPassword } = req.body
+    if (!passwordResetToken || _.isEmpty(passwordResetToken))
+      return httpError(errorTypes.CANT_PASSWORD_RESET, res)
 
-  if (!newPassword || _.isEmpty(newPassword))
-    return httpError(errorTypes.MISSING_PASSWORD, res)
-  return sequelize.models.verifies
-    .findOne({
+    if (!newPassword || _.isEmpty(newPassword))
+      return httpError(errorTypes.MISSING_PASSWORD, res)
+    const r = await sequelize.models.verifies.findOne({
       where: {
         passwordResetToken
       }
     })
-    .then((r) => {
-      if (!r) return httpError(errorTypes.CANT_PASSWORD_RESET, res)
-      return sequelize.models.users
-        .update(
-          {
-            password: newPassword
-          },
-          {
-            where: {
-              id: r?.userId,
-              phoneNumber: r?.phoneNumber
-            }
-          }
-        )
-        .then(() => {
-          return r.update({ passwordResetToken: null }).then(() => {
-            return res
-              .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
-              .send(messageTypes.SUCCESSFUL_UPDATE)
-          })
-        })
-    })
-    .catch((e) => {
-      return httpError(e, res)
-    })
+
+    if (!r) return httpError(errorTypes.CANT_PASSWORD_RESET, res)
+
+    await sequelize.models.users.update(
+      {
+        password: newPassword
+      },
+      {
+        where: {
+          id: r?.userId,
+          phoneNumber: r?.phoneNumber
+        }
+      }
+    )
+
+    await r.update({ passwordResetToken: null })
+
+    res
+      .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+      .send(messageTypes.SUCCESSFUL_UPDATE)
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 module.exports = {

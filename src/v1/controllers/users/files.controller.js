@@ -38,8 +38,8 @@ const upload = async (req, res) => {
 
     const r = await sequelize.models.files.create({
       userId,
-      uploadedFileName: attachment.name + num,
-      fileName: attachment.name + num,
+      uploadedFileName: num + attachment.name,
+      fileName: num + attachment.name,
       pageCount: rCounter.data || 0,
       fileUrl: 'https://google.com/' + attachment.name
     })

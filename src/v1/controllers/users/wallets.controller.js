@@ -5,7 +5,7 @@ require('dotenv').config()
 
 const withdrawal = async (req, res) => {
   try {
-    const { iban, owner } = req.body
+    const { iban, accountHolderName } = req.body
 
     const userId = req?.user[0]?.id
 
@@ -18,7 +18,7 @@ const withdrawal = async (req, res) => {
 
     const data = {
       iban: String(iban),
-      owner,
+      accountHolderName,
       amount: userWallet.data.balance,
       userId
     }
@@ -36,9 +36,9 @@ const withdrawal = async (req, res) => {
         type: 'withdrawal',
         change: 'decrease',
         balance: userWallet.data.balance,
-        balanceAfter: userWallet.data.balance - amount,
+        balanceAfter: userWallet.data.balance - userWallet.data.balance,
         status: 'pending',
-        amount,
+        amount: userWallet.data.balance,
         description: 'برداشت وجه'
       },
       { transaction: t }

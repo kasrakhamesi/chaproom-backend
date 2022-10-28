@@ -150,6 +150,7 @@
                 "statusCode": 200,
                 "data": {
                   "isSuccess": true,
+                  "passwordResetToken": "GH213123S",
                   "message": "کد ارسال شد",
                   "phoneNumber": "09385667274",
                   "expireAt": "2022-10-17T20:31:30.629Z"
@@ -1715,8 +1716,8 @@
                   "id": 3,
                   "status": "pending",
                   "amount": 15000,
-                  "sendMethod": "پست پیشتاز",
-                  "postFee": null,
+                  "postageMethod": "پست پیشتاز",
+                  "postageFee": null,
                   "recipientName": "کسری تحویل میگیره",
                   "recipientPhoneNumber": "09385667274",
                   "recipientPostalCode": "4675744151",
@@ -1726,7 +1727,7 @@
                   "discountCode": null,
                   "discountAmount": null,
                   "trackingNumber": null,
-                  "notFinishingReason": null,
+                  "cancelReason": null,
                   "walletPaidAmount": 0,
                   "gatewayPaidAmount": 10000,
                   "sentAt": null,
@@ -1736,16 +1737,15 @@
                   "folders": [
                     {
                       "id": 1,
-                      "color": "رنگی",
-                      "side": "تک رو",
-                      "size": "A4",
+                      "color": "black_and_white",
+                      "side": "single_sided",
+                      "size": "a4",
                       "countOfPages": 6,
                       "uploadedPages": 2,
-                      "binding": "میخواهم صحافی بشود",
+                      "binding": null,
                       "numberOfCopies": 6,
                       "description": "این یک توضیح است",
                       "shipmentPrice": 20000,
-                      "summary": "تست / تست / تست / تست / تست",
                       "countOfFiles": 1,
                       "filesUrl": "https://google.com",
                       "amount": 10000,
@@ -1774,7 +1774,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/users/orders/id/{id}/cancel": {
       "put": {
         "tags": ["Users Orders"],
         "summary": "update or change order",
@@ -1787,12 +1789,6 @@
             "in": "header",
             "type": "string",
             "required": true
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": { "$ref": "#/definitions/UpdateUsersOrders" }
           },
           {
             "name": "id",
@@ -1859,18 +1855,9 @@
                 "statusCode": 200,
                 "data": {
                   "discount": null,
-                  "user": {
-                    "balance": 10000
-                  },
-                  "folders": [
-                    {
-                      "id": 1,
-                      "amount": 10000
-                    }
-                  ],
-                  "payableAmountWithGateway": 2000,
-                  "postFee": 20000,
-                  "totalPrice": 30000
+                  "userBalance": 20000,
+                  "foldersAmount": [10000, 2000],
+                  "postageFee": 20000
                 },
                 "error": null
               }
@@ -1985,7 +1972,7 @@
                     {
                       "id": 3,
                       "status": "pending",
-                      "notFinishingReason": null,
+                      "cancelReason": null,
                       "amount": 15000,
                       "createdAt": "2022-10-19T22:34:30.000Z"
                     }
@@ -2307,7 +2294,7 @@
     "UsersWithdrawal": {
       "type": "object",
       "properties": {
-        "owner": { "type": "string", "example": "کسری" },
+        "accountHolderName": { "type": "string", "example": "کسری" },
         "iban": { "type": "string", "example": "123123123123132" }
       }
     },
@@ -2335,7 +2322,6 @@
           "enum": ["a4", "a3", "a5"]
         },
         "countOfPages": { "type": "int", "example": 6 },
-        "uploadedPages": { "type": "int", "example": 2 },
         "numberOfCopies": { "type": "int", "example": 6 },
         "description": { "type": "string", "example": "این یک توضیح است" },
         "binding": {
@@ -2382,13 +2368,6 @@
         "addressId": { "type": "int", "example": 1 },
         "discountCode": { "type": "string", "example": null },
         "paidWithWallet": { "type": "bool", "example": true }
-      }
-    },
-    "UpdateUsersOrders": {
-      "type": "object",
-      "properties": {
-        "status": { "type": "string", "example": "canceled" },
-        "notFinishingReason": { "type": "string", "example": null }
       }
     },
     "UsersProfile": {

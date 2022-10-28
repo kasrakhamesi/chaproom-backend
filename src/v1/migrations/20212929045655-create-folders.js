@@ -15,11 +15,9 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false
       },
-      bindingId: {
-        type: Sequelize.BIGINT.UNSIGNED,
-        references: { model: 'bindings', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+      binding: {
+        type: Sequelize.JSON,
+        defaultValue: null,
         allowNull: true
       },
       color: {

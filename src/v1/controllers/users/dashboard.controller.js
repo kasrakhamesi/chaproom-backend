@@ -20,7 +20,7 @@ const findOne = async (req, res) => {
     const orders = await sequelize.models.orders.findAll({
       where: {
         userId,
-        status: { [Op.not]: 'approved' },
+        status: { [Op.not]: 'sent' },
         status: { [Op.not]: 'user_canceled' },
         status: { [Op.not]: 'admin_canceled' }
       },
