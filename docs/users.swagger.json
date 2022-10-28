@@ -765,13 +765,10 @@
                     "createdAt": "2022-10-26T22:44:44.000Z",
                     "updatedAt": "2022-10-26T22:44:44.000Z",
                     "binding": {
-                      "id": 2,
                       "type": "stapler",
                       "method": "each_file_separated",
                       "numberOfFiles": 1,
-                      "coverColor": "colorful",
-                      "createdAt": "2022-10-26T22:44:44.000Z",
-                      "updatedAt": "2022-10-26T22:44:44.000Z"
+                      "coverColor": "colorful"
                     },
                     "files": [
                       {
@@ -1026,13 +1023,10 @@
                   "createdAt": "2022-10-26T22:44:44.000Z",
                   "updatedAt": "2022-10-26T22:44:44.000Z",
                   "binding": {
-                    "id": 2,
                     "type": "stapler",
                     "method": "each_file_separated",
                     "numberOfFiles": 1,
-                    "coverColor": "colorful",
-                    "createdAt": "2022-10-26T22:44:44.000Z",
-                    "updatedAt": "2022-10-26T22:44:44.000Z"
+                    "coverColor": "colorful"
                   },
                   "files": [
                     {
