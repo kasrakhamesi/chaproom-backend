@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true
       },
-      numberOfCopies: {
+      countOfCopies: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       countOfFiles: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: true
       },
       filesUrl: {
         type: DataTypes.TEXT,

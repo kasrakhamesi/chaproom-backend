@@ -483,7 +483,425 @@
                       "createdAt": "2022-10-19T22:34:30.000Z",
                       "updatedAt": "2022-10-19T22:36:39.000Z"
                     }
-                  ]
+                  ],
+                  "tariffs": {
+                    "binding": {
+                      "a4_springNormal": 560,
+                      "a5_springNormal": 700,
+                      "a3_springNormal": 400,
+                      "a5_springPapco": 1000,
+                      "a4_springPapco": 900,
+                      "a3_springPapco": 1200,
+                      "stapler": 400
+                    },
+                    "print": [
+                      {
+                        "id": 1,
+                        "type": "full_color",
+                        "size": "a4",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 2,
+                        "type": "black_and_white",
+                        "size": "a4",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 3,
+                        "type": "normal_color",
+                        "size": "a4",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 4,
+                        "type": "full_color",
+                        "size": "a5",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 5,
+                        "type": "black_and_white",
+                        "size": "a5",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 6,
+                        "type": "normal_color",
+                        "size": "a5",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 7,
+                        "type": "full_color",
+                        "size": "a3",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 8,
+                        "type": "black_and_white",
+                        "size": "a3",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      },
+                      {
+                        "id": 9,
+                        "type": "normal_color",
+                        "size": "a3",
+                        "single_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "single_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ],
+                        "double_sided_glossy": [
+                          {
+                            "fromPage": 0,
+                            "price": 800
+                          },
+                          {
+                            "fromPage": 10,
+                            "price": 800
+                          }
+                        ]
+                      }
+                    ]
+                  }
                 },
                 "error": null
               }
@@ -754,7 +1172,7 @@
                     "size": "a4",
                     "countOfPages": 6,
                     "uploadedPages": 2,
-                    "numberOfCopies": 6,
+                    "countOfCopies": 6,
                     "description": "این یک توضیح است",
                     "shipmentPrice": 5000,
                     "countOfFiles": 1,
@@ -767,16 +1185,16 @@
                     "binding": {
                       "type": "stapler",
                       "method": "each_file_separated",
-                      "numberOfFiles": 1,
+                      "countOfFiles": 1,
                       "coverColor": "colorful"
                     },
                     "files": [
                       {
                         "id": 1,
-                        "uploadedFileName": "f.pdf3",
-                        "fileName": "f.pdf3",
-                        "fileUrl": "https://google.com/f.pdf",
-                        "pageCount": 2,
+                        "uploadedName": "f.pdf3",
+                        "name": "f.pdf3",
+                        "url": "https://google.com/f.pdf",
+                        "countOfPages": 2,
                         "createdAt": "2022-10-26T22:41:56.000Z",
                         "updatedAt": "2022-10-26T22:41:56.000Z"
                       }
@@ -789,7 +1207,7 @@
                     "size": "a4",
                     "countOfPages": 6,
                     "uploadedPages": 2,
-                    "numberOfCopies": 6,
+                    "countOfCopies": 6,
                     "description": "این یک توضیح است",
                     "shipmentPrice": 5000,
                     "countOfFiles": 1,
@@ -803,10 +1221,10 @@
                     "files": [
                       {
                         "id": 1,
-                        "uploadedFileName": "f.pdf3",
-                        "fileName": "f.pdf3",
-                        "fileUrl": "https://google.com/f.pdf",
-                        "pageCount": 2,
+                        "uploadedName": "f.pdf3",
+                        "name": "f.pdf3",
+                        "url": "https://google.com/f.pdf",
+                        "countOfPages": 2,
                         "createdAt": "2022-10-26T22:41:56.000Z",
                         "updatedAt": "2022-10-26T22:41:56.000Z"
                       }
@@ -1012,7 +1430,7 @@
                   "size": "a4",
                   "countOfPages": 6,
                   "uploadedPages": 2,
-                  "numberOfCopies": 6,
+                  "countOfCopies": 6,
                   "description": "این یک توضیح است",
                   "shipmentPrice": 5000,
                   "countOfFiles": 1,
@@ -1025,16 +1443,16 @@
                   "binding": {
                     "type": "stapler",
                     "method": "each_file_separated",
-                    "numberOfFiles": 1,
+                    "countOfFiles": 1,
                     "coverColor": "colorful"
                   },
                   "files": [
                     {
                       "id": 1,
-                      "uploadedFileName": "f.pdf3",
-                      "fileName": "f.pdf3",
-                      "fileUrl": "https://google.com/f.pdf",
-                      "pageCount": 2,
+                      "uploadedName": "f.pdf3",
+                      "name": "f.pdf3",
+                      "url": "https://google.com/f.pdf",
+                      "countOfPages": 2,
                       "createdAt": "2022-10-26T22:41:56.000Z",
                       "updatedAt": "2022-10-26T22:41:56.000Z"
                     }
@@ -1099,18 +1517,7 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "id": 1,
-                  "color": "رنگی",
-                  "side": "تک رو",
-                  "size": "A4",
-                  "countOfPages": 8,
-                  "uploadedPages": 6,
-                  "binding": "من صحافی میخواهم",
-                  "numberOfCopies": 5,
-                  "description": "این یک توضیح است",
-                  "shipmentPrice": 5000,
-                  "price": 5000,
-                  "files": [{ "id": 1 }]
+                  "message": "با موفقعیت پاک شد"
                 },
                 "error": null
               }
@@ -1511,6 +1918,471 @@
         }
       }
     },
+    "/public/tariffs": {
+      "get": {
+        "tags": ["Public"],
+        "summary": "get tariffs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "binding": {
+                    "a4_springNormal": 560,
+                    "a5_springNormal": 700,
+                    "a3_springNormal": 400,
+                    "a5_springPapco": 1000,
+                    "a4_springPapco": 900,
+                    "a3_springPapco": 1200,
+                    "stapler": 400
+                  },
+                  "print": [
+                    {
+                      "id": 1,
+                      "type": "full_color",
+                      "size": "a4",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 2,
+                      "type": "black_and_white",
+                      "size": "a4",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 3,
+                      "type": "normal_color",
+                      "size": "a4",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 4,
+                      "type": "full_color",
+                      "size": "a5",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 5,
+                      "type": "black_and_white",
+                      "size": "a5",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 6,
+                      "type": "normal_color",
+                      "size": "a5",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 7,
+                      "type": "full_color",
+                      "size": "a3",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 8,
+                      "type": "black_and_white",
+                      "size": "a3",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    },
+                    {
+                      "id": 9,
+                      "type": "normal_color",
+                      "size": "a3",
+                      "single_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "single_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ],
+                      "double_sided_glossy": [
+                        {
+                          "fromPage": 0,
+                          "price": 800
+                        },
+                        {
+                          "fromPage": 10,
+                          "price": 800
+                        }
+                      ]
+                    }
+                  ],
+                  "book": null
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "name": ["شماره تلفن مقصد نامعتبر است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/public/contact-us": {
       "post": {
         "tags": ["Public"],
@@ -1737,7 +2609,7 @@
                       "countOfPages": 6,
                       "uploadedPages": 2,
                       "binding": null,
-                      "numberOfCopies": 6,
+                      "countOfCopies": 6,
                       "description": "این یک توضیح است",
                       "shipmentPrice": 20000,
                       "countOfFiles": 1,
@@ -1848,7 +2720,7 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "discount": null,
+                  "discountAmount": null,
                   "userBalance": 20000,
                   "foldersAmount": [10000, 2000],
                   "postageFee": 20000
@@ -2316,7 +3188,7 @@
           "enum": ["a4", "a3", "a5"]
         },
         "countOfPages": { "type": "int", "example": 6 },
-        "numberOfCopies": { "type": "int", "example": 6 },
+        "countOfCopies": { "type": "int", "example": 6 },
         "description": { "type": "string", "example": "این یک توضیح است" },
         "binding": {
           "type": "object",
@@ -2332,7 +3204,7 @@
               "enum": [
                 "each_file_separated",
                 "all_files_together",
-                "number_of_file"
+                "count_of_files"
               ]
             },
             "coverColor": {
@@ -2340,7 +3212,7 @@
               "example": "colorful",
               "enum": ["colorful", "black_and_white"]
             },
-            "numberOfFiles": { "type": "int", "example": 1 }
+            "countOfFiles": { "type": "int", "example": 1 }
           }
         },
         "files": {

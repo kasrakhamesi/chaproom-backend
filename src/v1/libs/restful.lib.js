@@ -1,5 +1,5 @@
+const { httpError, errorTypes, messageTypes } = require('../configs')
 const _ = require('lodash')
-const { httpError } = require('../configs')
 
 const paginate = (query, { page, pageSize }) => {
   const offset = page * pageSize
@@ -94,10 +94,9 @@ class Restful {
               limit: limit
             })
       else if (!findOne && pagination.active) {
-        if (_.isEmpty(pagination?.pageSize) || _.isEmpty(pagination?.page)) {
-          pagination.page = 0
-          pagination.pageSize = 25
-        }
+        if (_.isEmpty(pagination?.pageSize)) pagination.pageSize = 25
+
+        if (_.isEmpty(pagination?.page)) pagination.page = 0
 
         if (
           typeof parseInt(pagination?.pageSize) !== 'number' ||
@@ -109,19 +108,28 @@ class Restful {
 
         if (pageSize > 100) throw new Error('PageSize must under 100')
 
-        const page = parseInt(pagination?.page)
-        resGet = await this.#model.findAndCountAll(
-          paginate(
-            {
-              where: where,
-              attributes: attributes,
-              include: include,
-              order: order
-            },
-            { page, pageSize }
+        if (pageSize === 0) {
+          resGet = await this.#model.findAll({
+            where: where,
+            attributes: attributes,
+            include: include,
+            order: order
+          })
+        } else {
+          const page = parseInt(pagination?.page)
+          resGet = await this.#model.findAndCountAll(
+            paginate(
+              {
+                where: where,
+                attributes: attributes,
+                include: include,
+                order: order
+              },
+              { page, pageSize }
+            )
           )
-        )
-        resGet = paging(this.#generateNewTableName(), resGet, page, pageSize)
+          resGet = paging(this.#generateNewTableName(), resGet, page, pageSize)
+        }
       }
 
       return {
@@ -175,29 +183,12 @@ class Restful {
   }) => {
     try {
       if (where === undefined || where === null || where === '')
-        throw new Error('Invalid Inputs')
+        return errorTypes.INVALID_INPUTS
 
-      const resUpdate = await this.#model.update(body, {
+      await this.#model.update(body, {
         where: where
       })
-
-      if (resUpdate[0] || resUpdate >= 1) {
-        if (haveLog)
-          activities
-            .Log(req?.user[0]?.id, logDescription)
-            .then(console.log)
-            .catch(console.log)
-
-        return {
-          statusCode: 200,
-          data: {
-            status: 'success',
-            message: 'your data successfully updated'
-          },
-          error: null
-        }
-      }
-      return errorsConfig.codes.errorsCode.data_not_found_404
+      return messageTypes.SUCCESSFUL_UPDATE
     } catch (e) {
       return httpError(e)
     }
@@ -215,30 +206,13 @@ class Restful {
   }) => {
     try {
       if (where === undefined || where === null || where === '')
-        throw new Error('Invalid Inputs')
+        return errorTypes.INVALID_INPUTS
 
-      const resDelete = await this.#model.destroy({
+      await this.#model.destroy({
         where: where
       })
 
-      if (resDelete[0] || resDelete >= 1) {
-        if (haveLog)
-          activities
-            .Log(req?.user[0]?.id, logDescription)
-            .then(console.log)
-            .catch(console.log)
-
-        return {
-          statusCode: 200,
-          data: {
-            status: 'success',
-            message: 'your data successfully deleted'
-          },
-          error: null
-        }
-      }
-
-      return errorsConfig.codes.errorsCode.data_not_found_404
+      return messageTypes.SUCCESSFUL_DELETE
     } catch (e) {
       return httpError(e)
     }

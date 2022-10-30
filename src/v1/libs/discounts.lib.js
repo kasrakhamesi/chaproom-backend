@@ -30,4 +30,20 @@ const check = async (discountCode) => {
   }
 }
 
-module.exports = { check }
+const calculator = (discountData, price) => {
+  const { type, value } = discountData
+  if (type === 'percentage') {
+    const totalDiscount = parseFloat((price * parseInt(value)) / 100)
+    const payableAmount = parseFloat(price - totalDiscount)
+    return payableAmount
+  } else if (type === 'fix') {
+    const payableAmount = parseFloat(price - value)
+    return payableAmount
+  } else if (type === 'page') {
+    const payableAmount = parseFloat(price - value)
+    return payableAmount
+  }
+  return price
+}
+
+module.exports = { check, calculator }

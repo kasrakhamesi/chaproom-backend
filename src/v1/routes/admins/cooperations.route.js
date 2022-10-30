@@ -6,10 +6,7 @@ router.use(bodyParser.json())
 
 const { admins } = require('../../controllers')
 
-router.delete('/id/:id', admins.users.softDelete)
-router.put('/id/:id', admins.users.update)
-router.get('/id/:id', admins.users.findOne)
-router.get('/', admins.users.findAll)
-router.post('/', admins.users.create)
+router.put('/id/:id', admins.cooperations.update)
+router.get('/', admins.cooperations.findAll)
 
 module.exports = router

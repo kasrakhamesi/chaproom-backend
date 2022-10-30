@@ -1,21 +1,18 @@
 const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
 const { httpError } = require('../../configs')
-const addresses = new restful(sequelize.models.addresses)
+const cooperations = new restful(sequelize.models.cooperations)
 
 const findAll = async (req, res) => {
   try {
-    const { userId } = req.params
     const { page, pageSize } = req.query
     const [order, where] = await filters.filter(
       req.query,
-      sequelize.models.addresses
+      sequelize.models.cooperations
     )
 
-    const newWhere = { ...where, userId }
-
-    const r = await addresses.Get({
-      where: newWhere,
+    const r = await cooperations.Get({
+      where,
       order,
       pagination: {
         active: true,
@@ -29,56 +26,20 @@ const findAll = async (req, res) => {
   }
 }
 
-const findOne = async (req, res) => {
-  try {
-    const { id } = req.params
-    const r = await addresses.Get({
-      where: {
-        id
-      }
-    })
-    res.status(r?.statusCode).send(r)
-  } catch (e) {
-    httpError(e, res)
-  }
-}
-
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const {
-      recipientName,
-      recipientPhoneNumber,
-      recipientPostalCode,
-      recipientDeliveryProvince,
-      recipientDeliveryCity,
-      recipientDeliveryAddress
-    } = req.body
+    const { description, status } = req.body
 
     const data = {
-      recipientName,
-      recipientPhoneNumber,
-      recipientPostalCode,
-      recipientDeliveryProvince,
-      recipientDeliveryCity,
-      recipientDeliveryAddress
+      description,
+      status
     }
-
-    const r = await addresses.Put({ body: data, req, where: { id } })
+    const r = await cooperations.Put({ body: data, req, where: { id } })
     res.status(r?.statusCode).send(r)
   } catch (e) {
     httpError(e, res)
   }
 }
 
-const softDelete = async (req, res) => {
-  try {
-    const { id } = req.params
-    const r = await addresses.Delete({ req, where: { id } })
-    res.status(r?.statusCode).send(r)
-  } catch (e) {
-    httpError(e, res)
-  }
-}
-
-module.exports = { findAll, findOne, update, softDelete }
+module.exports = { findAll, update }

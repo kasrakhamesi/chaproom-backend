@@ -17,14 +17,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      checked: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-      },
       description: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       status: {
         type: DataTypes.ENUM('pending', 'approved', 'rejected'),

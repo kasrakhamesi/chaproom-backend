@@ -25,32 +25,44 @@ const findAll = async (req, res) => {
 
     if (r?.statusCode !== 200) return httpError(e, res)
 
-    if (r?.data?.data !== [] && !_.isEmpty(r?.data?.data)) {
-      r.data.data = r?.data?.data.map((item) => {
+    if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
+      r.data.users = r?.data?.users.map((item) => {
         return {
           ...item.dataValues,
           walletBalance: item.balance - item.marketingBalance
         }
       })
 
-      r.data.data = await Promise.all(r.data.data)
+      r.data.users = await Promise.all(r.data.users)
     }
 
-    /*
-    const ordersCondition = []
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
-    if (r.statusCode !== 200) return res.status(r?.statusCode).send(r)
+    let data = []
 
-    for (const entity of r?.data?.data) {
-      const orders = await sequelize.models.orders.count({
+    for (const entity of r?.data?.users) {
+      const countOfOrders = await sequelize.models.orders.count({
         where: {
           userId: entity?.id
         }
       })
+      data.push({ ...entity, countOfOrders })
     }
-    */
 
-    res.status(r?.statusCode).send(r)
+    data = await Promise.all(data)
+
+    res.status(200).send({
+      statusCode: 200,
+      data: {
+        page: r?.data?.page,
+        pageSize: r?.data?.pageSize,
+        totalCount: r?.data?.totalCount,
+        totalPageLeft: r?.data?.totalPageLeft,
+        totalCountLeft: r?.data?.totalCountLeft,
+        users: data
+      },
+      error: null
+    })
   } catch (e) {
     console.log(e)
     httpError(e, res)

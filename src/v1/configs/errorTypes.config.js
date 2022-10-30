@@ -131,6 +131,10 @@ const Types = {
   FOLDER_NOT_FOUND: {
     statusCode: 400,
     message: 'پوشه پیدا نشد'
+  },
+  INVALID_INPUTS: {
+    statusCode: 400,
+    message: 'ورودی نامعتبر است'
   }
 }
 

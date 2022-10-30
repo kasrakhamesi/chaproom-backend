@@ -1,30 +1,38 @@
 const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
 const { httpError } = require('../../configs')
-const addresses = new restful(sequelize.models.addresses)
+const transactions = new restful(sequelize.models.transactions)
 
 const findAll = async (req, res) => {
   try {
-    const { userId } = req.params
     const { page, pageSize } = req.query
     const [order, where] = await filters.filter(
       req.query,
-      sequelize.models.addresses
+      sequelize.models.transactions
     )
 
-    const newWhere = { ...where, userId }
-
-    const r = await addresses.Get({
+    const r = await transactions.Get({
+      include: [
+        {
+          model: sequelize.models.users,
+          attributes: ['name', 'phoneNumber', 'id']
+        },
+        {
+          model: sequelize.models.admins,
+          attributes: ['name', 'id']
+        }
+      ],
       attributes: {
         exclude: [
           'userId',
           'withdrawalId',
+          'adminId',
           'paymentId',
           'balance',
           'balanceAfter'
         ]
       },
-      where: newWhere,
+      where,
       order,
       pagination: {
         active: true,
@@ -41,7 +49,7 @@ const findAll = async (req, res) => {
 const findOne = async (req, res) => {
   try {
     const { id } = req.params
-    const r = await addresses.Get({
+    const r = await transactions.Get({
       where: {
         id
       }
@@ -75,7 +83,7 @@ const update = async (req, res) => {
       recipientDeliveryAddress
     }
 
-    const r = await addresses.Put({ body: data, req, where: { id } })
+    const r = await transactions.Put({ body: data, req, where: { id } })
     res.status(r?.statusCode).send(r)
   } catch (e) {
     httpError(e, res)
@@ -85,7 +93,7 @@ const update = async (req, res) => {
 const softDelete = async (req, res) => {
   try {
     const { id } = req.params
-    const r = await addresses.Delete({ req, where: { id } })
+    const r = await transactions.Delete({ req, where: { id } })
     res.status(r?.statusCode).send(r)
   } catch (e) {
     httpError(e, res)

@@ -20,19 +20,19 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      uploadedFileName: {
+      uploadedName: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      fileName: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      fileUrl: {
+      url: {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      pageCount: {
+      countOfPages: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       }

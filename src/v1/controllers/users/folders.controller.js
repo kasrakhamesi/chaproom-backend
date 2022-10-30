@@ -5,16 +5,16 @@ const _ = require('lodash')
 const extractBinding = (binding) => {
   if (binding === null) return null
 
-  let { type, method, numberOfFiles, coverColor } = binding
+  let { type, method, countOfFiles, coverColor } = binding
 
-  if (!type && !method && !numberOfFiles && !coverColor) return null
+  if (!type && !method && !countOfFiles && !coverColor) return null
 
   if (type !== 'spring_normal' && type !== 'spring_papco' && type !== 'stapler')
     type = null
   if (
     method !== 'each_file_separated' &&
     method !== 'all_files_together' &&
-    method !== 'number_of_file'
+    method !== 'count_of_files'
   )
     method = null
   if (coverColor !== 'black_and_white' && coverColor !== 'colorful')
@@ -22,7 +22,7 @@ const extractBinding = (binding) => {
   return JSON.stringify({
     type,
     method,
-    numberOfFiles: parseInt(numberOfFiles) || null,
+    countOfFiles: parseInt(countOfFiles) || null,
     coverColor
   })
 }
@@ -36,7 +36,7 @@ const create = async (req, res) => {
       side,
       size,
       countOfPages,
-      numberOfCopies,
+      countOfCopies,
       description,
       binding,
       files
@@ -50,7 +50,7 @@ const create = async (req, res) => {
       size,
       countOfPages,
       uploadedPages: 5,
-      numberOfCopies,
+      countOfCopies,
       description,
       shipmentPrice,
       binding: extractBinding(binding),
@@ -68,7 +68,7 @@ const create = async (req, res) => {
 
     const ids = []
     for (const entity of files) {
-      if (findedFiles.findIndex((item) => item.id !== entity.id) === -1)
+      if (findedFiles.findIndex((item) => item.id === entity.id) === -1)
         ids.push(entity?.id)
     }
 
@@ -105,6 +105,13 @@ const create = async (req, res) => {
   }
 }
 
+const priceCalculator = async (req, res) => {
+  try {
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
 const update = (req, res) => {
   const { id } = req.params
   const userId = req?.user[0]?.id
@@ -114,7 +121,7 @@ const update = (req, res) => {
     side,
     size,
     countOfPages,
-    numberOfCopies,
+    countOfCopies,
     description,
     binding,
     files
@@ -129,7 +136,7 @@ const update = (req, res) => {
     countOfPages,
     uploadedPages: 4,
     binding: extractBinding(binding),
-    numberOfCopies,
+    countOfCopies,
     description
   }
 
@@ -142,7 +149,7 @@ const update = (req, res) => {
     .then((rFiles) => {
       const filesId = []
       for (const entity of files) {
-        if (rFiles.findIndex((item) => item.id !== entity.id) === -1)
+        if (rFiles.findIndex((item) => item.id === entity.id) === -1)
           filesId.push(entity?.id)
       }
 
@@ -202,8 +209,8 @@ const findAll = (req, res) => {
   return sequelize.models.folders
     .findAll({
       where: {
-        userId
-        // TODO used: false
+        userId,
+        used: false
       },
       attributes: {
         exclude: ['userId', 'used']
@@ -254,7 +261,8 @@ const findOne = (req, res) => {
     .findOne({
       where: {
         userId,
-        id // #TODO USED : FALSE
+        id,
+        used: false
       },
       attributes: {
         exclude: ['userId', 'used']
@@ -301,7 +309,8 @@ const hardDelete = (req, res) => {
     .destroy({
       where: {
         id,
-        userId
+        userId,
+        used: false
       }
     })
     .then(() => {
@@ -314,4 +323,11 @@ const hardDelete = (req, res) => {
     })
 }
 
-module.exports = { create, findAll, hardDelete, findOne, update }
+module.exports = {
+  create,
+  findAll,
+  hardDelete,
+  findOne,
+  update,
+  priceCalculator
+}

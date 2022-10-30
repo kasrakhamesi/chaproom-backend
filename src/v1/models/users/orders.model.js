@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
+      referralId: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
       discountId: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: true

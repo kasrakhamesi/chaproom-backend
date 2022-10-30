@@ -21,6 +21,7 @@ const register = async (req, res) => {
 
     const r = await authentications.sms.send({
       phoneNumber,
+      isAdmin: false,
       registerData: data
     })
     return res.status(r?.statusCode).send(r)
@@ -45,6 +46,7 @@ const resendCode = async (req, res) => {
 
     const r = await authentications.sms.send({
       phoneNumber,
+      isAdmin: false,
       registerData:
         previousSmsRequest?.registerData !== null
           ? previousSmsRequest?.registerData
@@ -63,7 +65,11 @@ const registerConfirm = async (req, res) => {
     if (typeof code !== 'number')
       return httpError(errorTypes.INVALID_OTP_TYPE, res)
 
-    const auth = await authentications.sms.check({ code, phoneNumber })
+    const auth = await authentications.sms.check({
+      code,
+      phoneNumber,
+      isAdmin: false
+    })
 
     if (auth.statusCode !== 200) return res.status(auth.statusCode).send(auth)
 
@@ -184,6 +190,7 @@ const passwordReset = async (req, res) => {
     const r = await authentications.sms.send({
       phoneNumber,
       creatorId: user?.id,
+      isAdmin: false,
       isPasswordReset: true
     })
 
@@ -196,7 +203,7 @@ const passwordReset = async (req, res) => {
 const passwordResetConfirmCode = (req, res) => {
   const { code, phoneNumber } = req.body
   return authentications.sms
-    .check({ code, phoneNumber, isPasswordReset: true })
+    .check({ code, phoneNumber, isAdmin: false, isPasswordReset: true })
     .then((r) => {
       return res.status(r?.statusCode).send(r)
     })

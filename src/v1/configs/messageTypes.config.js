@@ -19,6 +19,13 @@ const Types = {
       message: 'با موفقعیت ساخته شد'
     },
     error: null
+  },
+  ORDER_SUCCESSFUL_CREATED: {
+    statusCode: 201,
+    data: {
+      message: 'سفارش شما با موفقعیت تکمیل شد'
+    },
+    error: null
   }
 }
 

@@ -59,7 +59,7 @@ const createOrder = async (
       Description: 'افزایش موجودی کیف پول'
     })
 
-    if (payment?.status !== 100) return httpError(errorTypes.GATEWAY_ERROR, res)
+    if (payment?.status !== 100) return httpError(errorTypes.GATEWAY_ERROR)
 
     const t = await sequelize.transaction()
 
@@ -72,7 +72,7 @@ const createOrder = async (
       { transaction: t }
     )
 
-    if (!paymentCreated) return httpError(errorTypes.GATEWAY_ERROR, res)
+    if (!paymentCreated) return httpError(errorTypes.GATEWAY_ERROR)
     data.paymentId = paymentCreated?.id
     data.gatewayPaidAmount = gatewayPayAmount
     data.walletPaidAmount = walletPayAmount
@@ -115,51 +115,55 @@ const submitOrder = async (
   refId,
   transaction
 ) => {
-  const order = await sequelize.models.orders.findOne({
-    where: {
-      userId,
-      paymentId,
-      status: 'payment_pending'
+  try {
+    const order = await sequelize.models.orders.findOne({
+      where: {
+        userId,
+        paymentId,
+        status: 'payment_pending'
+      }
+    })
+
+    if (!order) return null
+    const userWallet = await getBalance(userId)
+
+    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+
+    await sequelize.models.transactions.create(
+      {
+        userId,
+        orderId: order?.id,
+        type: 'order',
+        change: 'decrease',
+        balance: userWallet?.data?.balance,
+        balanceAfter: userWallet?.data?.balance - paymentAmount,
+        status: 'successful',
+        amount: paymentAmount,
+        description: 'ثبت سفارش'
+      },
+      { transaction }
+    )
+
+    await order.update(
+      {
+        status: 'pending'
+      },
+      { transaction }
+    )
+
+    return {
+      statusCode: 200,
+      data: {
+        id: paymentAmount,
+        orderId: order?.id,
+        message: 'پرداخت با موفقعیت انجام شد',
+        amount: paymentId,
+        refId
+      },
+      error: null
     }
-  })
-
-  if (!order) return null
-  const userWallet = await getBalance(userId)
-
-  if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
-
-  await sequelize.models.transactions.create(
-    {
-      userId,
-      orderId: order?.id,
-      type: 'order',
-      change: 'decrease',
-      balance: userWallet?.data?.balance,
-      balanceAfter: userWallet?.data?.balance - paymentAmount,
-      status: 'successful',
-      amount: paymentAmount,
-      description: 'ثبت سفارش'
-    },
-    { transaction }
-  )
-
-  await order.update(
-    {
-      status: 'pending'
-    },
-    { transaction }
-  )
-
-  return {
-    statusCode: 200,
-    data: {
-      id: paymentAmount,
-      orderId: order?.id,
-      message: 'پرداخت با موفقعیت انجام شد',
-      amount: paymentId,
-      refId
-    },
-    error: null
+  } catch {
+    return null
   }
 }
 

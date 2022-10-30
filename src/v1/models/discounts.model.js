@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      discounts.belongsTo(models.users)
     }
   }
   discounts.init(
@@ -45,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
       usageLimit: {
         type: DataTypes.INTEGER.UNSIGNED,
         defaultValue: 0,
+        allowNull: true
+      },
+      pageLimit: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true
       },
       timesUsed: {

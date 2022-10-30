@@ -106,6 +106,7 @@ const callback = async (req, res) => {
       error: null
     })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

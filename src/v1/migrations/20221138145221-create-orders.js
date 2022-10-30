@@ -23,6 +23,13 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: false
         },
+        referralId: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          references: { model: 'referrals', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          allowNull: true
+        },
         discountId: {
           type: Sequelize.BIGINT.UNSIGNED,
           references: { model: 'addresses', key: 'id' },

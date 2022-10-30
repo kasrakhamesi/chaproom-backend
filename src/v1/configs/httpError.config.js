@@ -6,7 +6,7 @@ const Config = (err, res = null) => {
       statusCode: err?.statusCode,
       data: null,
       error: {
-        message: err?.message,
+        message: err?.message || err?.error?.message,
         details: []
       }
     })
@@ -15,14 +15,13 @@ const Config = (err, res = null) => {
       statusCode: err?.statusCode,
       data: null,
       error: {
-        message: err?.message,
+        message: err?.message || err?.error?.message,
         details: []
       }
     }
 
   const details = []
   for (const entity in errorTypes) {
-    console.log(String(err))
     if (String(err) !== entity) continue
     return res.status(entity.statusCode).send({
       statusCode: entity.statusCode,
@@ -34,7 +33,7 @@ const Config = (err, res = null) => {
     })
   }
   let message = err?.message || 'ورودی نامعتبر'
-  if (err.name === 'SequelizeValidationError') {
+  if (err?.name === 'SequelizeValidationError') {
     for (const entity of err?.errors) {
       const errorMessage = entity.type.includes('notNull')
         ? 'نمیتواند خالی باشد '
@@ -42,7 +41,7 @@ const Config = (err, res = null) => {
 
       details.push({ [entity.path]: errorMessage })
     }
-  } else if (err.name === 'SequelizeUniqueConstraintError')
+  } else if (err?.name === 'SequelizeUniqueConstraintError')
     message = 'این اطلاعات قبلا ساخته شده بود'
 
   if (res === null)

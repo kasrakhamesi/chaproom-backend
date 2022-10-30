@@ -15,6 +15,10 @@ const findAll = async (req, res) => {
     const newWhere = { ...where, userId }
 
     const r = await addresses.Get({
+      include: {
+        model: sequelize.models.users,
+        attributes: ['id', 'name', 'phoneNumber']
+      },
       where: newWhere,
       order,
       pagination: {
@@ -33,6 +37,10 @@ const findOne = async (req, res) => {
   try {
     const { id } = req.params
     const r = await addresses.Get({
+      include: {
+        model: sequelize.models.users,
+        attributes: ['id', 'name', 'phoneNumber']
+      },
       where: {
         id
       }

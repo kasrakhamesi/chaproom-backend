@@ -1,8 +1,12 @@
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
-const { restful, filters, users, discounts } = require('../../libs')
+const { restful, filters, users, discounts, utils } = require('../../libs')
 const orders = new restful(sequelize.models.orders)
+const { Op } = require('sequelize')
 const _ = require('lodash')
+const { calculator } = require('../../libs/discounts.lib')
+
+const ONE_MOUNTH = 1000 * 60 * 60 * 24 * 30
 
 const create = async (req, res) => {
   try {
@@ -11,6 +15,21 @@ const create = async (req, res) => {
     const totalPrice = 150000
 
     const { addressId, discountCode, paidWithWallet } = req.body
+
+    const referral = await sequelize.models.referrals.findOne({
+      where: {
+        userId,
+        referralUserId: { [Op.not]: null }
+      }
+    })
+
+    let referralUserId = null
+
+    if (
+      referral &&
+      Date.now() < utils.isoToTimestamp(referral?.createdAt) + ONE_MOUNTH
+    )
+      referralUserId = referral?.referralUserId
 
     const address = await sequelize.models.addresses.findOne({
       where: {
@@ -31,6 +50,7 @@ const create = async (req, res) => {
     const data = {
       addressId,
       userId,
+      referralUserId,
       recipientName: address?.recipientName,
       recipientPhoneNumber: address?.recipientPhoneNumber,
       recipientPostalCode: address?.recipientPostalCode,
@@ -44,7 +64,8 @@ const create = async (req, res) => {
     let discount = null
     if (discountCode) discount = await discounts.check(discountCode)
 
-    if (discount?.statusCode !== 200) return httpError(discount, res)
+    if (discount !== null && discount?.statusCode !== 200)
+      return httpError(discount, res)
 
     if (paidWithWallet) {
       const user = await sequelize.models.users.findOne({
@@ -67,8 +88,16 @@ const create = async (req, res) => {
             transaction: t
           }
         )
+        await t.commit()
 
-        return res.status(201).send(r)
+        return res.status(messageTypes.SUCCESSFUL_CREATED.statusCode).send({
+          statusCode: messageTypes.SUCCESSFUL_CREATED.statusCode,
+          data: {
+            id: r?.id,
+            message: messageTypes.SUCCESSFUL_CREATED.data.message
+          },
+          error: null
+        })
       } else {
         const gatewayPayAmount = totalPrice - balance
 
@@ -84,10 +113,7 @@ const create = async (req, res) => {
     }
 
     const r = await users.createOrder(userId, totalPrice, 0, folders, data)
-    if (r?.statusCode !== 201) return res.status(r?.statusCode).send(r)
-    return res
-      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
-      .send(messageTypes.SUCCESSFUL_CREATED)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     console.log(e)
     return httpError(e, res)
@@ -97,11 +123,12 @@ const create = async (req, res) => {
 const priceCalculator = async (req, res) => {
   try {
     const userId = req?.user[0]?.id
-    const { discountCode, paidWithWallet } = req.body
+    const { discountCode } = req.body
     let discount = null
     if (discountCode) discount = await discounts.check(discountCode)
 
-    if (discount?.statusCode !== 200) return httpError(discount, res)
+    if (discount !== null && discount?.statusCode !== 200)
+      return httpError(discount, res)
 
     const folders = await sequelize.models.folders.findAll({
       where: {
@@ -116,10 +143,20 @@ const priceCalculator = async (req, res) => {
       attributes: ['balance']
     })
 
+    const amounts = []
+    let amount = 0
+    for (let k = 0; k < folders.length; k++) {
+      amounts.push(1000)
+      amount += 1000
+    }
+
     const data = {
-      discount: null,
+      discountAmount:
+        discount !== null
+          ? await calculator(discount?.data, amount + 20000)
+          : null,
       userBalance: user?.balance,
-      folders,
+      foldersAmount: amounts,
       postageFee: 20000
     }
 
@@ -179,14 +216,15 @@ const findOne = (req, res) => {
           'discountValue',
           'paymentId',
           'adminId',
-          'order_folders'
+          'order_folders',
+          'referralId'
         ]
       },
       include: [
         {
           model: sequelize.models.folders,
           attributes: {
-            exclude: ['userId']
+            exclude: ['userId', 'used']
           },
           through: {
             attributes: {
@@ -203,6 +241,14 @@ const findOne = (req, res) => {
       ]
     })
     .then((r) => {
+      const folders = r?.folders.map((item) => {
+        if (item?.binding !== null) {
+          item.binding = JSON.parse(item?.binding)
+          return item
+        }
+        return item
+      })
+      r.folders = folders
       return res.status(200).send({
         statusCode: 200,
         data: r,
@@ -231,7 +277,7 @@ const update = async (req, res) => {
 
     await order.update(data, { transaction: t })
 
-    const userWallet = await users.getBalance(payment?.userId)
+    const userWallet = await users.getBalance(userId)
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 

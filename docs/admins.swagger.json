@@ -9,6 +9,779 @@
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {
+    "/admins/discounts": {
+      "get": {
+        "tags": ["Discounts"],
+        "summary": "get Discounts",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "search",
+            "description": "search by phoneNumber or name or discount code",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 2,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "discounts": [
+                    {
+                      "id": 1,
+                      "code": "4AH8EWHG",
+                      "type": "percentage",
+                      "value": "5",
+                      "active": true,
+                      "description": null,
+                      "usageLimit": 0,
+                      "pageLimit": null,
+                      "timesUsed": 0,
+                      "totalSale": 0,
+                      "benefit": 0,
+                      "expireAt": null,
+                      "createdAt": "2022-10-27T23:26:31.000Z",
+                      "updatedAt": "2022-10-27T23:26:31.000Z",
+                      "user": {
+                        "name": "Programmer Kasra",
+                        "phoneNumber": "09385667274",
+                        "id": 1
+                      }
+                    },
+                    {
+                      "id": 2,
+                      "code": "BA372ZQL",
+                      "type": "percentage",
+                      "value": "10",
+                      "active": true,
+                      "description": null,
+                      "usageLimit": 0,
+                      "pageLimit": null,
+                      "timesUsed": 0,
+                      "totalSale": 0,
+                      "benefit": 0,
+                      "expireAt": null,
+                      "createdAt": "2022-10-27T23:26:31.000Z",
+                      "updatedAt": "2022-10-27T23:26:31.000Z",
+                      "user": {
+                        "name": "Programmer Kasra",
+                        "phoneNumber": "09385667274",
+                        "id": 1
+                      }
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Discounts"],
+        "summary": "create new discount",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Cooperations" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "message": "با موفقعیت ساخته شد شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/discounts/id/{id}": {
+      "put": {
+        "tags": ["Discounts"],
+        "summary": "update or change Discount",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Cooperations" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Discounts"],
+        "summary": "get one of discount",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "code": "4AH8EWHG",
+                  "type": "percentage",
+                  "value": "5",
+                  "active": true,
+                  "description": null,
+                  "usageLimit": 0,
+                  "pageLimit": null,
+                  "timesUsed": 0,
+                  "totalSale": 0,
+                  "benefit": 0,
+                  "expireAt": null,
+                  "createdAt": "2022-10-27T23:26:31.000Z",
+                  "updatedAt": "2022-10-27T23:26:31.000Z",
+                  "user": {
+                    "name": "Programmer Kasra",
+                    "phoneNumber": "09385667274",
+                    "id": 1
+                  }
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/cooperations/id/{id}": {
+      "put": {
+        "tags": ["Cooperations"],
+        "summary": "update or change Cooperation",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Cooperations" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/cooperations": {
+      "get": {
+        "tags": ["Cooperations"],
+        "summary": "Cooperations",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "description": "search by phoneNumber",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 2,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "cooperations": [
+                    {
+                      "id": 1,
+                      "phoneNumber": "09385667274",
+                      "description": null,
+                      "status": "pending",
+                      "createdAt": "2022-10-28T14:45:40.000Z",
+                      "updatedAt": "2022-10-28T14:45:40.000Z"
+                    },
+                    {
+                      "id": 2,
+                      "phoneNumber": "09385667274",
+                      "description": null,
+                      "status": "pending",
+                      "createdAt": "2022-10-28T14:46:05.000Z",
+                      "updatedAt": "2022-10-28T14:46:05.000Z"
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/transactions": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Transactions",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "search",
+            "description": "search by phoneNumber or name",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "status",
+            "description": "set status to filter",
+            "in": "query",
+            "type": "string",
+            "enum": ["pending", "successful", "unsuccessful"],
+            "required": false
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "transactions": [
+                    {
+                      "id": 3,
+                      "orderId": null,
+                      "type": "deposit",
+                      "status": "successful",
+                      "change": "increase",
+                      "amount": 10000,
+                      "description": "افزایش موجودی کیف پول",
+                      "createdAt": "2022-10-28T18:25:14.000Z",
+                      "updatedAt": "2022-10-28T18:25:14.000Z",
+                      "deletedAt": null,
+                      "user": {
+                        "name": "Programmer Kasra",
+                        "phoneNumber": "09385667274",
+                        "id": 1
+                      },
+                      "admin": null
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/transactions/id/{id}": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "get one of transaction",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 3,
+                  "orderId": null,
+                  "type": "deposit",
+                  "status": "successful",
+                  "change": "increase",
+                  "amount": 10000,
+                  "description": "افزایش موجودی کیف پول",
+                  "createdAt": "2022-10-28T18:25:14.000Z",
+                  "updatedAt": "2022-10-28T18:25:14.000Z",
+                  "deletedAt": null,
+                  "user": {
+                    "name": "Programmer Kasra",
+                    "phoneNumber": "09385667274",
+                    "id": 1
+                  },
+                  "admin": null
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/auth/password-reset": {
+      "post": {
+        "tags": ["Admins Auth ( Login & ... )"],
+        "summary": "check admin account and Send confirmation code for password reset",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/AdminsPasswordReset" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "isSuccess": true,
+                  "message": "کد ارسال شد",
+                  "phoneNumber": "09385667274",
+                  "expireAt": "2022-10-17T20:31:30.629Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این اکانت قبلا ساخته شده بود ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Admins Auth ( Login & ... )"],
+        "summary": "submit password reset after confirm code",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdminsSubmitPasswordReset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "application/json": {
+                  "statusCode": 200,
+                  "data": {
+                    "message": "با موفقعیت آپدیت شد"
+                  },
+                  "error": null
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "newPassword": [" رمز عبور وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این یک خطا است  ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/auth/password-reset/confirm-code": {
+      "post": {
+        "tags": ["Admins Auth ( Login & ... )"],
+        "summary": "check confirmation code for password reset",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdminsCheckConfirmationPasswordResetCode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "isSuccess": true,
+                  "passwordResetToken": "GH213123S",
+                  "message": "کد ارسال شد",
+                  "phoneNumber": "09385667274",
+                  "expireAt": "2022-10-17T20:31:30.629Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این اکانت قبلا ساخته شده بود ",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admins/auth/login": {
       "post": {
         "tags": ["Admins Auth ( Login & ... )"],
@@ -60,6 +833,71 @@
                 "data": null,
                 "error": {
                   "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/auth/login/confirm": {
+      "post": {
+        "tags": ["Admins Auth ( Login & ... )"],
+        "summary": "confirm your code and login",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/AdminsRegisterConfirm" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "active": true,
+                  "id": 1,
+                  "phoneNumber": "09385667274",
+                  "name": "Programmer Kasra",
+                  "updatedAt": "2022-10-06T18:17:07.510Z",
+                  "createdAt": "2022-10-06T18:17:07.510Z",
+                  "avatar": null,
+                  "token": {
+                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ"
+                  }
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": " این اکانت قبلا ساخته شده بود ",
                   "details": []
                 }
               }
@@ -147,6 +985,13 @@
             "required": true
           },
           {
+            "name": "search",
+            "description": "search by phoneNumber or name",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
             "name": "page",
             "description": "set page number",
             "in": "query",
@@ -170,10 +1015,21 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "isSuccess": true,
-                  "message": "کد ارسال شد",
-                  "phoneNumber": "09385667274",
-                  "expireAt": "2022-10-17T20:31:30.629Z"
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "users": [
+                    {
+                      "id": 1,
+                      "name": "Programmer Kasra",
+                      "balance": 10000,
+                      "marketingBalance": 0,
+                      "walletBalance": 10000,
+                      "countOfOrders": 0
+                    }
+                  ]
                 },
                 "error": null
               }
@@ -189,6 +1045,118 @@
                   "message": "اینپوت پیدا نشد",
                   "details": [{ "phoneNumber": ["شماره تلفن وارد نشده است"] }]
                 }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/admins/tariffs/binding": {
+      "put": {
+        "tags": ["Tariffs"],
+        "summary": "Update or change Binding tariffs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/BindingTariffs" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "stapler": ["stapler وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Tariffs"],
+        "summary": "Get Binding Tariffs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "a4_springNormal": 560,
+                  "a5_springNormal": 700,
+                  "a3_springNormal": 400,
+                  "a5_springPapco": 1000,
+                  "a4_springPapco": 900,
+                  "a3_springPapco": 1200,
+                  "stapler": 400
+                },
+                "error": null
               }
             }
           },
@@ -261,6 +1229,7 @@
                     {
                       "id": 1,
                       "userId": 1,
+                      "label": "خانه",
                       "recipientName": "کسری تحویل میگیره",
                       "recipientPhoneNumber": "09385667274",
                       "recipientPostalCode": "4675744151",
@@ -274,6 +1243,7 @@
                     {
                       "id": 3,
                       "userId": 1,
+                      "label": "خانه",
                       "recipientName": "کسری تحویل میگیره",
                       "recipientPhoneNumber": "09385667274",
                       "recipientPostalCode": "42675744151",
@@ -336,6 +1306,114 @@
                 "data": {
                   "id": 1,
                   "userId": 1,
+                  "label": "خانه",
+                  "recipientName": "کسری تحویل میگیره",
+                  "recipientPhoneNumber": "09385667274",
+                  "recipientPostalCode": "4675744151",
+                  "recipientDeliveryProvince": "مازندران",
+                  "recipientDeliveryCity": "ساری",
+                  "recipientDeliveryAddress": "خیابان لاله کوچه بهار پلاک دوازده",
+                  "createdAt": "2022-10-25T13:20:27.000Z",
+                  "updatedAt": "2022-10-25T13:20:27.000Z",
+                  "deletedAt": null
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users Addresses"],
+        "summary": "Delete one of Address From Id",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت پاک شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users Addresses"],
+        "summary": "Get One of Address From Id",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "userId": 1,
+                  "label": "خانه",
                   "recipientName": "کسری تحویل میگیره",
                   "recipientPhoneNumber": "09385667274",
                   "recipientPostalCode": "4675744151",
@@ -812,6 +1890,32 @@
         "trackingNumber": { "type": "string", "example": "kasra" }
       }
     },
+    "AdminsSubmitPasswordReset": {
+      "type": "object",
+      "properties": {
+        "newPassword": { "type": "string", "example": "09385667274" },
+        "passwordResetToken": { "type": "string", "example": "A787878C" }
+      }
+    },
+    "AdminsCheckConfirmationPasswordResetCode": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" },
+        "code": { "type": "int", "example": 787878 }
+      }
+    },
+    "AdminsPasswordReset": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" }
+      }
+    },
+    "AdminsResendCode": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" }
+      }
+    },
     "Orders": {
       "type": "object",
       "properties": {
@@ -820,10 +1924,40 @@
           "example": "rejected",
           "enum": ["approved", "rejected", "sent"]
         },
-        "sendMethod": { "type": "string", "example": "پست پیشتاز" },
+        "postageMethod": { "type": "string", "example": "پست پیشتاز" },
         "description": { "type": "string", "example": "این یک توضیح است" },
         "trackingNumber": { "type": "string", "example": "kasra" },
-        "notFinishingReason": { "type": "string", "example": null }
+        "cancelReason": { "type": "string", "example": null }
+      }
+    },
+    "Cooperations": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "rejected",
+          "enum": ["approved", "rejected"]
+        },
+        "description": { "type": "string", "example": "این یک توضیح است" }
+      }
+    },
+    "AdminsRegisterConfirm": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": { "type": "string", "example": "09385667274" },
+        "code": { "type": "int", "example": 787878 }
+      }
+    },
+    "BindingTariffs": {
+      "type": "object",
+      "properties": {
+        "a3_springNormal": { "type": "int", "example": 600 },
+        "a4_springNormal": { "type": "int", "example": 600 },
+        "a5_springNormal": { "type": "int", "example": 600 },
+        "a3_springPapco": { "type": "int", "example": 600 },
+        "a4_springPapco": { "type": "int", "example": 600 },
+        "a5_springPapco": { "type": "int", "example": 600 },
+        "stapler": { "type": "int", "example": 600 }
       }
     }
   }

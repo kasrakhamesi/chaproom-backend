@@ -38,10 +38,10 @@ const upload = async (req, res) => {
 
     const r = await sequelize.models.files.create({
       userId,
-      uploadedFileName: num + attachment.name,
-      fileName: num + attachment.name,
-      pageCount: rCounter.data || 0,
-      fileUrl: 'https://google.com/' + attachment.name
+      uploadedName: num + attachment.name,
+      name: num + attachment.name,
+      countOfPages: rCounter.data || 0,
+      url: 'https://google.com/' + attachment.name
     })
 
     res.status(201).send({
@@ -49,9 +49,9 @@ const upload = async (req, res) => {
       data: {
         message: messageTypes.SUCCESSFUL_CREATED.data.message,
         id: r?.id,
-        fileName: r?.fileName,
-        pageCount: r?.pageCount,
-        fileUrl: r?.fileUrl
+        name: r?.name,
+        countOfPages: r?.countOfPages,
+        url: r?.url
       },
       error: null
     })

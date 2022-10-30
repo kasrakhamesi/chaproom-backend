@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      transcations.belongsTo(models.users)
+      transcations.belongsTo(models.admins)
     }
   }
   transcations.init(

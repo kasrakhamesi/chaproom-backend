@@ -16,19 +16,19 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: false
         },
-        uploadedFileName: {
+        uploadedName: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        fileName: {
+        name: {
           type: Sequelize.STRING,
           allowNull: false
         },
-        fileUrl: {
+        url: {
           type: Sequelize.TEXT,
           allowNull: false
         },
-        pageCount: {
+        countOfPages: {
           type: Sequelize.INTEGER.UNSIGNED,
           allowNull: false
         },
@@ -46,7 +46,7 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('files', ['fileName'], {
+        queryInterface.addIndex('files', ['name'], {
           unique: true
         })
       )

@@ -12,14 +12,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      checked: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-      },
       description: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       status: {
         type: Sequelize.ENUM('pending', 'approved', 'rejected'),

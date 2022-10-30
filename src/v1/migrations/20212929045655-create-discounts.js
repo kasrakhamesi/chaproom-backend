@@ -44,6 +44,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: true
         },
+        pageLimit: {
+          type: Sequelize.INTEGER.UNSIGNED,
+          allowNull: true
+        },
         usageLimit: {
           type: Sequelize.INTEGER.UNSIGNED,
           defaultValue: 0,
@@ -78,6 +82,10 @@ module.exports = {
           type: Sequelize.DATE
         },
         updatedAt: {
+          allowNull: true,
+          type: Sequelize.DATE
+        },
+        deletedAt: {
           allowNull: true,
           type: Sequelize.DATE
         }
