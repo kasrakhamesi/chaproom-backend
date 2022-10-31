@@ -8,27 +8,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
-      type: {
-        type: Sequelize.ENUM('black_and_white', 'full_color', 'normal_color'),
-        allowNull: false
-      },
-      size: {
-        type: Sequelize.ENUM('a4', 'a5', 'a3'),
-        allowNull: false
-      },
-      single_sided: {
+      a3: {
         type: Sequelize.JSON,
         allowNull: false
       },
-      double_sided: {
+      a4: {
         type: Sequelize.JSON,
         allowNull: false
       },
-      single_sided_glossy: {
-        type: Sequelize.JSON,
-        allowNull: false
-      },
-      double_sided_glossy: {
+      a5: {
         type: Sequelize.JSON,
         allowNull: false
       },

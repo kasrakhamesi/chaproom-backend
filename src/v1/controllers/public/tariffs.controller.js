@@ -48,23 +48,37 @@ const findAll = async (req, res) => {
       getBookPriceses()
     ])
 
+    const binding = _.isEmpty(promises[0])
+      ? null
+      : {
+          springNormal: {
+            a4: promises[0].a4_springNormal,
+            a3: promises[0].a3_springNormal,
+            a5: promises[0].a5_springNormal
+          },
+          springPapco: {
+            a4: promises[0].a4_springPapco,
+            a3: promises[0].a3_springPapco,
+            a5: promises[0].a5_springPapco
+          },
+          stapler: promises[0].stapler
+        }
+
+    const print = _.isEmpty(promises[1])
+      ? null
+      : promises[1].map((item) => {
+          return {
+            a3: JSON.parse(item.a3),
+            a4: JSON.parse(item.a4),
+            a5: JSON.parse(item.a5)
+          }
+        })
+
     res.status(200).send({
       statusCode: 200,
       data: {
-        binding: promises[0],
-        print: _.isEmpty(promises[1])
-          ? null
-          : promises[1].map((item) => {
-              return {
-                id: item.id,
-                type: item.type,
-                size: item.size,
-                single_sided: JSON.parse(item.single_sided),
-                double_sided: JSON.parse(item.double_sided),
-                single_sided_glossy: JSON.parse(item.single_sided_glossy),
-                double_sided_glossy: JSON.parse(item.double_sided_glossy)
-              }
-            }),
+        binding,
+        print,
         book: promises[2]
       },
       error: null

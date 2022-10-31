@@ -68,7 +68,7 @@ const create = async (req, res) => {
 
     const ids = []
     for (const entity of files) {
-      if (findedFiles.findIndex((item) => item.id === entity.id) === -1)
+      if (findedFiles.find((item) => item.id === entity.id))
         ids.push(entity?.id)
     }
 
@@ -149,7 +149,7 @@ const update = (req, res) => {
     .then((rFiles) => {
       const filesId = []
       for (const entity of files) {
-        if (rFiles.findIndex((item) => item.id === entity.id) === -1)
+        if (rFiles.find((item) => item.id === entity.id))
           filesId.push(entity?.id)
       }
 

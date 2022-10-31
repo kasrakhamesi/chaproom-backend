@@ -12,403 +12,77 @@ module.exports = {
      * }], {});
      */
 
-    await queryInterface.bulkInsert('print_tariffs', [
-      {
-        type: 'full_color',
-        size: 'a4',
-        single_sided: JSON.stringify([
+    const data = JSON.stringify({
+      blackAndWhite: {
+        singleSided: 480,
+        doubleSided: 620,
+        singleSidedGlossy: 0,
+        doubleSidedGlossy: 0,
+        breakpoints: [
           {
-            fromPage: 0,
-            price: 800
+            at: 501,
+            singleSided: 460,
+            doubleSided: 580,
+            singleSidedGlossy: 0,
+            doubleSidedGlossy: 0
           },
           {
-            fromPage: 10,
-            price: 800
+            at: 1001,
+            singleSided: 430,
+            doubleSided: 560,
+            singleSidedGlossy: 0,
+            doubleSidedGlossy: 0
           }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
+        ]
       },
-      {
-        type: 'black_and_white',
-        size: 'a4',
-        single_sided: JSON.stringify([
+      normalColor: {
+        singleSided: 480,
+        doubleSided: 620,
+        singleSidedGlossy: 0,
+        doubleSidedGlossy: 0,
+        breakpoints: [
           {
-            fromPage: 0,
-            price: 800
+            at: 501,
+            singleSided: 460,
+            doubleSided: 580,
+            singleSidedGlossy: 0,
+            doubleSidedGlossy: 0
           },
           {
-            fromPage: 10,
-            price: 800
+            at: 1001,
+            singleSided: 430,
+            doubleSided: 560,
+            singleSidedGlossy: 0,
+            doubleSidedGlossy: 0
           }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
+        ]
       },
-      {
-        type: 'normal_color',
-        size: 'a4',
-        single_sided: JSON.stringify([
+      fullColor: {
+        singleSided: 480,
+        doubleSided: 620,
+        singleSidedGlossy: 0,
+        doubleSidedGlossy: 0,
+        breakpoints: [
           {
-            fromPage: 0,
-            price: 800
+            at: 501,
+            singleSided: 460,
+            doubleSided: 580,
+            singleSidedGlossy: 0,
+            doubleSidedGlossy: 0
           },
           {
-            fromPage: 10,
-            price: 800
+            at: 1001,
+            singleSided: 430,
+            doubleSided: 560,
+            singleSidedGlossy: 0,
+            doubleSidedGlossy: 0
           }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
-      },
-      {
-        type: 'full_color',
-        size: 'a5',
-        single_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
-      },
-      {
-        type: 'black_and_white',
-        size: 'a5',
-        single_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
-      },
-      {
-        type: 'normal_color',
-        size: 'a5',
-        single_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
-      },
-      {
-        type: 'full_color',
-        size: 'a3',
-        single_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
-      },
-      {
-        type: 'black_and_white',
-        size: 'a3',
-        single_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
-      },
-      {
-        type: 'normal_color',
-        size: 'a3',
-        single_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        single_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ]),
-        double_sided_glossy: JSON.stringify([
-          {
-            fromPage: 0,
-            price: 800
-          },
-          {
-            fromPage: 10,
-            price: 800
-          }
-        ])
+        ]
       }
+    })
+
+    await queryInterface.bulkInsert('print_tariffs', [
+      { a3: data, a4: data, a5: data }
     ])
   },
 

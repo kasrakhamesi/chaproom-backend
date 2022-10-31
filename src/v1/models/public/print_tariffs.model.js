@@ -13,27 +13,15 @@ module.exports = (sequelize, DataTypes) => {
   }
   print_tariffs.init(
     {
-      type: {
-        type: DataTypes.ENUM('black_and_white', 'full_color', 'normal_color'),
-        allowNull: false
-      },
-      size: {
-        type: DataTypes.ENUM('a4', 'a5', 'a3'),
-        allowNull: false
-      },
-      single_sided: {
+      a3: {
         type: DataTypes.JSON,
         allowNull: false
       },
-      double_sided: {
+      a4: {
         type: DataTypes.JSON,
         allowNull: false
       },
-      single_sided_glossy: {
-        type: DataTypes.JSON,
-        allowNull: false
-      },
-      double_sided_glossy: {
+      a5: {
         type: DataTypes.JSON,
         allowNull: false
       }
