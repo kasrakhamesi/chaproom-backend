@@ -1,6 +1,7 @@
 const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
-const { httpError } = require('../../configs')
+const { httpError, errorTypes } = require('../../configs')
+const { Op } = require('sequelize')
 const transactions = new restful(sequelize.models.transactions)
 
 const findAll = async (req, res) => {
@@ -29,7 +30,8 @@ const findAll = async (req, res) => {
           'adminId',
           'paymentId',
           'balance',
-          'balanceAfter'
+          'balanceAfter',
+          'type'
         ]
       },
       where,
@@ -40,7 +42,34 @@ const findAll = async (req, res) => {
         pageSize
       }
     })
-    res.status(r?.statusCode).send(r)
+
+    if (r?.statusCode !== 200) res.status(r?.statusCode).send(r)
+
+    res.status(r?.statusCode).send({
+      statusCode: r?.statusCode,
+      data: {
+        page: r?.data?.page,
+        pageSize: r?.data?.pageSize,
+        totalCount: r?.data?.totalCount,
+        totalPageLeft: r?.data?.totalPageLeft,
+        totalCountLeft: r?.data?.totalCountLeft,
+        transactions: r?.data?.transactions.map((item) => {
+          return {
+            id: item.id,
+            orderId: item.orderId,
+            type: 'debtor',
+            status: item.status,
+            amount: item.amount,
+            description: item.description,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+            user: item.user,
+            admin: item.admin
+          }
+        })
+      },
+      error: null
+    })
   } catch (e) {
     httpError(e, res)
   }
@@ -50,11 +79,50 @@ const findOne = async (req, res) => {
   try {
     const { id } = req.params
     const r = await transactions.Get({
+      include: [
+        {
+          model: sequelize.models.users,
+          attributes: ['name', 'phoneNumber', 'id']
+        },
+        {
+          model: sequelize.models.admins,
+          attributes: ['name', 'id']
+        }
+      ],
+      attributes: {
+        exclude: [
+          'userId',
+          'withdrawalId',
+          'adminId',
+          'paymentId',
+          'balance',
+          'balanceAfter',
+          'type'
+        ]
+      },
       where: {
         id
       }
     })
-    res.status(r?.statusCode).send(r)
+
+    if (r?.statusCode !== 200) res.status(r?.statusCode).send(r)
+
+    res.status(r?.statusCode).send({
+      statusCode: r?.statusCode,
+      data: {
+        id: r?.data?.id,
+        orderId: r?.data?.orderId,
+        type: 'debtor',
+        status: r?.data?.status,
+        amount: r?.data?.amount,
+        description: r?.data?.description,
+        createdAt: r?.data?.createdAt,
+        updatedAt: r?.data?.updatedAt,
+        user: r?.data?.user,
+        admin: r?.data?.admin
+      },
+      error: null
+    })
   } catch (e) {
     httpError(e, res)
   }
@@ -63,28 +131,13 @@ const findOne = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const {
-      label,
-      recipientName,
-      recipientPhoneNumber,
-      recipientPostalCode,
-      recipientDeliveryProvince,
-      recipientDeliveryCity,
-      recipientDeliveryAddress
-    } = req.body
 
-    const data = {
-      label,
-      recipientName,
-      recipientPhoneNumber,
-      recipientPostalCode,
-      recipientDeliveryProvince,
-      recipientDeliveryCity,
-      recipientDeliveryAddress
-    }
+    const transaction = await sequelize.models.transactions.findOne({
+      where: { id, adminId: { [Op.not]: null } }
+    })
 
-    const r = await transactions.Put({ body: data, req, where: { id } })
-    res.status(r?.statusCode).send(r)
+    if (!transaction)
+      return httpError(errorTypes.TRANSACTION_NOT_CREATED_BY_ADMIN, res)
   } catch (e) {
     httpError(e, res)
   }

@@ -1,40 +1,53 @@
 const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
-const { httpError } = require('../../configs')
+const { httpError, messageTypes, errorTypes } = require('../../configs')
+const { Op } = require('sequelize')
 const discounts = new restful(sequelize.models.discounts)
 
 const create = async (req, res) => {
   try {
-    const r = await discounts.Get({
-      include: [
-        {
-          model: sequelize.models.users,
-          attributes: ['name', 'phoneNumber', 'id']
-        },
-        {
-          model: sequelize.models.admins,
-          attributes: ['name', 'id']
-        }
-      ],
-      attributes: {
-        exclude: [
-          'userId',
-          'withdrawalId',
-          'adminId',
-          'paymentId',
-          'balance',
-          'balanceAfter'
-        ]
-      },
-      where,
-      order,
-      pagination: {
-        active: true,
-        page,
-        pageSize
+    const {
+      type,
+      value,
+      code,
+      description,
+      pageLimit,
+      usageLimit,
+      phoneNumber,
+      userId,
+      expireAt
+    } = req.body
+    const data = {
+      type,
+      value,
+      code,
+      userId: userId ? userId : null,
+      active: true,
+      description,
+      phoneNumber,
+      pageLimit,
+      usageLimit,
+      timesUsed: 0,
+      benefit: 0,
+      totalSale: 0,
+      expireAt: expireAt ? expireAt : null,
+      userMarketing: false
+    }
+
+    const checkExistDiscountCode = await sequelize.models.discounts.findOne({
+      where: {
+        code
       }
     })
-    res.status(r?.statusCode).send(r)
+
+    if (checkExistDiscountCode)
+      return httpError(errorTypes.DISCOUNT_CODE_EXIST, res)
+
+    sequelize.models.discounts.create(data)
+
+    res
+      .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
+      .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
     httpError(e, res)
   }
@@ -99,24 +112,52 @@ const update = async (req, res) => {
   try {
     const { id } = req.params
     const {
-      label,
-      recipientName,
-      recipientPhoneNumber,
-      recipientPostalCode,
-      recipientDeliveryProvince,
-      recipientDeliveryCity,
-      recipientDeliveryAddress
+      type,
+      value,
+      code,
+      active,
+      description,
+      pageLimit,
+      usageLimit,
+      phoneNumber,
+      userId,
+      expireAt
     } = req.body
 
     const data = {
-      label,
-      recipientName,
-      recipientPhoneNumber,
-      recipientPostalCode,
-      recipientDeliveryProvince,
-      recipientDeliveryCity,
-      recipientDeliveryAddress
+      type,
+      value,
+      code,
+      userId,
+      active,
+      phoneNumber,
+      description,
+      pageLimit,
+      usageLimit,
+      expireAt
     }
+
+    const checkMarketingDiscountCode = await sequelize.models.discounts.findOne(
+      {
+        where: {
+          id,
+          userMarketing: true
+        }
+      }
+    )
+
+    if (checkMarketingDiscountCode)
+      return httpError(errorTypes.CAN_NOT_EDIT_MARKETING_DISCOUNT, res)
+
+    const checkExistDiscountCode = await sequelize.models.discounts.findOne({
+      where: {
+        id: { [Op.not]: id },
+        code
+      }
+    })
+
+    if (checkExistDiscountCode)
+      return httpError(errorTypes.DISCOUNT_CODE_EXIST, res)
 
     const r = await discounts.Put({ body: data, req, where: { id } })
     res.status(r?.statusCode).send(r)
@@ -135,4 +176,4 @@ const softDelete = async (req, res) => {
   }
 }
 
-module.exports = { findAll, findOne, update, softDelete }
+module.exports = { create, findAll, findOne, update, softDelete }

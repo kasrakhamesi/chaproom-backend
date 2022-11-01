@@ -14,7 +14,10 @@ const check = async (discountCode) => {
 
     if (!discount?.active) return httpError(errorTypes.DISCOUNT_CODE_INACTIVE)
 
-    if (utils.isoToTimestamp(discount?.expireAt) < Date.now())
+    if (
+      discount?.expireAt !== null &&
+      utils.isoToTimestamp(discount?.expireAt) < Date.now()
+    )
       return httpError(errorTypes.DISCOUNT_CODE_EXPIRED)
 
     if (parseInt(discount?.timesUsed) >= parseInt(discount?.usageLimit))

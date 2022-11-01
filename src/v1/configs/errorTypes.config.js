@@ -135,6 +135,22 @@ const Types = {
   INVALID_INPUTS: {
     statusCode: 400,
     message: 'ورودی نامعتبر است'
+  },
+  TRANSACTION_NOT_CREATED_BY_ADMIN: {
+    statusCode: 400,
+    message: 'تراکنش توسط ادمین ساخته نشده است'
+  },
+  DISCOUNT_CODE_EXIST: {
+    statusCode: 400,
+    message: 'این کد تخفیف قبلا ساخته شده است'
+  },
+  CAN_NOT_EDIT_MARKETING_DISCOUNT: {
+    statusCode: 400,
+    message: 'قابلیت تغییر کد تخفیف مارکتینگ کاربر را ندارید'
+  },
+  INVALID_ORDER_STATUS: {
+    statusCode: 400,
+    message: 'وضعیت وارد شده برای تراکنش موجود نمیباشد'
   }
 }
 

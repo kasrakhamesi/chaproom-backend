@@ -7,6 +7,7 @@ router.use(bodyParser.json())
 const { admins } = require('../../controllers')
 
 router.put('/id/:id', admins.transactions.update)
+router.get('/id/:id', admins.transactions.findOne)
 router.get('/', admins.transactions.findAll)
 
 module.exports = router

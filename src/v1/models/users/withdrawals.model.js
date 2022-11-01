@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM(
           'pending',
           'rejected',
-          'approved',
+          'done',
           'confirmation_pending'
         ),
         defaultValue: 'pending',

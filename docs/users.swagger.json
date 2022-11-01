@@ -87,13 +87,11 @@
             "description": "OK",
             "examples": {
               "application/json": {
-                "application/json": {
-                  "statusCode": 200,
-                  "data": {
-                    "message": "با موفقعیت آپدیت شد"
-                  },
-                  "error": null
-                }
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
               }
             }
           },

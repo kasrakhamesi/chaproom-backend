@@ -19,6 +19,8 @@ const findOne = async (req, res) => {
           'expireAt',
           'timesUsed',
           'userMarketing',
+          'phoneNumber',
+          'pageLimit',
           'description'
         ]
       }

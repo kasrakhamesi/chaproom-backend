@@ -98,7 +98,19 @@ module.exports = {
           allowNull: true
         },
         discountAmount: {
-          type: Sequelize.STRING,
+          type: Sequelize.BIGINT.UNSIGNED,
+          allowNull: true
+        },
+        discountBenefit: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          allowNull: true
+        },
+        referralBenefit: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          allowNull: true
+        },
+        referralCommission: {
+          type: Sequelize.FLOAT,
           allowNull: true
         },
         trackingNumber: {

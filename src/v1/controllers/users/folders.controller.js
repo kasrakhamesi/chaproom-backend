@@ -44,7 +44,9 @@ const create = async (req, res) => {
 
     const userId = req?.user[0]?.id
 
-    const data = {
+    const extractedBinding = extractBinding(binding)
+
+    let data = {
       color,
       side,
       size,
@@ -53,9 +55,14 @@ const create = async (req, res) => {
       countOfCopies,
       description,
       shipmentPrice,
-      binding: extractBinding(binding),
+      binding: extractedBinding,
       amount,
       userId
+    }
+
+    const bindingBreakpoint = {
+      spring_papco: 300,
+      stapler: 200
     }
 
     if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)

@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       orders.belongsToMany(models.folders, {
         through: 'order_folders'
       })
+      orders.belongsTo(models.users)
+      orders.belongsTo(models.referrals)
+      orders.belongsTo(models.discounts)
     }
   }
   orders.init(
@@ -93,7 +96,19 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       discountAmount: {
-        type: DataTypes.STRING,
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
+      discountBenefit: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
+      referralBenefit: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true
+      },
+      referralCommission: {
+        type: DataTypes.FLOAT,
         allowNull: true
       },
       trackingNumber: {

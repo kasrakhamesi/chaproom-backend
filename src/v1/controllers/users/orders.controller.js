@@ -4,7 +4,6 @@ const { restful, filters, users, discounts, utils } = require('../../libs')
 const orders = new restful(sequelize.models.orders)
 const { Op } = require('sequelize')
 const _ = require('lodash')
-const { calculator } = require('../../libs/discounts.lib')
 
 const ONE_MOUNTH = 1000 * 60 * 60 * 24 * 30
 
@@ -61,11 +60,30 @@ const create = async (req, res) => {
       amount: 15000
     }
 
+    if (referralUserId !== null) {
+      data.referralCommission = 10
+      data.referralBenefit = totalPrice
+    }
+
     let discount = null
     if (discountCode) discount = await discounts.check(discountCode)
 
     if (discount !== null && discount?.statusCode !== 200)
       return httpError(discount, res)
+
+    const discountAmount =
+      discount !== null
+        ? await discounts.calculator(discount?.data, totalPrice + 20000)
+        : null
+
+    if (discountAmount !== null) {
+      data.discountId = discount?.data?.id
+      data.discountType = discount?.data?.type
+      data.discountValue = discount?.data?.value
+      data.discountCode = discount?.data?.code
+      data.discountAmount = discountAmount
+      data.discountBenefit = discountAmount
+    }
 
     if (paidWithWallet) {
       const user = await sequelize.models.users.findOne({
@@ -153,7 +171,7 @@ const priceCalculator = async (req, res) => {
     const data = {
       discountAmount:
         discount !== null
-          ? await calculator(discount?.data, amount + 20000)
+          ? await discounts.calculator(discount?.data, amount + 20000)
           : null,
       userBalance: user?.balance,
       foldersAmount: amounts,
@@ -217,7 +235,10 @@ const findOne = (req, res) => {
           'paymentId',
           'adminId',
           'order_folders',
-          'referralId'
+          'referralId',
+          'marketerBenefit',
+          'referralBenefit',
+          'referralCommission'
         ]
       },
       include: [
@@ -256,7 +277,7 @@ const findOne = (req, res) => {
       })
     })
     .catch((e) => {
-      return httpError(e)
+      return httpError(e, res)
     })
 }
 

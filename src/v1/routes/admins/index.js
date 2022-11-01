@@ -17,5 +17,7 @@ router.use('/withdrawals', adminsPassport, require('./withdrawals.route'))
 router.use('/transactions', adminsPassport, require('./transactions.route'))
 router.use('/discounts', adminsPassport, require('./discounts.route'))
 router.use('/tariffs', adminsPassport, require('./tariffs.route'))
+router.use('/marketings', adminsPassport, require('./marketings.route'))
+router.use('/orders', adminsPassport, require('./orders.route'))
 
 module.exports = router

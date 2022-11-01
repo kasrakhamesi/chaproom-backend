@@ -23,6 +23,17 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: true
         },
+        phoneNumber: {
+          type: Sequelize.STRING,
+          unique: {
+            args: true,
+            msg: 'This phoneNumber is already registered.'
+          },
+          validate: {
+            is: /^(\+98|0098|98|0)?9\d{9}$/
+          },
+          allowNull: true
+        },
         type: {
           type: Sequelize.ENUM('fixed', 'percentage', 'page'),
           allowNull: false
@@ -50,7 +61,7 @@ module.exports = {
         },
         usageLimit: {
           type: Sequelize.INTEGER.UNSIGNED,
-          defaultValue: 0,
+          defaultValue: null,
           allowNull: true
         },
         timesUsed: {

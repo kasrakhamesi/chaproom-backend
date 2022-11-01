@@ -10,8 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       referrals.belongsTo(models.users, {
-        as: 'referral',
+        as: 'referralUser',
         foreignKey: 'referralUserId'
+      })
+      referrals.belongsTo(models.users, {
+        as: 'user',
+        foreignKey: 'userId'
       })
     }
   }

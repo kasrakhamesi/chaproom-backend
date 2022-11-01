@@ -19,10 +19,9 @@ const getBindingPriceses = () => {
 
 const getPrintPriceses = () => {
   return sequelize.models.print_tariffs
-    .findAll({
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
+    .findOne({
+      where: { id: 1 },
+      attributes: ['a3', 'a4', 'a5']
     })
     .then((r) => {
       return r
@@ -74,15 +73,7 @@ const findOne = async (req, res) => {
           stapler: promises[0].stapler
         }
 
-    const print = _.isEmpty(promises[1])
-      ? null
-      : promises[1].map((item) => {
-          return {
-            a3: JSON.parse(item.a3),
-            a4: JSON.parse(item.a4),
-            a5: JSON.parse(item.a5)
-          }
-        })
+    const print = _.isEmpty(promises[1]) ? null : promises[1]
 
     const r = {
       ...user.dataValues,

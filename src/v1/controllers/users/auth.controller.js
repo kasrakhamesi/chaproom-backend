@@ -101,6 +101,7 @@ const registerConfirm = async (req, res) => {
         value: '5',
         type: 'percentage',
         code: discountCodes[0],
+        usageLimit: null,
         userMarketing: true
       },
       { transaction: t }
@@ -111,6 +112,7 @@ const registerConfirm = async (req, res) => {
         value: '10',
         type: 'percentage',
         code: discountCodes[1],
+        usageLimit: null,
         userMarketing: true
       },
       { transaction: t }

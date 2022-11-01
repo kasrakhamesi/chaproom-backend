@@ -102,7 +102,7 @@ const passwordReset = async (req, res) => {
   try {
     const { phoneNumber } = req.body
 
-    const user = await sequelize.models.users.findOne({
+    const user = await sequelize.models.admins.findOne({
       where: {
         phoneNumber
       }
@@ -151,7 +151,7 @@ const passwordResetSubmit = async (req, res) => {
 
     if (!r) return httpError(errorTypes.CANT_PASSWORD_RESET, res)
 
-    await sequelize.models.users.update(
+    await sequelize.models.admins.update(
       {
         password: newPassword
       },

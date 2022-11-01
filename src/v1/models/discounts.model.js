@@ -26,6 +26,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      phoneNumber: {
+        type: DataTypes.STRING,
+        unique: {
+          args: true,
+          msg: 'This phoneNumber is already registered.'
+        },
+        validate: {
+          is: /^(\+98|0098|98|0)?9\d{9}$/
+        },
+        allowNull: true
+      },
       type: {
         type: DataTypes.ENUM('fixed', 'percentage', 'countOfPages'),
         allowNull: false
@@ -45,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       usageLimit: {
         type: DataTypes.INTEGER.UNSIGNED,
-        defaultValue: 0,
+        defaultValue: null,
         allowNull: true
       },
       pageLimit: {
