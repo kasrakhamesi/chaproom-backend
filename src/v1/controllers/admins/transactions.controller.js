@@ -131,6 +131,8 @@ const findOne = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
+    const { userId, type, amount, description } = req.body
+    const data = { userId, type, amount, description }
 
     const transaction = await sequelize.models.transactions.findOne({
       where: { id, adminId: { [Op.not]: null } }
@@ -138,6 +140,16 @@ const update = async (req, res) => {
 
     if (!transaction)
       return httpError(errorTypes.TRANSACTION_NOT_CREATED_BY_ADMIN, res)
+
+    const r = await transactions.Put({
+      body: data,
+      req,
+      where: {
+        id
+      }
+    })
+
+    res.status(r?.statusCode).send(r)
   } catch (e) {
     httpError(e, res)
   }
@@ -146,6 +158,17 @@ const update = async (req, res) => {
 const softDelete = async (req, res) => {
   try {
     const { id } = req.params
+
+    const transaction = await sequelize.models.transactions.findOne({
+      where: {
+        id,
+        adminId: { [Op.not]: null }
+      }
+    })
+
+    if (!transaction)
+      return httpError(errorTypes.ADMIN_CANT_DELETE_NORMAL_TRANSACTION, res)
+
     const r = await transactions.Delete({ req, where: { id } })
     res.status(r?.statusCode).send(r)
   } catch (e) {

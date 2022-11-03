@@ -1,6 +1,7 @@
 const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
 const { httpError, errorTypes } = require('../../configs')
+const { Op } = require('sequelize')
 const orders = new restful(sequelize.models.orders)
 
 const findAllByUserId = async (req, res) => {
@@ -12,7 +13,11 @@ const findAllByUserId = async (req, res) => {
       sequelize.models.orders
     )
 
-    const newWhere = { ...where, userId }
+    const newWhere = {
+      ...where,
+      status: { [Op.not]: 'payment_pending' },
+      userId
+    }
 
     const r = await orders.Get({
       attributes: ['id', 'createdAt', 'amount', 'status', 'cancelReason'],

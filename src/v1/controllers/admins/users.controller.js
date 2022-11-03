@@ -15,7 +15,7 @@ const findAll = async (req, res) => {
     )
 
     let r = await users.Get({
-      attributes: ['id', 'name', 'balance', 'marketingBalance'],
+      attributes: ['id', 'name', 'phoneNumber', 'balance', 'marketingBalance'],
       where,
       order,
       pagination: {
@@ -45,7 +45,8 @@ const findAll = async (req, res) => {
     for (const entity of r?.data?.users) {
       const countOfOrders = await sequelize.models.orders.count({
         where: {
-          userId: entity?.id
+          userId: entity?.id,
+          status: { [Op.not]: 'payment_pending' }
         }
       })
       data.push({ ...entity, countOfOrders })
@@ -101,12 +102,12 @@ const findOne = (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { name, phoneNumber, password, balance } = req.body
+    const { name, phoneNumber, password, walletBalance } = req.body
     const data = {
       name,
       phoneNumber,
       password,
-      balance
+      balance: walletBalance
     }
 
     const t = await sequelize.transaction()
@@ -271,7 +272,7 @@ const generateAccessToken = async (req, res) => {
     res.status(201).send({
       statusCode: 201,
       data: {
-        token: {
+        userToken: {
           access: accessToken
         }
       },

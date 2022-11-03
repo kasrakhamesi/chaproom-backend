@@ -127,7 +127,7 @@ const submitOrder = async (
     if (!order) return null
     const userWallet = await getBalance(userId)
 
-    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+    if (!userWallet?.isSuccess) return httpError(userWallet?.message)
 
     await sequelize.models.transactions.create(
       {

@@ -19,7 +19,15 @@ module.exports = {
           allowNull: false
         },
         message: {
-          type: Sequelize.TEXT,
+          type: Sequelize.TEXT('medium'),
+          allowNull: false
+        },
+        checked: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false
+        },
+        description: {
+          type: Sequelize.STRING,
           allowNull: false
         },
         createdAt: {

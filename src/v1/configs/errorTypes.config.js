@@ -151,6 +151,30 @@ const Types = {
   INVALID_ORDER_STATUS: {
     statusCode: 400,
     message: 'وضعیت وارد شده برای تراکنش موجود نمیباشد'
+  },
+  ADMIN_CANT_DELETE_NORMAL_TRANSACTION: {
+    statusCode: 400,
+    message: 'امکان پاک کردن تراکنش سیستمی وجود ندارد'
+  },
+  ADMIN_CANT_UPDATE_NORMAL_TRANSACTION: {
+    statusCode: 400,
+    message: 'امکان بروزرسانی تراکنش سیستمی وجود ندارد'
+  },
+  ADMIN_EXIST_ERROR: {
+    statusCode: 400,
+    message: 'این مشخصات به عنوان مدیر قبلا ساخته شده است'
+  },
+  ADMIN_NOT_FOUND: {
+    statusCode: 400,
+    message: 'مدیر با این مشخصایت یافت نشد'
+  },
+  PENDING_COOPERATION_EXIST: {
+    statusCode: 400,
+    message: 'شما یک درخواست همکاری ثبت شده دارید'
+  },
+  CANT_DELETE_FOUNDER: {
+    statusCode: 400,
+    message: 'امکان حذف حساب مالک سایت وجود ندارد'
   }
 }
 

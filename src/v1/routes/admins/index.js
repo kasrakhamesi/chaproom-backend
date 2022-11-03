@@ -7,6 +7,8 @@ const adminsPassport = passport.adminsPassport.authenticate('jwt', {
   failureRedirect: '/v1/failures/unauthorized'
 })
 
+const { admins } = require('../../controllers')
+
 router.use(passport.adminsPassport.initialize())
 
 router.use('/auth', require('./auth.route'))
@@ -19,5 +21,17 @@ router.use('/discounts', adminsPassport, require('./discounts.route'))
 router.use('/tariffs', adminsPassport, require('./tariffs.route'))
 router.use('/marketings', adminsPassport, require('./marketings.route'))
 router.use('/orders', adminsPassport, require('./orders.route'))
+router.use('/profile', adminsPassport, require('./profile.route'))
+router.use(
+  '/customers-report',
+  adminsPassport,
+  require('./customersReport.route')
+)
+
+router.put('/id/:id', adminsPassport, admins.admins.update)
+router.get('/id/:id', adminsPassport, admins.admins.findOne)
+router.delete('/id/:id', adminsPassport, admins.admins.softDelete)
+router.get('/', adminsPassport, admins.admins.findAll)
+router.post('/', adminsPassport, admins.admins.create)
 
 module.exports = router

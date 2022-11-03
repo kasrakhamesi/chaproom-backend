@@ -34,4 +34,31 @@ app.use('*', (req, res) => {
   })
 })
 
+const t = {
+  a3: {
+    blackAndWhite: {
+      singleSided: 480,
+      doubleSided: 620,
+      singleSidedGlossy: 0,
+      doubleSidedGlossy: 0,
+      breakpoints: [
+        {
+          at: 501,
+          singleSided: 460,
+          doubleSided: 580,
+          singleSidedGlossy: 0,
+          doubleSidedGlossy: 0
+        },
+        {
+          at: 1001,
+          singleSided: 430,
+          doubleSided: 560,
+          singleSidedGlossy: 0,
+          doubleSidedGlossy: 0
+        }
+      ]
+    }
+  }
+}
+
 app.listen(process.env.PORT)

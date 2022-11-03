@@ -6,6 +6,7 @@ router.use(bodyParser.json())
 
 const { admins } = require('../../controllers')
 
+router.post('/id/:id/set-admin', admins.admins.createAdminFromUser)
 router.get('/id/:id/marketing', admins.users.marketing)
 router.post('/id/:id/jwt', admins.users.generateAccessToken)
 router.delete('/id/:id', admins.users.softDelete)

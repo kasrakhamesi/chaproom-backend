@@ -9,7 +9,7 @@ const { admins } = require('../../controllers')
 router.get('/binding', admins.bindingTariffs.findAll)
 router.put('/binding', admins.bindingTariffs.update)
 
-router.put('/print', admins.bindingTariffs.update)
-router.put('/book', admins.bindingTariffs.update)
+router.get('/print', admins.printTariffs.findAll)
+router.put('/print', admins.printTariffs.update)
 
 module.exports = router
