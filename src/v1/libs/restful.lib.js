@@ -125,7 +125,7 @@ class Restful {
                 include: include,
                 order: order
               },
-              { page, pageSize }
+              { page: page > 0 ? page - 1 : page, pageSize }
             )
           )
           resGet = paging(this.#generateNewTableName(), resGet, page, pageSize)
@@ -146,19 +146,9 @@ class Restful {
      @ Post method for create data
     */
 
-  Post = async ({
-    body: body,
-    req: req,
-    haveLog: haveLog = false,
-    logDescription: logDescription
-  }) => {
+  Post = async ({ body: body }) => {
     try {
       const resCreate = await this.#model.create(body)
-      if (haveLog)
-        activities
-          .Log(req?.user[0]?.id, logDescription)
-          .then(console.log)
-          .catch(console.log)
 
       return {
         statusCode: 201,
@@ -174,13 +164,7 @@ class Restful {
      @ PUT method for updating or changing data
     */
 
-  Put = async ({
-    body: body,
-    req: req,
-    where: where = null,
-    haveLog: haveLog = false,
-    logDescription: logDescription
-  }) => {
+  Put = async ({ body: body, where: where = null }) => {
     try {
       if (where === undefined || where === null || where === '')
         return errorTypes.INVALID_INPUTS
@@ -198,12 +182,7 @@ class Restful {
      @ Delete method for updating or changing data
     */
 
-  Delete = async ({
-    req: req,
-    where: where = null,
-    haveLog: haveLog = false,
-    logDescription: logDescription
-  }) => {
+  Delete = async ({ where: where = null }) => {
     try {
       if (where === undefined || where === null || where === '')
         return errorTypes.INVALID_INPUTS

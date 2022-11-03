@@ -24,6 +24,15 @@ module.exports = (sequelize, DataTypes) => {
       message: {
         type: DataTypes.TEXT,
         allowNull: false
+      },
+      checked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
+      result: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
     },
     {

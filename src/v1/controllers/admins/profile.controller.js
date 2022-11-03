@@ -1,6 +1,8 @@
 const { httpError, messageTypes } = require('../../configs')
+const { utils } = require('../../libs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
+
 const update = (req, res) => {
   const { name, password } = req.body
   const adminId = req?.user[0]?.id
@@ -29,7 +31,8 @@ const update = (req, res) => {
           data: {
             message: messageTypes.SUCCESSFUL_UPDATE.data.message,
             token: {
-              access: accessToken
+              access: accessToken,
+              expire: utils.timestampToIso(authorize.decodeJwt(accessToken).exp)
             }
           },
           error: null
@@ -45,6 +48,11 @@ const findOne = (req, res) => {
   const adminId = req?.user[0]?.id
   return sequelize.models.admins
     .findOne({
+      include: {
+        model: sequelize.models.admins_roles,
+        as: 'role',
+        attributes: ['id', 'name']
+      },
       where: {
         id: adminId
       },

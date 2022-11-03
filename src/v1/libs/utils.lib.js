@@ -1,5 +1,10 @@
-const timestampToIso = (timestamp) => new Date(timestamp).toISOString()
+const timestampToIso = (timestamp) =>
+  new Date(
+    String(timestamp).length === 10 ? timestamp * 1e3 : timestamp
+  ).toISOString()
 
-const isoToTimestamp = (isoTime) => parseInt(new Date(isoTime).getTime())
+const isoToTimestamp = (isoTime) => {
+  parseInt(new Date(isoTime).getTime())
+}
 
 module.exports = { timestampToIso, isoToTimestamp }

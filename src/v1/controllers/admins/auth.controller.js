@@ -3,6 +3,7 @@ const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
 const _ = require('lodash')
+const { utils } = require('../../libs')
 
 const login = (req, res) => {
   const { phoneNumber, password } = req.body
@@ -45,6 +46,11 @@ const loginConfirm = async (req, res) => {
     if (auth.statusCode !== 200) return res.status(auth.statusCode).send(auth)
 
     const r = await sequelize.models.admins.findOne({
+      include: {
+        model: sequelize.models.admins_roles,
+        as: 'role',
+        attributes: ['id', 'name']
+      },
       where: {
         phoneNumber
       },
@@ -64,7 +70,10 @@ const loginConfirm = async (req, res) => {
       data: {
         ...r?.dataValues,
         avatar: null,
-        token: { access: accessToken }
+        token: {
+          access: accessToken,
+          expire: utils.timestampToIso(authorize.decodeJwt(accessToken).exp)
+        }
       },
       error: null
     })

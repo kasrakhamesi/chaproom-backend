@@ -9,7 +9,7 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.INTEGER.UNSIGNED
         },
-        roleName: {
+        name: {
           type: Sequelize.STRING,
           allowNull: false
         },
@@ -23,7 +23,7 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('admins_roles', ['roleName'], {
+        queryInterface.addIndex('admins_roles', ['name'], {
           unique: true
         })
       )

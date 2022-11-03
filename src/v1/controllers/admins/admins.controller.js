@@ -23,6 +23,13 @@ const createAdminFromUser = async (req, res) => {
 
     if (admin) return httpError(errorTypes.ADMIN_EXIST_ERROR, res)
 
+    const data = {
+      phoneNumber: user?.phoneNumber,
+      roleId: 2,
+      name: user?.name,
+      password: user?.password
+    }
+
     await sequelize.models.admins.create(data)
 
     res
@@ -36,7 +43,7 @@ const createAdminFromUser = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { phoneNumber, name, password } = req.body
-    const data = { phoneNumber, name, password }
+    const data = { phoneNumber, roleId: 2, name, password }
 
     const admin = await sequelize.models.admins.findOne({
       where: {
@@ -57,10 +64,24 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-  try {
-  } catch (e) {
-    return httpError(e, res)
-  }
+  const { id } = req.params
+  const { phoneNumber, name, password } = req.body
+  const data = { phoneNumber, roleId: 2, name, password }
+
+  return sequelize.models.admins
+    .update(data, {
+      where: {
+        id
+      }
+    })
+    .then(() => {
+      return res
+        .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+        .send(messageTypes.SUCCESSFUL_UPDATE)
+    })
+    .catch((e) => {
+      return httpError(e, res)
+    })
 }
 
 const findAll = async (req, res) => {
@@ -72,6 +93,11 @@ const findAll = async (req, res) => {
     )
 
     const r = await admins.Get({
+      include: {
+        model: sequelize.models.admins_roles,
+        as: 'role',
+        attributes: ['id', 'name']
+      },
       attributes: [
         'id',
         'name',
@@ -99,6 +125,11 @@ const findOne = async (req, res) => {
   const { id } = req.params
   return sequelize.models.admins
     .findOne({
+      include: {
+        model: sequelize.models.admins_roles,
+        as: 'role',
+        attributes: ['id', 'name']
+      },
       where: { id },
       attributes: {
         exclude: ['roleId', 'password']

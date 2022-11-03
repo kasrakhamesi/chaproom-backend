@@ -15,8 +15,20 @@ module.exports = {
       {
         roleId: 1,
         name: 'کسری',
-        password: 'kasra',
+        password: 'superadmin',
         phoneNumber: '09385667274'
+      },
+      {
+        roleId: 2,
+        name: 'کسری',
+        password: 'adminadmin',
+        phoneNumber: '09385667272'
+      },
+      {
+        roleId: 3,
+        name: 'کسری',
+        password: 'agentagent',
+        phoneNumber: '09385667270'
       }
     ])
   },
@@ -28,11 +40,5 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('admins', {
-      roleId: 1,
-      name: 'کسری',
-      password: 'kasra',
-      phoneNumber: '09385667274'
-    })
   }
 }

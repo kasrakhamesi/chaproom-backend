@@ -986,17 +986,22 @@
             "description": "Created",
             "examples": {
               "application/json": {
-                "statusCode": 201,
+                "statusCode": 200,
                 "data": {
-                  "active": true,
                   "id": 1,
+                  "name": "کسری",
                   "phoneNumber": "09385667274",
-                  "name": "Programmer Kasra",
-                  "updatedAt": "2022-10-06T18:17:07.510Z",
-                  "createdAt": "2022-10-06T18:17:07.510Z",
+                  "active": true,
+                  "createdAt": null,
+                  "updatedAt": null,
+                  "role": {
+                    "id": 1,
+                    "name": "superAdmin"
+                  },
                   "avatar": null,
                   "token": {
-                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmUiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjYwMDIxODYsImV4cCI6MTY2OTYwMjE4Nn0.BsYeOciUA1uMfAvx3agupXAWTnYUqldo39tNmSyPHUQ"
+                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmVOdW1iZXIiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY2NzUxODE4MSwiZXhwIjoxNjcxMTE4MTgxfQ.v7681wvFLpzeuVOp9oz8MrjbYHhJcw-aSALFrwH5Tts",
+                    "expire": "2022-12-15T15:29:41.000Z"
                   }
                 },
                 "error": null
@@ -1434,7 +1439,15 @@
                   "active": true,
                   "createdAt": null,
                   "updatedAt": null,
-                  "avatar": null
+                  "role": {
+                    "id": 1,
+                    "name": "superAdmin"
+                  },
+                  "avatar": null,
+                  "token": {
+                    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGhvbmVOdW1iZXIiOiIwOTM4NTY2NzI3NCIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY2NzUxODE4MSwiZXhwIjoxNjcxMTE4MTgxfQ.v7681wvFLpzeuVOp9oz8MrjbYHhJcw-aSALFrwH5Tts",
+                    "expire": "2022-12-15T15:29:41.000Z"
+                  }
                 },
                 "error": null
               }
@@ -1763,7 +1776,7 @@
             "in": "body",
             "name": "body",
             "required": true,
-            "schema": { "$ref": "#/definitions/CreateUser" }
+            "schema": { "$ref": "#/definitions/CreateOrUpdateAdmin" }
           }
         ],
         "responses": {
@@ -3605,7 +3618,7 @@
       "type": "object",
       "properties": {
         "phoneNumber": { "type": "string", "example": "09385667274" },
-        "password": { "type": "string", "example": "kasra" }
+        "password": { "type": "string", "example": "superadmin" }
       }
     },
     "Withdrawals": {

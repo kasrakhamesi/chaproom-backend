@@ -24,11 +24,12 @@ module.exports = {
         },
         checked: {
           type: Sequelize.BOOLEAN,
+          defaultValue: false,
           allowNull: false
         },
-        description: {
+        result: {
           type: Sequelize.STRING,
-          allowNull: false
+          allowNull: true
         },
         createdAt: {
           allowNull: true,

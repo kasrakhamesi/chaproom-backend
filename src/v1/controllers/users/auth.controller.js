@@ -2,10 +2,9 @@ const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
-const { uniqueGenerates } = require('../../libs')
+const { uniqueGenerates, utils } = require('../../libs')
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
-
 const register = async (req, res) => {
   try {
     const { phoneNumber, name, password, referralSlug } = req.body
@@ -136,7 +135,12 @@ const registerConfirm = async (req, res) => {
         ...r?.dataValues,
         walletBalance: r?.balance - r?.marketingBalance,
         avatar: null,
-        token: { access: accessToken }
+        token: {
+          access: accessToken,
+          expire: utils.timestampToIso(
+            authorize.decodeJwt(accessToken, false).exp
+          )
+        }
       },
       error: null
     })

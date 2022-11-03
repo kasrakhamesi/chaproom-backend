@@ -2,6 +2,7 @@ const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const bcrypt = require('bcrypt')
+const { utils } = require('../../libs')
 
 const update = (req, res) => {
   const { name, password } = req.body
@@ -30,7 +31,10 @@ const update = (req, res) => {
           data: {
             message: messageTypes.SUCCESSFUL_UPDATE.data.message,
             token: {
-              access: accessToken
+              access: accessToken,
+              expire: utils.timestampToIso(
+                authorize.decodeJwt(accessToken, false).exp
+              )
             }
           },
           error: null

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   admins_roles.init(
     {
-      roleName: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false
       }

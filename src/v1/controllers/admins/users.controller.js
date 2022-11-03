@@ -1,5 +1,5 @@
 const { sequelize } = require('../../models')
-const { restful, filters, uniqueGenerates } = require('../../libs')
+const { restful, filters, uniqueGenerates, utils } = require('../../libs')
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const users = new restful(sequelize.models.users)
 const _ = require('lodash')
@@ -150,7 +150,7 @@ const create = async (req, res) => {
       { transaction: t }
     )
 
-    if (balance && balance !== 0) {
+    if (walletBalance && walletBalance !== 0) {
       await sequelize.models.transactions.create(
         {
           userId: r?.id,
@@ -158,9 +158,9 @@ const create = async (req, res) => {
           type: 'deposit',
           change: 'increase',
           balance: 0,
-          balanceAfter: balance,
+          balanceAfter: walletBalance,
           status: 'successful',
-          amount: balance,
+          amount: walletBalance,
           description: 'افزایش موجودی کیف پول توسط ادمین'
         },
         { transaction: t }
@@ -273,7 +273,8 @@ const generateAccessToken = async (req, res) => {
       statusCode: 201,
       data: {
         userToken: {
-          access: accessToken
+          access: accessToken,
+          expire: utils.timestampToIso(authorize.decodeJwt(accessToken).exp)
         }
       },
       error: null

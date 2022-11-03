@@ -15,6 +15,42 @@ module.exports = {
       {
         permission: 'GOD',
         description: 'Full Access'
+      },
+      {
+        permission: 'orders',
+        description: 'orders'
+      },
+      {
+        permission: 'transactions',
+        description: 'transactions'
+      },
+      {
+        permission: 'discounts',
+        description: 'discounts'
+      },
+      {
+        permission: 'marketings',
+        description: 'marketings'
+      },
+      {
+        permission: 'users',
+        description: 'users'
+      },
+      {
+        permission: 'admins',
+        description: 'admins'
+      },
+      {
+        permission: 'customerReport',
+        description: 'customerReport'
+      },
+      {
+        permission: 'tariffs',
+        description: 'tariffs'
+      },
+      {
+        permission: 'blog',
+        description: 'blog'
       }
     ])
   },
@@ -26,9 +62,5 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-
-    await queryInterface.bulkDelete('admins_permissions', {
-      permission: 'GOD'
-    })
   }
 }
