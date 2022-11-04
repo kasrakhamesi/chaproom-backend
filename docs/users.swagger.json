@@ -2213,7 +2213,18 @@
                       "telegramUploadFile": false,
                       "whatsappUploadFile": false,
                       "createdAt": "2022-10-19T21:55:07.000Z",
-                      "updatedAt": "2022-10-19T21:55:07.000Z"
+                      "updatedAt": "2022-10-19T21:55:07.000Z",
+                      "files": [
+                        {
+                          "id": 1,
+                          "uploadedName": "f.pdf",
+                          "name": "0_.pdf",
+                          "url": "https://google.com/0_.pdf",
+                          "countOfPages": 2,
+                          "createdAt": "2022-11-04T00:01:04.000Z",
+                          "updatedAt": "2022-11-04T00:01:04.000Z"
+                        }
+                      ]
                     }
                   ]
                 },

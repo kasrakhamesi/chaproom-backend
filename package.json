@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express-fileupload": "^1.4.0",
+    "json2excel": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "kavenegar": "^1.1.4",
     "lodash": "^4.17.21",

@@ -257,6 +257,23 @@ const findOne = (req, res) => {
                 'folderId'
               ]
             }
+          },
+          include: {
+            model: sequelize.models.files,
+            attributes: {
+              exclude: ['userId', 'folder_files']
+            },
+            through: {
+              attributes: {
+                exclude: [
+                  'userId',
+                  'createdAt',
+                  'updatedAt',
+                  'fileId',
+                  'folderId'
+                ]
+              }
+            }
           }
         }
       ]

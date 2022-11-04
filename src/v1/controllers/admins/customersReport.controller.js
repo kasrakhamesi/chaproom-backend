@@ -1,11 +1,12 @@
 const { sequelize } = require('../../models')
-const { restful, filters } = require('../../libs')
+const { restful, filters, utils } = require('../../libs')
 const { httpError, errorTypes } = require('../../configs')
 const { Op } = require('sequelize')
 const users = new restful(sequelize.models.users)
 const _ = require('lodash')
+const jexcel = require('json2excel')
 
-const findAll = async (req, res) => {
+const getAll = async (req, res, paginateActive = true) => {
   try {
     const { page, pageSize } = req.query
     const [order, where] = await filters.filter(
@@ -25,7 +26,7 @@ const findAll = async (req, res) => {
       where,
       order,
       pagination: {
-        active: true,
+        active: paginateActive,
         page,
         pageSize
       }
@@ -56,7 +57,7 @@ const findAll = async (req, res) => {
       }
     })
 
-    for (const entity of r?.data?.users) {
+    for (const entity of r?.data?.users || r?.data) {
       const countOfOrders = await sequelize.models.orders.count({
         where: {
           userId: entity?.id,
@@ -97,8 +98,12 @@ const findAll = async (req, res) => {
           incoming += parseInt(transaction?.amount)
       }
 
+      const newStyleEntity = _.isEmpty({ ...entity.dataValues })
+        ? { ...entity }
+        : { ...entity.dataValues }
+
       data.push({
-        ...entity,
+        ...newStyleEntity,
         countOfOrders,
         totalPaidAmount: incoming,
         firstOrderAt: firstOrder[0]?.createdAt || null,
@@ -108,25 +113,100 @@ const findAll = async (req, res) => {
 
     data = await Promise.all(data)
 
-    res.status(200).send({
-      statusCode: 200,
+    return {
+      isSuccess: true,
       data: {
-        page: r?.data?.page,
-        pageSize: r?.data?.pageSize,
-        totalCount: r?.data?.totalCount,
-        totalPageLeft: r?.data?.totalPageLeft,
-        totalCountLeft: r?.data?.totalCountLeft,
-        totalUsersCount,
-        totalOrdersCount,
-        totalDebtor: 5000,
-        totalCreditor: 6000,
-        customersReport: data
-      },
-      error: null
-    })
+        statusCode: 200,
+        data: {
+          page: r?.data?.page,
+          pageSize: r?.data?.pageSize,
+          totalCount: r?.data?.totalCount,
+          totalPageLeft: r?.data?.totalPageLeft,
+          totalCountLeft: r?.data?.totalCountLeft,
+          totalUsersCount,
+          totalOrdersCount,
+          totalDebtor: 5000,
+          totalCreditor: 6000,
+          customersReport: data
+        },
+        error: null
+      }
+    }
+  } catch (e) {
+    return {
+      isSuccess: false,
+      message:
+        e ||
+        e.message ||
+        'مشکلی در سیستم پیش آمده.لطفا با مدیر ارتباط حاصل فرمایید'
+    }
+  }
+}
+
+const findAll = async (req, res) => {
+  try {
+    const r = await getAll(req, res)
+    if (r.isSuccess) return res.status(r?.data?.statusCode).send(r?.data)
+    return httpError(
+      r?.message || 'مشکلی در سیستم پیش آمده.لطفا با مدیر ارتباط حاصل فرمایید',
+      res
+    )
   } catch (e) {
     return httpError(e, res)
   }
 }
 
-module.exports = { findAll }
+const createExcel = (req, res) => {
+  return getAll(req, res, false)
+    .then((r) => {
+      if (r?.isSuccess) {
+        const exc = {
+          sheets: [
+            {
+              header: {
+                id: 'شمارنده',
+                name: 'نام و نام خانوادگی',
+                phoneNumber: 'شماره تماس',
+                balance: 'موجودی کامل',
+                marketingBalance: 'موجودی بازاریابی',
+                createdAt: 'تاریخ ساخت حساب',
+                walletBalance: 'موجودی کیف پول',
+                countOfOrders: 'تعداد سفارشات',
+                totalPaidAmount: 'کل مبلغ پرداختی',
+                firstOrderAt: 'تاریخ ثبت اولین سفارش',
+                lastOrderAt: 'تاریخ ثبت اخرین سفارش'
+              },
+              items: r?.data?.data?.customersReport,
+              sheetName: 'sheet1'
+            }
+          ],
+          filepath: `chaproom-report_${Date.now()}.xlsx`
+        }
+
+        return jexcel.j2e(exc, (err) => {
+          if (err)
+            return httpError(
+              'مشکلی در سیستم پیش آمده.لطفا با مدیر ارتباط حاصل فرمایید',
+              res
+            )
+          return res.status(201).send({
+            statusCode: 201,
+            data: {
+              url: 'https://google.com'
+            },
+            error: null
+          })
+        })
+      }
+      return httpError(
+        r?.message ||
+          'مشکلی در سیستم پیش آمده.لطفا با مدیر ارتباط حاصل فرمایید',
+        res
+      )
+    })
+    .catch((e) => {
+      return httpError(e, res)
+    })
+}
+
+module.exports = { findAll, createExcel }

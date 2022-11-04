@@ -69,7 +69,7 @@ class Restful {
   }) => {
     try {
       let resGet
-      if (pagination === null)
+      if (pagination === null || !pagination?.active)
         resGet = where?.id
           ? await this.#model.findByPk(parseInt(where?.id), {
               where: where,
@@ -93,7 +93,7 @@ class Restful {
               order: order,
               limit: limit
             })
-      else if (!findOne && pagination.active) {
+      else if (!findOne && pagination?.active) {
         if (_.isEmpty(pagination?.pageSize)) pagination.pageSize = 25
 
         if (_.isEmpty(pagination?.page)) pagination.page = 0

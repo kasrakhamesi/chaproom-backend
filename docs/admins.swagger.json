@@ -2001,6 +2001,58 @@
         }
       }
     },
+    "/admins/customers-report/excel": {
+      "post": {
+        "tags": ["Customers Report"],
+        "summary": "create excel",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "search",
+            "description": "search by phoneNumber or name",
+            "in": "query",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "url": "https://google.com"
+                },
+                "error": null
+              }
+            }
+          },
+
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admins": {
       "post": {
         "tags": ["Admins"],
@@ -2107,11 +2159,11 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "page": 0,
+                  "page": 1,
                   "pageSize": 25,
-                  "totalCount": 1,
-                  "totalPageLeft": 0,
-                  "totalCountLeft": 0,
+                  "totalCount": 3,
+                  "totalPageLeft": 1,
+                  "totalCountLeft": 25,
                   "admins": [
                     {
                       "id": 1,
@@ -2119,7 +2171,35 @@
                       "phoneNumber": "09385667274",
                       "active": true,
                       "createdAt": null,
-                      "updatedAt": null
+                      "updatedAt": null,
+                      "role": {
+                        "id": 1,
+                        "name": "superAdmin"
+                      }
+                    },
+                    {
+                      "id": 2,
+                      "name": "کسری",
+                      "phoneNumber": "09385667272",
+                      "active": true,
+                      "createdAt": null,
+                      "updatedAt": null,
+                      "role": {
+                        "id": 1,
+                        "name": "superAdmin"
+                      }
+                    },
+                    {
+                      "id": 3,
+                      "name": "کسری",
+                      "phoneNumber": "09385667270",
+                      "active": true,
+                      "createdAt": null,
+                      "updatedAt": null,
+                      "role": {
+                        "id": 1,
+                        "name": "superAdmin"
+                      }
                     }
                   ]
                 },
