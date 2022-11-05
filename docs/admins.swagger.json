@@ -63,7 +63,7 @@
                       "code": "V000EVC3",
                       "phoneNumber": null,
                       "type": "percentage",
-                      "value": "5",
+                      "value": 5,
                       "active": true,
                       "description": null,
                       "usageLimit": null,
@@ -85,7 +85,7 @@
                       "code": "Y6TY72HQ",
                       "phoneNumber": null,
                       "type": "percentage",
-                      "value": "10",
+                      "value": 10,
                       "active": true,
                       "description": null,
                       "usageLimit": null,
@@ -173,6 +173,60 @@
       }
     },
     "/admins/discounts/id/{id}": {
+      "delete": {
+        "tags": ["Discounts"],
+        "summary": "delete one of Discount",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/CreateDiscount" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت حذف شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": ["Discounts"],
         "summary": "update or change Discount",
@@ -3526,10 +3580,10 @@
                       "orderId": 2,
                       "discountCode": "V000EVC3",
                       "discountType": "percentage",
-                      "discountValue": "5",
+                      "discountValue": 5,
                       "discountAmount": 161500,
                       "discountBenefit": 161500,
-                      "discountBenefitPercentage": "5",
+                      "discountBenefitPercentage": 5,
                       "createdAt": "2022-11-01T13:21:13.000Z",
                       "amount": 15000
                     },
@@ -3547,10 +3601,10 @@
                       "orderId": 1,
                       "discountCode": "V000EVC3",
                       "discountType": "percentage",
-                      "discountValue": "5",
+                      "discountValue": 5,
                       "discountAmount": 161500,
                       "discountBenefit": null,
-                      "discountBenefitPercentage": "5",
+                      "discountBenefitPercentage": 5,
                       "createdAt": "2022-11-01T13:20:30.000Z",
                       "amount": 15000
                     }
@@ -3636,6 +3690,7 @@
                         "name": "کسری میباشد",
                         "phoneNumber": "09123456789"
                       },
+                      "referralSlug": "ref=1",
                       "orderId": 2,
                       "createdAt": "2022-11-01T13:21:13.000Z",
                       "referralBenefit": 1605,
@@ -3858,7 +3913,25 @@
                 "doubleSided": { "type": "int", "example": 350 },
                 "singleSidedGlossy": { "type": "int", "example": 400 },
                 "doubleSidedGlossy": { "type": "int", "example": 400 },
-                "breakpoints": { "type": "array", "example": [] }
+                "breakpoints": {
+                  "type": "array",
+                  "example": [
+                    {
+                      "at": 501,
+                      "doubleSided": 580,
+                      "singleSided": 460,
+                      "doubleSidedGlossy": 0,
+                      "singleSidedGlossy": 0
+                    },
+                    {
+                      "at": 1001,
+                      "doubleSided": 560,
+                      "singleSided": 430,
+                      "doubleSidedGlossy": 0,
+                      "singleSidedGlossy": 0
+                    }
+                  ]
+                }
               }
             }
           }

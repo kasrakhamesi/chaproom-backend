@@ -7,4 +7,17 @@ const isoToTimestamp = (isoTime) => {
   parseInt(new Date(isoTime).getTime())
 }
 
-module.exports = { timestampToIso, isoToTimestamp }
+const camelCase = (entity) => {
+  let newEntity = ''
+  for (let k = 0; k < entity.length; k++) {
+    if (entity[k] === '_') {
+      k++
+      newEntity += String(entity[k]).toUpperCase()
+      continue
+    }
+    newEntity += entity[k]
+  }
+  return newEntity
+}
+
+module.exports = { timestampToIso, isoToTimestamp, camelCase }

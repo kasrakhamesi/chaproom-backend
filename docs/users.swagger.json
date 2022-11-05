@@ -2500,7 +2500,7 @@
                       {
                         "code": "XCKFR353",
                         "type": "percentage",
-                        "value": "5",
+                        "value": 5,
                         "active": true,
                         "createdAt": "2022-10-19T21:33:07.000Z",
                         "updatedAt": "2022-10-19T21:33:07.000Z"
@@ -2508,7 +2508,7 @@
                       {
                         "code": "CXBS1HCY",
                         "type": "percentage",
-                        "value": "10",
+                        "value": 10,
                         "active": true,
                         "createdAt": "2022-10-19T21:33:07.000Z",
                         "updatedAt": "2022-10-19T21:33:07.000Z"

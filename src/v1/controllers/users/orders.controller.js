@@ -193,16 +193,13 @@ const findAll = async (req, res) => {
     const userId = req?.user[0]?.id
     const { page, pageSize } = req.query
 
-    const [order, where] = await filters.filter(
-      req.query,
-      sequelize.models.orders
-    )
+    const [where] = await filters.filter(req.query, sequelize.models.orders)
 
     const newWhere = { ...where, userId }
 
     const r = await orders.Get({
       where: newWhere,
-      order,
+      order: [['id', 'desc']],
       attributes: ['id', 'status', 'cancelReason', 'amount', 'createdAt'],
       pagination: {
         active: true,

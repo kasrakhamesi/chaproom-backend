@@ -53,29 +53,31 @@ const findAllDiscounts = async (req, res) => {
         totalCount: r?.data?.totalCount,
         totalPageLeft: r?.data?.totalPageLeft,
         totalCountLeft: r?.data?.totalCountLeft,
-        marketings: r?.data?.orders.map((item) => {
-          return {
-            user: {
-              id: item.discount.user.id,
-              name: item.discount.user.name,
-              phoneNumber: item.discount.user.phoneNumber
-            },
-            buyer: {
-              id: item.user.id,
-              name: item.user.name,
-              phoneNumber: item.user.phoneNumber
-            },
-            orderId: item.id,
-            discountCode: item.discountCode,
-            discountType: item.discountType,
-            discountValue: item.discountValue,
-            discountAmount: item.discountAmount,
-            discountBenefit: item.discountBenefit,
-            discountBenefitPercentage: item.discountValue,
-            createdAt: item.createdAt,
-            amount: item.amount
-          }
-        })
+        marketings: r?.data?.orders
+          .filter((item) => item?.discount?.userMarketing)
+          .map((item) => {
+            return {
+              user: {
+                id: item.discount.user.id,
+                name: item.discount.user.name,
+                phoneNumber: item.discount.user.phoneNumber
+              },
+              buyer: {
+                id: item.user.id,
+                name: item.user.name,
+                phoneNumber: item.user.phoneNumber
+              },
+              orderId: item.id,
+              discountCode: item.discountCode,
+              discountType: item.discountType,
+              discountValue: item.discountValue,
+              discountAmount: item.discountAmount,
+              discountBenefit: item.discountBenefit,
+              discountBenefitPercentage: item.discountValue,
+              createdAt: item.createdAt,
+              amount: item.amount
+            }
+          })
       },
       error: null
     })
@@ -155,6 +157,7 @@ const findAllReferrals = async (req, res) => {
               phoneNumber: item.referral.referralUser.phoneNumber
             },
             orderId: item.id,
+            referralSlug: item.referral.slug,
             createdAt: item.createdAt,
             referralBenefit: item.referralBenefit,
             referralCommission: item.referralCommission,

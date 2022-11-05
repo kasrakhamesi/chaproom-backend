@@ -90,7 +90,7 @@ module.exports = {
           allowNull: true
         },
         discountValue: {
-          type: Sequelize.STRING,
+          type: Sequelize.FLOAT,
           allowNull: true
         },
         discountCode: {

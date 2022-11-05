@@ -1,5 +1,6 @@
 const { httpError, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const _ = require('lodash')
 
 const checkValidate = (data) => {
   const {
@@ -13,13 +14,13 @@ const checkValidate = (data) => {
   } = data
 
   if (
-    !parseInt(a4_springNormal) ||
-    !parseInt(a5_springNormal) ||
-    !parseInt(a3_springNormal) ||
-    !parseInt(a5_springPapco) ||
-    !parseInt(a4_springPapco) ||
-    !parseInt(a3_springPapco) ||
-    !parseInt(stapler)
+    !_.isInteger(a4_springNormal) ||
+    !_.isInteger(a5_springNormal) ||
+    !_.isInteger(a3_springNormal) ||
+    !_.isInteger(a5_springPapco) ||
+    !_.isInteger(a4_springPapco) ||
+    !_.isInteger(a3_springPapco) ||
+    !_.isInteger(stapler)
   )
     return {
       isSuccess: false,

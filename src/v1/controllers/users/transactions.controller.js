@@ -8,7 +8,7 @@ const findAll = async (req, res) => {
     const userId = req?.user[0]?.id
 
     const { page, pageSize } = req.query
-    const [order, where] = await filters.filter(
+    const [where] = await filters.filter(
       req.query,
       sequelize.models.transactions
     )
@@ -17,7 +17,7 @@ const findAll = async (req, res) => {
 
     const r = await transactions.Get({
       where: newWhere,
-      order,
+      order: [['id', 'desc']],
       attributes: {
         exclude: [
           'userId',

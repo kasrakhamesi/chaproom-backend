@@ -1,5 +1,6 @@
 const { httpError, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const _ = require('lodash')
 
 const checkChildObject = (object) => {
   const {
@@ -13,34 +14,27 @@ const checkChildObject = (object) => {
   let error = false
 
   if (
-    !parseInt(singleSided) ||
-    !parseInt(doubleSided) ||
-    !parseInt(singleSidedGlossy) ||
-    !parseInt(doubleSidedGlossy)
+    !_.isInteger(singleSided) ||
+    !_.isInteger(doubleSided) ||
+    !_.isInteger(singleSidedGlossy) ||
+    !_.isInteger(doubleSidedGlossy)
   ) {
     error = true
   }
 
   if (breakpoints?.length > 0) {
     for (const entity of breakpoints) {
-      const {
-        at,
-        singleSided,
-        doubleSided,
-        singleSidedGlossy,
-        doubleSidedGlossy
-      } = entity
-
       if (
-        !parseInt(at) ||
-        !parseInt(singleSided) ||
-        !parseInt(doubleSided) ||
-        !parseInt(singleSidedGlossy) ||
-        !parseInt(doubleSidedGlossy)
+        !_.isInteger(entity?.at) ||
+        !_.isInteger(entity?.singleSided) ||
+        !_.isInteger(entity?.doubleSided) ||
+        !_.isInteger(entity?.singleSidedGlossy) ||
+        !_.isInteger(entity?.doubleSidedGlossy)
       )
         error = true
     }
   }
+
   return error
 }
 
@@ -50,7 +44,7 @@ const checkValidate = (data) => {
 
   if (!a3 && !a4 && !a5) {
     error = true
-    return true
+    return error
   }
   if (a3) {
     if (a3?.blackAndWhite) {

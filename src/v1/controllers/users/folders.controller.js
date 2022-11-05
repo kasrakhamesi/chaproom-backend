@@ -1,7 +1,27 @@
 const { httpError, messageTypes, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 const _ = require('lodash')
+const zip = require('adm-zip')
+const { utils } = require('../../libs')
+var zipper = new zip()
+zipper.addLocalFile('README.md')
+zipper.addLocalFile('.env')
+zipper.writeZip('123.zip')
 
+const getPrintTariffs = () => {
+  return sequelize.models.print_tariffs
+    .findOne({
+      where: { id: 1 },
+      attributes: ['a3', 'a4', 'a5']
+    })
+    .then((r) => {
+      return {
+        a3: JSON.parse(r?.a3),
+        a4: JSON.parse(r?.a4),
+        a5: JSON.parse(r?.a5)
+      }
+    })
+}
 const extractBinding = (binding) => {
   if (binding === null) return null
 
@@ -29,8 +49,6 @@ const extractBinding = (binding) => {
 
 const create = async (req, res) => {
   try {
-    const shipmentPrice = 5000
-    const amount = 7000
     const {
       color,
       side,
@@ -46,7 +64,7 @@ const create = async (req, res) => {
 
     const extractedBinding = extractBinding(binding)
 
-    let data = {
+    const data = {
       color,
       side,
       size,
@@ -54,16 +72,52 @@ const create = async (req, res) => {
       uploadedPages: 5,
       countOfCopies,
       description,
-      shipmentPrice,
       binding: extractedBinding,
-      amount,
       userId
     }
 
     const bindingBreakpoint = {
+      spring_normal: 300,
       spring_papco: 300,
       stapler: 200
     }
+    /*
+    color: {
+      type: Sequelize.ENUM('black_and_white', 'full_color', 'normal_color'),
+      allowNull: false
+    },
+    side: {
+      type: Sequelize.ENUM(
+        'single_sided',
+        'double_sided',
+        'single_sided_glossy',
+        'double_sided_glossy'
+      ),
+      allowNull: false
+    },
+    size: {
+      type: Sequelize.ENUM('a4', 'a5', 'a3'),
+      allowNull: false
+    },
+*/
+    const printTariffs = await getPrintTariffs()
+
+    const tariff = printTariffs[size][utils.camelCase(color)]
+    let shipmentPrice = tariff[utils.camelCase(side)]
+
+    if (tariff.breakpoints.length > 0) {
+      for (let k = 0; k < tariff.breakpoints.length; k++) {
+        if (countOfPages >= tariff.breakpoints[k].at) {
+          shipmentPrice = tariff.breakpoints[k][utils.camelCase(side)]
+        }
+      }
+    }
+
+    data.shipmentPrice = shipmentPrice
+
+    let amount = shipmentPrice * countOfPages * countOfCopies || 1
+    const sideAmount = String(side).includes('single') ? 1 : 2
+    data.amount = parseInt(amount * sideAmount)
 
     if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 

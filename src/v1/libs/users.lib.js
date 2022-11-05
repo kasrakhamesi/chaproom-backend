@@ -1,6 +1,7 @@
 const { sequelize } = require('../models')
 const { gateways } = require('.')
 const { httpError, errorTypes } = require('../configs')
+const { Op } = require('sequelize')
 require('dotenv').config()
 
 const getBalance = async (userId) => {
@@ -8,7 +9,7 @@ const getBalance = async (userId) => {
     const userTransactions = await sequelize.models.transactions.findAll({
       where: {
         userId,
-        status: 'successful'
+        [Op.or]: [{ status: 'successful' }, { status: 'pending' }]
       }
     })
 

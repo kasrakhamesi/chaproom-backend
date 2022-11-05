@@ -49,10 +49,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: true
       },
-      body: {
-        type: DataTypes.TEXT('medium'),
-        allowNull: true
-      },
       thumb_alt: {
         type: DataTypes.STRING,
         allowNull: true

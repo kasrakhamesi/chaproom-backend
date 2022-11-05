@@ -48,10 +48,6 @@ module.exports = {
           type: Sequelize.JSON,
           allowNull: true
         },
-        body: {
-          type: Sequelize.TEXT('medium'),
-          allowNull: true
-        },
         thumb_alt: {
           type: Sequelize.STRING,
           allowNull: true

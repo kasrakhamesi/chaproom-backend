@@ -1,5 +1,5 @@
 module.exports.contactUs = require('./contactUs.controller')
-module.exports.blogs = require('./blogs.contoller')
+module.exports.blogs = require('./blogs.controller')
 module.exports.cooperations = require('./cooperations.controller')
 module.exports.referrals = require('./referrals.controller')
 module.exports.tariffs = require('./tariffs.controller')
