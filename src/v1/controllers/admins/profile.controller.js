@@ -32,7 +32,9 @@ const update = (req, res) => {
             message: messageTypes.SUCCESSFUL_UPDATE.data.message,
             token: {
               access: accessToken,
-              expire: utils.timestampToIso(authorize.decodeJwt(accessToken).exp)
+              expireAt: utils.timestampToIso(
+                authorize.decodeJwt(accessToken).exp
+              )
             }
           },
           error: null

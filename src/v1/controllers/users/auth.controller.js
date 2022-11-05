@@ -137,7 +137,7 @@ const registerConfirm = async (req, res) => {
         avatar: null,
         token: {
           access: accessToken,
-          expire: utils.timestampToIso(
+          expireAt: utils.timestampToIso(
             authorize.decodeJwt(accessToken, false).exp
           )
         }
@@ -171,7 +171,12 @@ const login = (req, res) => {
           ...r?.dataValues,
           walletBalance: r?.balance - r?.marketingBalance,
           avatar: null,
-          token: { access: accessToken }
+          token: {
+            access: accessToken,
+            expireAt: utils.timestampToIso(
+              authorize.decodeJwt(accessToken, false).exp
+            )
+          }
         },
         error: null
       })

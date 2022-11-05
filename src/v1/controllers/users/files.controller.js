@@ -19,7 +19,7 @@ const upload = async (req, res) => {
 
     const extensionName = path.extname(attachment.name)
 
-    const allowedExtension = ['.pdf']
+    const allowedExtension = ['.pdf', '.docx']
 
     if (!allowedExtension.includes(extensionName.toLowerCase()))
       return httpError(errorTypes.INVALID_PDF_DOCX_FORMAT, res)
@@ -41,13 +41,17 @@ const upload = async (req, res) => {
 
     await attachment.mv(filePath)
 
-    const rCounter = await pageCounter.pdf(filePath)
+    let rCounter = 0
+    if (String(extensionName).toLowerCase().includes('pdf'))
+      rCounter = await pageCounter.pdf(filePath)
+    else if (String(extensionName).toLowerCase().includes('pdf'))
+      rCounter = await pageCounter.docx(filePath)
 
     const r = await sequelize.models.files.create({
       userId,
       uploadedName: attachment.name,
       name: newFileName,
-      countOfPages: rCounter.data || 0,
+      countOfPages: rCounter,
       url: 'https://google.com/' + newFileName
     })
 

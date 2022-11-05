@@ -1721,6 +1721,263 @@
         }
       }
     },
+
+    "/public/blogs/categories": {
+      "get": {
+        "tags": ["Public"],
+        "summary": "get all of blogs categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "این یک دسته بدی است است",
+                    "countOfBlogs": 1
+                  },
+                  {
+                    "id": 2,
+                    "name": "این یک دسته بدی2ست",
+                    "countOfBlogs": 0
+                  }
+                ],
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/blogs": {
+      "get": {
+        "tags": ["Public"],
+        "summary": "get all of blog",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "blogs": [
+                    {
+                      "id": 1,
+                      "title": "این یک عنوان نمایشی است",
+                      "pageTitle": "این عنوان صفحه میباشد",
+                      "slug": "این-یک-اسلاگ-است",
+                      "keyWords": "این,کلمات,کلیدی,است",
+                      "metaDescription": "این توضیحات متا است",
+                      "body": "این یک بدنه است",
+                      "imageUrl": "http://google.com",
+                      "imageAlt": "this is a alt of image",
+                      "countOfViews": 0,
+                      "display": true,
+                      "createdAt": "2022-11-05T21:39:27.000Z",
+                      "updatedAt": "2022-11-05T21:39:27.000Z",
+                      "category": {
+                        "id": 1,
+                        "name": "این یک دسته بدی است است"
+                      }
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/blogs/slug/{slug}/view": {
+      "put": {
+        "tags": ["Public"],
+        "summary": "increase blog view by slug",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت افزایش یافت"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/blogs/slug/{slug}": {
+      "get": {
+        "tags": ["Public"],
+        "summary": "get one of Blog by slug",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "currentBlog": {
+                    "id": 1,
+                    "title": "این یک عنوان نمایشی است",
+                    "pageTitle": "این عنوان صفحه میباشد",
+                    "slug": "این-یک-اسلاگ-است",
+                    "keyWords": "این,کلمات,کلیدی,است",
+                    "metaDescription": "این توضیحات متا است",
+                    "body": "این یک بدنه است",
+                    "imageUrl": "http://google.com",
+                    "imageAlt": "this is a alt of image",
+                    "countOfViews": 0,
+                    "display": true,
+                    "createdAt": "2022-11-05T21:39:27.000Z",
+                    "updatedAt": "2022-11-05T21:39:27.000Z",
+                    "category": {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است"
+                    }
+                  },
+                  "nextBlog": {
+                    "id": 1,
+                    "title": "این یک عنوان نمایشی است",
+                    "pageTitle": "این عنوان صفحه میباشد",
+                    "slug": "این-یک-اسلاگ-است",
+                    "keyWords": "این,کلمات,کلیدی,است",
+                    "metaDescription": "این توضیحات متا است",
+                    "body": "این یک بدنه است",
+                    "imageUrl": "http://google.com",
+                    "imageAlt": "this is a alt of image",
+                    "countOfViews": 0,
+                    "display": true,
+                    "createdAt": "2022-11-05T21:39:27.000Z",
+                    "updatedAt": "2022-11-05T21:39:27.000Z",
+                    "category": {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است"
+                    }
+                  },
+                  "previousBlog": {
+                    "id": 1,
+                    "title": "این یک عنوان نمایشی است",
+                    "pageTitle": "این عنوان صفحه میباشد",
+                    "slug": "این-یک-اسلاگ-است",
+                    "keyWords": "این,کلمات,کلیدی,است",
+                    "metaDescription": "این توضیحات متا است",
+                    "body": "این یک بدنه است",
+                    "imageUrl": "http://google.com",
+                    "imageAlt": "this is a alt of image",
+                    "countOfViews": 0,
+                    "display": true,
+                    "createdAt": "2022-11-05T21:39:27.000Z",
+                    "updatedAt": "2022-11-05T21:39:27.000Z",
+                    "category": {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است"
+                    }
+                  }
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/public/tariffs": {
       "get": {
         "tags": ["Public"],

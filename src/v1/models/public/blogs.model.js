@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      blogs.belongsTo(models.categories)
     }
   }
   blogs.init(
@@ -17,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
-      category: {
-        type: DataTypes.STRING,
+      categoryId: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true
       },
       title: {
@@ -33,11 +34,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      slugLink: {
+      keyWords: {
         type: DataTypes.STRING,
         allowNull: true
       },
-      description: {
+      metaDescription: {
         type: DataTypes.STRING,
         allowNull: true
       },
@@ -45,16 +46,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT('long'),
         allowNull: true
       },
-      images: {
-        type: DataTypes.JSON,
+      imageUrl: {
+        type: DataTypes.TEXT,
         allowNull: true
       },
-      thumb_alt: {
+      imageAlt: {
         type: DataTypes.STRING,
         allowNull: true
       },
-      viewCount: {
-        type: DataTypes.INTEGER.UNSIGNED,
+      countOfViews: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
         allowNull: true
       },
       display: {

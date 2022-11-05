@@ -88,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       discountValue: {
-        type: DataTypes.STRING,
+        type: DataTypes.FLOAT,
         allowNull: true
       },
       discountCode: {

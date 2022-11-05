@@ -53,8 +53,8 @@ const findOne = async (req, res) => {
     })
 
     const promises = await Promise.all([
-      getPrintPriceses(),
-      getBindingPriceses()
+      getBindingPriceses(),
+      getPrintPriceses()
     ])
 
     const binding = _.isEmpty(promises[0])

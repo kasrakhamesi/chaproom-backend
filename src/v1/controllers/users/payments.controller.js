@@ -39,7 +39,10 @@ const callback = async (req, res) => {
     })
 
     if (String(paymentVerification?.status) !== '100')
-      return httpError(errorTypes.PAYMENT_VERIFICATION_FAILED, res)
+      return res.redirect(
+        `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
+      )
+    //return httpError(errorTypes.PAYMENT_VERIFICATION_FAILED, res)
 
     const userWallet = await users.getBalance(payment?.userId)
 
@@ -89,10 +92,12 @@ const callback = async (req, res) => {
     await t.commit()
 
     if (submitOrderResult !== null)
-      return res.status(submitOrderResult.statusCode).send(submitOrderResult)
+      return res.redirect(
+        `${process.env.FRONT_DOMAIN}/dashboard/orders/payment-result?isSuccessful=true&orderId=${submitOrderResult?.data?.orderId}`
+      )
 
     return res.redirect(
-      `https://localhost:3000/dashboard?isDeposit=true&isSuccessful=true&paymentId=${payment?.id}&amount=${payment?.amount}`
+      `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=true&paymentId=${payment?.id}&amount=${payment?.amount}`
     )
 
     res.status(200).send({

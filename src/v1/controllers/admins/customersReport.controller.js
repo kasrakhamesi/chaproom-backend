@@ -79,7 +79,7 @@ const getAll = async (req, res, paginateActive = true) => {
           userId: entity?.id,
           status: { [Op.not]: 'payment_pending' }
         },
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'ASC']]
       })
 
       const firstOrder = await sequelize.models.orders.findAll({

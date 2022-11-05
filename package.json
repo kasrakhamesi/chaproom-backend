@@ -1,5 +1,5 @@
 {
-  "name": "chaproom_backend",
+  "name": "chaproom-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,7 +7,7 @@
     "dev": "cd ./src/v1/ && npx sequelize db:migrate && cd ../.. && nodemon index.js",
     "start": "cd ./src/v1/ && npx sequelize db:migrate && cd ../.. && node index.js"
   },
-  "author": "",
+  "author": "Kasra Khamesi",
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -24,11 +24,10 @@
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
+    "page-count": "^0.0.2",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "pdf-page-counter": "^1.0.3",
-    "pdfjs-dist": "^2.16.105",
-    "pm2": "^5.2.2",
     "request-promise": "^4.2.6",
     "sequelize": "^6.21.4",
     "swagger-jsdoc": "^6.2.5",

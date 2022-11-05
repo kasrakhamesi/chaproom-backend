@@ -35,8 +35,18 @@ const findOne = async (req, res) => {
       }
     })
 
+    let totalSales = 0
+    let benefit = 0
+    let timesUsed = 0
+
+    for (const entity of discounts) {
+      timesUsed += entity?.timesUsed
+      totalSales += entity?.totalSale
+      benefit += entity?.benefit
+    }
+
     const r = {
-      discount: { totalSales: 0, benefit: 0, timesUsed: 0, data: discounts },
+      discount: { totalSales, benefit, timesUsed, data: discounts },
       referral
     }
 

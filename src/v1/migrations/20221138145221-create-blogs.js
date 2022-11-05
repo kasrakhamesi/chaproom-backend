@@ -16,9 +16,12 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: false
         },
-        category: {
-          type: Sequelize.STRING,
-          allowNull: true
+        categoryId: {
+          type: Sequelize.INTEGER.UNSIGNED,
+          references: { model: 'categories', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          allowNull: false
         },
         title: {
           type: Sequelize.STRING,
@@ -32,11 +35,11 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false
         },
-        slugLink: {
+        keyWords: {
           type: Sequelize.STRING,
           allowNull: true
         },
-        description: {
+        metaDescription: {
           type: Sequelize.STRING,
           allowNull: true
         },
@@ -44,16 +47,17 @@ module.exports = {
           type: Sequelize.TEXT('long'),
           allowNull: true
         },
-        images: {
-          type: Sequelize.JSON,
+        imageUrl: {
+          type: Sequelize.TEXT,
           allowNull: true
         },
-        thumb_alt: {
+        imageAlt: {
           type: Sequelize.STRING,
           allowNull: true
         },
-        viewCount: {
-          type: Sequelize.INTEGER.UNSIGNED,
+        countOfViews: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
           allowNull: true
         },
         display: {

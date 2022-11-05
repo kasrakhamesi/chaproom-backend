@@ -274,7 +274,9 @@ const generateAccessToken = async (req, res) => {
       data: {
         userToken: {
           access: accessToken,
-          expire: utils.timestampToIso(authorize.decodeJwt(accessToken).exp)
+          expireAt: utils.timestampToIso(
+            authorize.decodeJwt(accessToken, false).exp
+          )
         }
       },
       error: null

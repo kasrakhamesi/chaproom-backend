@@ -155,6 +155,28 @@ const update = async (req, res) => {
   }
 }
 
+const create = async (req, res) => {
+  try {
+    const adminId = req?.user[0]?.id
+    const { userId, type, amount, description } = req.body
+    const data = { adminId, userId, type, amount, description }
+
+    const user = await sequelize.models.users.findOne({
+      where: { id }
+    })
+
+    if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
+
+    const r = await transactions.Post({
+      body: data
+    })
+
+    res.status(r?.statusCode).send(r)
+  } catch (e) {
+    httpError(e, res)
+  }
+}
+
 const softDelete = async (req, res) => {
   try {
     const { id } = req.params
@@ -176,4 +198,4 @@ const softDelete = async (req, res) => {
   }
 }
 
-module.exports = { findAll, findOne, update, softDelete }
+module.exports = { findAll, findOne, update, softDelete, create }

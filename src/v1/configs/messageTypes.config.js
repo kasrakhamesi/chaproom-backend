@@ -16,7 +16,7 @@ const Types = {
   SUCCESSFUL_CREATED: {
     statusCode: 201,
     data: {
-      message: 'با موفقعیت ساخته شد'
+      message: 'با موفقعیت ایجاد شد'
     },
     error: null
   },

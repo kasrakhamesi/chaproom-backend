@@ -2,50 +2,7 @@ const { httpError, messageTypes, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 const _ = require('lodash')
 const zip = require('adm-zip')
-const { utils } = require('../../libs')
-var zipper = new zip()
-zipper.addLocalFile('README.md')
-zipper.addLocalFile('.env')
-zipper.writeZip('123.zip')
-
-const getPrintTariffs = () => {
-  return sequelize.models.print_tariffs
-    .findOne({
-      where: { id: 1 },
-      attributes: ['a3', 'a4', 'a5']
-    })
-    .then((r) => {
-      return {
-        a3: JSON.parse(r?.a3),
-        a4: JSON.parse(r?.a4),
-        a5: JSON.parse(r?.a5)
-      }
-    })
-}
-const extractBinding = (binding) => {
-  if (binding === null) return null
-
-  let { type, method, countOfFiles, coverColor } = binding
-
-  if (!type && !method && !countOfFiles && !coverColor) return null
-
-  if (type !== 'spring_normal' && type !== 'spring_papco' && type !== 'stapler')
-    type = null
-  if (
-    method !== 'each_file_separated' &&
-    method !== 'all_files_together' &&
-    method !== 'count_of_files'
-  )
-    method = null
-  if (coverColor !== 'black_and_white' && coverColor !== 'colorful')
-    coverColor = null
-  return JSON.stringify({
-    type,
-    method,
-    countOfFiles: parseInt(countOfFiles) || null,
-    coverColor
-  })
-}
+const { utils, folders } = require('../../libs')
 
 const create = async (req, res) => {
   try {
@@ -62,7 +19,7 @@ const create = async (req, res) => {
 
     const userId = req?.user[0]?.id
 
-    const extractedBinding = extractBinding(binding)
+    const extractedBinding = folders.extractBinding(binding)
 
     const data = {
       color,
@@ -76,49 +33,6 @@ const create = async (req, res) => {
       userId
     }
 
-    const bindingBreakpoint = {
-      spring_normal: 300,
-      spring_papco: 300,
-      stapler: 200
-    }
-    /*
-    color: {
-      type: Sequelize.ENUM('black_and_white', 'full_color', 'normal_color'),
-      allowNull: false
-    },
-    side: {
-      type: Sequelize.ENUM(
-        'single_sided',
-        'double_sided',
-        'single_sided_glossy',
-        'double_sided_glossy'
-      ),
-      allowNull: false
-    },
-    size: {
-      type: Sequelize.ENUM('a4', 'a5', 'a3'),
-      allowNull: false
-    },
-*/
-    const printTariffs = await getPrintTariffs()
-
-    const tariff = printTariffs[size][utils.camelCase(color)]
-    let shipmentPrice = tariff[utils.camelCase(side)]
-
-    if (tariff.breakpoints.length > 0) {
-      for (let k = 0; k < tariff.breakpoints.length; k++) {
-        if (countOfPages >= tariff.breakpoints[k].at) {
-          shipmentPrice = tariff.breakpoints[k][utils.camelCase(side)]
-        }
-      }
-    }
-
-    data.shipmentPrice = shipmentPrice
-
-    let amount = shipmentPrice * countOfPages * countOfCopies || 1
-    const sideAmount = String(side).includes('single') ? 1 : 2
-    data.amount = parseInt(amount * sideAmount)
-
     if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
     const findedFiles = await sequelize.models.files.findAll({
@@ -127,16 +41,39 @@ const create = async (req, res) => {
       }
     })
 
+    const filesInfo = []
     const ids = []
     for (const entity of files) {
-      if (findedFiles.find((item) => item.id === entity.id))
+      const findedFile = findedFiles.find((item) => item.id === entity.id)
+      if (findedFile) {
         ids.push(entity?.id)
+        filesInfo.push({ countOfPages: findedFile?.countOfPages })
+      }
     }
 
     if (ids.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
     data.countOfFiles = ids.length
+
+    const calculatedPrice = await folders.priceCalculator(
+      color,
+      side,
+      size,
+      extractedBinding,
+      data.countOfFiles,
+      countOfPages,
+      countOfCopies,
+      filesInfo
+    )
+
+    if (calculatedPrice === null)
+      return httpError(errorTypes.CONTACT_TO_ADMIN, res)
+
     data.filesUrl = 'https://google.com'
+
+    data.amount = calculatedPrice?.amount
+
+    data.shipmentPrice = calculatedPrice?.shipmentPrice
 
     const t = await sequelize.transaction()
 
@@ -161,15 +98,7 @@ const create = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
-    console.log(e)
     return httpError(e?.message || String(e), res)
-  }
-}
-
-const priceCalculator = async (req, res) => {
-  try {
-  } catch (e) {
-    return httpError(e, res)
   }
 }
 
@@ -190,13 +119,15 @@ const update = (req, res) => {
 
   if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
+  const extractedBinding = folders.extractBinding(binding)
+
   const data = {
     color,
     side,
     size,
     countOfPages,
     uploadedPages: 4,
-    binding: extractBinding(binding),
+    binding: extractedBinding,
     countOfCopies,
     description
   }
@@ -209,52 +140,81 @@ const update = (req, res) => {
     })
     .then((rFiles) => {
       const filesId = []
+      const filesInfo = []
       for (const entity of files) {
-        if (rFiles.find((item) => item.id === entity.id))
+        const findedFile = rFiles.find((item) => item.id === entity.id)
+        if (findedFile) {
           filesId.push(entity?.id)
+          filesInfo.push({ countOfPages: findedFile?.countOfPages })
+        }
       }
 
       if (filesId.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
-      return sequelize.models.folders
-        .findOne(
-          {
-            where: {
-              userId,
-              id
-            }
-          },
-          {
-            include: [
+      data.countOfFiles = filesId.length
+
+      return folders
+        .priceCalculator(
+          color,
+          side,
+          size,
+          extractedBinding,
+          data.countOfFiles,
+          countOfPages,
+          countOfCopies,
+          filesInfo
+        )
+        .then((calculatedPrice) => {
+          if (calculatedPrice === null)
+            return httpError(errorTypes.CONTACT_TO_ADMIN, res)
+
+          data.amount = calculatedPrice?.amount
+
+          data.shipmentPrice = calculatedPrice?.shipmentPrice
+
+          return sequelize.models.folders
+            .findOne(
               {
-                model: sequelize.models.bindings
+                where: {
+                  userId,
+                  id
+                }
               },
               {
-                model: sequelize.models.files
+                include: [
+                  {
+                    model: sequelize.models.bindings
+                  },
+                  {
+                    model: sequelize.models.files
+                  }
+                ]
               }
-            ]
-          }
-        )
-        .then((r) => {
-          if (!r) return httpError(errorTypes.FOLDER_NOT_FOUND, res)
+            )
+            .then((r) => {
+              if (!r) return httpError(errorTypes.FOLDER_NOT_FOUND, res)
 
-          r.setFiles(filesId, { through: { userId } })
-          r.set(data)
+              r.setFiles(filesId, { through: { userId } })
+              r.set(data)
 
-          return sequelize.transaction((t) => {
-            return r
-              .save({
-                transaction: t
+              return sequelize.transaction((t) => {
+                return r
+                  .save({
+                    transaction: t
+                  })
+                  .then((r) => {
+                    r.save()
+                  })
               })
-              .then((r) => {
-                r.save()
-              })
-          })
-        })
-        .then(() => {
-          return res
-            .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
-            .send(messageTypes.SUCCESSFUL_UPDATE)
+            })
+            .then(() => {
+              return res
+                .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+                .send(messageTypes.SUCCESSFUL_UPDATE)
+            })
+            .catch((e) => {
+              return httpError(e, res)
+            })
         })
         .catch((e) => {
           return httpError(e, res)
@@ -310,7 +270,6 @@ const findAll = (req, res) => {
       })
     })
     .catch((e) => {
-      console.log(e)
       return httpError(e, res)
     })
 }
@@ -383,6 +342,8 @@ const hardDelete = (req, res) => {
       return httpError(e, res)
     })
 }
+
+const priceCalculator = (req, res) => {}
 
 module.exports = {
   create,

@@ -9,6 +9,412 @@
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {
+    "/admins/blogs-uploader": {
+      "post": {
+        "tags": ["Blogs Uploader"],
+        "summary": "Upload new image for blog",
+        "consumes": ["multipart/form-data"],
+        "produces": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "attachment",
+            "type": "file",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/admins/blogs-uploader/id/{id}": {
+      "delete": {
+        "tags": ["Blogs Uploader"],
+        "summary": "delete image for blog",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت  حذف شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/blogs/id/{id}": {
+      "get": {
+        "tags": ["Blogs"],
+        "summary": "get one of Blog",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "currentBlog": {
+                    "id": 1,
+                    "title": "این یک عنوان نمایشی است",
+                    "pageTitle": "این عنوان صفحه میباشد",
+                    "slug": "این-یک-اسلاگ-است",
+                    "keyWords": "این,کلمات,کلیدی,است",
+                    "metaDescription": "این توضیحات متا است",
+                    "body": "این یک بدنه است",
+                    "imageUrl": "http://google.com",
+                    "imageAlt": "this is a alt of image",
+                    "countOfViews": 0,
+                    "display": true,
+                    "createdAt": "2022-11-05T21:39:27.000Z",
+                    "updatedAt": "2022-11-05T21:39:27.000Z",
+                    "category": {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است"
+                    }
+                  },
+                  "nextBlog": {
+                    "id": 1,
+                    "title": "این یک عنوان نمایشی است",
+                    "pageTitle": "این عنوان صفحه میباشد",
+                    "slug": "این-یک-اسلاگ-است",
+                    "keyWords": "این,کلمات,کلیدی,است",
+                    "metaDescription": "این توضیحات متا است",
+                    "body": "این یک بدنه است",
+                    "imageUrl": "http://google.com",
+                    "imageAlt": "this is a alt of image",
+                    "countOfViews": 0,
+                    "display": true,
+                    "createdAt": "2022-11-05T21:39:27.000Z",
+                    "updatedAt": "2022-11-05T21:39:27.000Z",
+                    "category": {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است"
+                    }
+                  },
+                  "previousBlog": {
+                    "id": 1,
+                    "title": "این یک عنوان نمایشی است",
+                    "pageTitle": "این عنوان صفحه میباشد",
+                    "slug": "این-یک-اسلاگ-است",
+                    "keyWords": "این,کلمات,کلیدی,است",
+                    "metaDescription": "این توضیحات متا است",
+                    "body": "این یک بدنه است",
+                    "imageUrl": "http://google.com",
+                    "imageAlt": "this is a alt of image",
+                    "countOfViews": 0,
+                    "display": true,
+                    "createdAt": "2022-11-05T21:39:27.000Z",
+                    "updatedAt": "2022-11-05T21:39:27.000Z",
+                    "category": {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است"
+                    }
+                  }
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Blogs"],
+        "summary": "update or change one of blog",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Blogs" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت  آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Blogs"],
+        "summary": "update or change one of blog",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت  حذف شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/admins/blogs": {
+      "get": {
+        "tags": ["Blogs"],
+        "summary": "get Blogs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "blogs": [
+                    {
+                      "id": 1,
+                      "title": "این یک عنوان نمایشی است",
+                      "pageTitle": "این عنوان صفحه میباشد",
+                      "slug": "این-یک-اسلاگ-است",
+                      "keyWords": "این,کلمات,کلیدی,است",
+                      "metaDescription": "این توضیحات متا است",
+                      "body": "این یک بدنه است",
+                      "imageUrl": "http://google.com",
+                      "imageAlt": "this is a alt of image",
+                      "countOfViews": 0,
+                      "display": true,
+                      "createdAt": "2022-11-05T21:39:27.000Z",
+                      "updatedAt": "2022-11-05T21:39:27.000Z",
+                      "category": {
+                        "id": 1,
+                        "name": "این یک دسته بدی است است"
+                      }
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Blogs"],
+        "summary": "create new blog",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Blogs" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "message": "با موفقعیت ساخته شد شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admins/discounts": {
       "get": {
         "tags": ["Discounts"],
@@ -191,12 +597,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": { "$ref": "#/definitions/CreateDiscount" }
           }
         ],
         "responses": {
@@ -345,6 +745,280 @@
         }
       }
     },
+
+    "/admins/blogs/categories": {
+      "post": {
+        "tags": ["Blog Categories"],
+        "summary": "create blog category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/BlogCategory" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت ساخته شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Blog Categories"],
+        "summary": "get all blog categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 0,
+                  "pageSize": 25,
+                  "totalCount": 2,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "categories": [
+                    {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است",
+                      "countOfBlogs": 1
+                    },
+                    {
+                      "id": 2,
+                      "name": "این یک دسته بدی2ست",
+                      "countOfBlogs": 0
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/admins/blogs/categories/id/{id}": {
+      "delete": {
+        "tags": ["Blog Categories"],
+        "summary": "delete one of category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت حذف شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Blog Categories"],
+        "summary": "update or change category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/BlogCategory" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "name": "این یک دسته بدی است است",
+                  "createdAt": "2022-11-05T21:35:44.000Z",
+                  "updatedAt": "2022-11-05T21:35:44.000Z"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Blog Categories"],
+        "summary": "get one of category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "id": 1,
+                  "name": "این یک دسته بدی است است",
+                  "countOfBlogs": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "/admins/cooperations/id/{id}": {
       "put": {
         "tags": ["Cooperations"],
@@ -616,6 +1290,54 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": ["Transactions"],
+        "summary": "create new Transaction",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Transaction" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "message": "درخواست شما با موفقعیت ثبت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/admins/transactions/id/{id}": {
@@ -751,7 +1473,7 @@
             "in": "body",
             "name": "body",
             "required": true,
-            "schema": { "$ref": "#/definitions/UpdateTransaction" }
+            "schema": { "$ref": "#/definitions/Transaction" }
           }
         ],
         "responses": {
@@ -1834,11 +2556,11 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "examples": {
               "application/json": {
-                "statusCode": 201,
+                "statusCode": 200,
                 "data": {
                   "message": "درخواست شما با موفقعیت ثبت شد"
                 },
@@ -3864,7 +4586,7 @@
       }
     },
 
-    "UpdateTransaction": {
+    "Transaction": {
       "type": "object",
       "properties": {
         "userId": { "type": "int", "example": 1 },
@@ -3898,6 +4620,12 @@
           }
         },
         "stapler": { "type": "int", "example": 700 }
+      }
+    },
+    "BlogCategory": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "example": "این یک دسته بدی است است" }
       }
     },
     "PrintTariffs": {
@@ -3936,6 +4664,24 @@
             }
           }
         }
+      }
+    },
+    "Blogs": {
+      "type": "object",
+      "properties": {
+        "categoryId": { "type": "int", "example": 1 },
+        "title": { "type": "string", "example": "این یک عنوان نمایشی است" },
+        "pageTitle": { "type": "string", "example": "این عنوان صفحه میباشد" },
+        "slug": { "type": "string", "example": "این-یک-اسلاگ-است" },
+        "body": { "type": "string", "example": "این یک بدنه است" },
+        "imageUrl": { "type": "string", "example": "http://google.com" },
+        "imageAlt": { "type": "string", "example": "this is a alt of image" },
+        "display": { "type": "bool", "example": true },
+        "metaDescription": {
+          "type": "string",
+          "example": "این توضیحات متا است"
+        },
+        "keyWords": { "type": "string", "example": "این,کلمات,کلیدی,است" }
       }
     }
   }

@@ -175,6 +175,23 @@ const Types = {
   CANT_DELETE_FOUNDER: {
     statusCode: 400,
     message: 'امکان حذف حساب مالک سایت وجود ندارد'
+  },
+  CONTACT_TO_ADMIN: {
+    statusCode: 400,
+    message: 'مشکلی در سیستم پیش امده است.لطفا به ادمین گزارش دهید'
+  },
+  CATEGORY_NOT_FOUND: {
+    statusCode: 400,
+    message: 'دسته بندی انتخاب شده وجود ندارد'
+  },
+  INVALID_IMAGE_FORMAT: {
+    statusCode: 400,
+    message:
+      'فرمت عکس شما قابل قبول نمیباشد.لطفا عکس را با فرمت های استاندارد وارد کنید'
+  },
+  BLOG_NOT_FOUND: {
+    statusCode: 400,
+    message: 'وبلاگ موردنظر یافت نشد'
   }
 }
 

@@ -72,7 +72,7 @@ const loginConfirm = async (req, res) => {
         avatar: null,
         token: {
           access: accessToken,
-          expire: utils.timestampToIso(authorize.decodeJwt(accessToken).exp)
+          expireAt: utils.timestampToIso(authorize.decodeJwt(accessToken).exp)
         }
       },
       error: null
