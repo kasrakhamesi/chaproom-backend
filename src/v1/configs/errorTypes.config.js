@@ -192,6 +192,14 @@ const Types = {
   BLOG_NOT_FOUND: {
     statusCode: 400,
     message: 'وبلاگ موردنظر یافت نشد'
+  },
+  YOU_HAVE_PENDING_WITHDRAWAL: {
+    statusCode: 400,
+    message: 'شما یک درخواست برداشت در انتظار تایید دارید'
+  },
+  DONT_HAVE_FOLDERS: {
+    statusCode: 400,
+    message: 'شما هیچ پوشه ای برای ثبت سفارش ندارید'
   }
 }
 

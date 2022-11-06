@@ -34,7 +34,7 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('blogs_images', ['url'], {
+        queryInterface.addIndex('blogs_images', ['name'], {
           unique: true
         })
       )

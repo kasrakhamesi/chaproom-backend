@@ -9,11 +9,25 @@ const withdrawal = async (req, res) => {
 
     const userId = req?.user[0]?.id
 
+    const checkPendingWithdrawal = await sequelize.models.withdrawals.findOne({
+      where: {
+        userId,
+        status: 'pending'
+      }
+    })
+
+    if (checkPendingWithdrawal)
+      return httpError(errorTypes.YOU_HAVE_PENDING_WITHDRAWAL, res)
+
     const userWallet = await users.getBalance(userId)
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
-    if (userWallet.data.balance === 0)
+    if (
+      userWallet.data.balance === 0 ||
+      userWallet.data.balance <
+        parseInt(process.env.DEFAULT_MINIMUM_WITHDRAWAL_AMOUNT)
+    )
       return httpError(errorTypes.INSUFFICIENT_FUNDS, res)
 
     const data = {
@@ -50,6 +64,7 @@ const withdrawal = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

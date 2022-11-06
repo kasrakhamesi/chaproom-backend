@@ -11,8 +11,6 @@ const create = async (req, res) => {
   try {
     const userId = req?.user[0]?.id
 
-    const totalPrice = 150000
-
     const { addressId, discountCode, paidWithWallet } = req.body
 
     const referral = await sequelize.models.referrals.findOne({
@@ -40,11 +38,37 @@ const create = async (req, res) => {
     if (!address) return httpError(errorTypes.INVALID_ADDRESS, res)
 
     const folders = await sequelize.models.folders.findAll({
+      include: [
+        {
+          model: sequelize.models.files,
+          attributes: {
+            exclude: ['userId', 'folder_files']
+          },
+          through: {
+            attributes: {
+              exclude: [
+                'userId',
+                'createdAt',
+                'updatedAt',
+                'fileId',
+                'folderId'
+              ]
+            }
+          }
+        }
+      ],
       where: {
         userId,
         used: false
       }
     })
+
+    if (_.isEmpty(folders)) return httpError(errorTypes.DONT_HAVE_FOLDERS, res)
+
+    let totalPrice = 20000
+    for (const entity of folders) {
+      totalPrice += entity?.amount
+    }
 
     const data = {
       addressId,
@@ -57,12 +81,14 @@ const create = async (req, res) => {
       recipientDeliveryCity: address?.recipientDeliveryCity,
       recipientDeliveryAddress: address?.recipientDeliveryAddress,
       status: 'payment_pending',
-      amount: 15000
+      amount: totalPrice
     }
 
     if (referralUserId !== null) {
-      data.referralCommission = 10
-      data.referralBenefit = totalPrice
+      data.referralCommission = referral?.commission || 10
+      data.referralBenefit = parseInt(
+        (totalPrice * referral?.commission || 10) / 100
+      )
     }
 
     let discount = null
@@ -95,10 +121,20 @@ const create = async (req, res) => {
       const balance = user?.balance
 
       if (balance >= totalPrice) {
-        data.walletPaidAmount = balance
+        data.walletPaidAmount = balance - totalPrice
         data.status = 'pending'
         const t = await sequelize.transaction()
         const r = await sequelize.models.orders.create(data, { transaction: t })
+
+        const rUpdateFiles = await users.updateFolderFiles(
+          folders,
+          userId,
+          t,
+          r?.id || 0
+        )
+        if (rUpdateFiles === false)
+          return httpError(errorTypes.CONTACT_TO_ADMIN, res)
+
         await sequelize.models.folders.update(
           { used: true },
           { where: { userId, used: false } },
@@ -106,6 +142,37 @@ const create = async (req, res) => {
             transaction: t
           }
         )
+
+        for (const folder of folders) {
+          await sequelize.models.order_folders.create(
+            {
+              userId,
+              folderId: folder?.id,
+              orderId: r?.id
+            },
+            { transaction: t }
+          )
+        }
+
+        const userWallet = await users.getBalance(userId)
+
+        if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+
+        await sequelize.models.transactions.create(
+          {
+            userId,
+            orderId: r?.id,
+            type: 'order',
+            change: 'decrease',
+            balance: userWallet?.data?.balance,
+            balanceAfter: userWallet?.data?.balance - totalPrice,
+            status: 'successful',
+            amount: data.walletPaidAmount,
+            description: 'ثبت سفارش'
+          },
+          { transaction: t }
+        )
+
         await t.commit()
 
         return res.status(messageTypes.SUCCESSFUL_CREATED.statusCode).send({
@@ -119,22 +186,21 @@ const create = async (req, res) => {
       } else {
         const gatewayPayAmount = totalPrice - balance
 
-        const r = await users.createOrder(
+        return await users.createOrder(
           userId,
           gatewayPayAmount,
           balance,
           folders,
-          data
+          data,
+          res
         )
-        return res.status(r?.statusCode).send(r)
       }
     }
 
-    const r = await users.createOrder(userId, totalPrice, 0, folders, data)
-    return res.status(r?.statusCode).send(r)
+    return await users.createOrder(userId, totalPrice, 0, folders, data, res)
   } catch (e) {
     console.log(e)
-    return httpError(e, res)
+    return httpError(e || String(e) || e?.message, res)
   }
 }
 
@@ -163,9 +229,9 @@ const priceCalculator = async (req, res) => {
 
     const amounts = []
     let amount = 0
-    for (let k = 0; k < folders.length; k++) {
-      amounts.push(1000)
-      amount += 1000
+    for (const entity of folders) {
+      amounts.push(entity?.amount)
+      amount += entity?.amount
     }
 
     const data = {

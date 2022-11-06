@@ -2,6 +2,7 @@ const { sequelize } = require('../models')
 const { gateways } = require('.')
 const { httpError, errorTypes } = require('../configs')
 const { Op } = require('sequelize')
+const libs = require('../libs')
 require('dotenv').config()
 
 const getBalance = async (userId) => {
@@ -41,12 +42,50 @@ const getBalance = async (userId) => {
   }
 }
 
+const updateFolderFiles = async (folders, userId, transaction, orderId) => {
+  try {
+    let error = false
+    for (const folder of folders) {
+      if (error) return false
+      const filesPath = []
+      for (const file of folder?.files) filesPath.push(file?.name)
+
+      const rArchive = libs.folders.archiveFiles(
+        filesPath,
+        userId,
+        folder?.id,
+        orderId
+      )
+      if (rArchive === false) {
+        error = true
+        return false
+      }
+
+      await sequelize.models.folders.update(
+        { filesUrl: rArchive },
+        {
+          where: {
+            id: folder?.id
+          }
+        },
+        {
+          transaction
+        }
+      )
+    }
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
 const createOrder = async (
   userId,
   gatewayPayAmount,
   walletPayAmount,
   folders,
-  data
+  data,
+  res
 ) => {
   try {
     const zarinpal = gateways.zarinpal.create(
@@ -60,7 +99,7 @@ const createOrder = async (
       Description: 'افزایش موجودی کیف پول'
     })
 
-    if (payment?.status !== 100) return httpError(errorTypes.GATEWAY_ERROR)
+    if (payment?.status !== 100) return httpError(errorTypes.GATEWAY_ERROR, res)
 
     const t = await sequelize.transaction()
 
@@ -73,7 +112,7 @@ const createOrder = async (
       { transaction: t }
     )
 
-    if (!paymentCreated) return httpError(errorTypes.GATEWAY_ERROR)
+    if (!paymentCreated) return httpError(errorTypes.GATEWAY_ERROR, res)
     data.paymentId = paymentCreated?.id
     data.gatewayPaidAmount = gatewayPayAmount
     data.walletPaidAmount = walletPayAmount
@@ -81,6 +120,16 @@ const createOrder = async (
     const r = await sequelize.models.orders.create(data, {
       transaction: t
     })
+
+    const rUpdateFoldersFiles = await updateFolderFiles(
+      folders,
+      userId,
+      t,
+      res,
+      r?.id
+    )
+    if (rUpdateFoldersFiles === false)
+      return httpError(errorTypes.CONTACT_TO_ADMIN, res)
 
     for (const folder of folders) {
       await sequelize.models.order_folders.create(
@@ -93,9 +142,17 @@ const createOrder = async (
       )
     }
 
+    await sequelize.models.folders.update(
+      { used: true },
+      { where: { userId, used: false } },
+      {
+        transaction: t
+      }
+    )
+
     await t.commit()
 
-    return {
+    return res.status(201).send({
       statusCode: 201,
       data: {
         orderType: 'payment',
@@ -103,9 +160,9 @@ const createOrder = async (
         payableAmount: gatewayPayAmount
       },
       error: null
-    }
+    })
   } catch (e) {
-    return httpError(e)
+    return httpError(e, res)
   }
 }
 
@@ -168,4 +225,4 @@ const submitOrder = async (
   }
 }
 
-module.exports = { getBalance, submitOrder, createOrder }
+module.exports = { getBalance, submitOrder, createOrder, updateFolderFiles }

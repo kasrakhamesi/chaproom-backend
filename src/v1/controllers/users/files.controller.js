@@ -24,12 +24,12 @@ const upload = async (req, res) => {
     if (!allowedExtension.includes(extensionName.toLowerCase()))
       return httpError(errorTypes.INVALID_PDF_DOCX_FORMAT, res)
 
-    let newFileName = `0_${extensionName}`
+    let newFileName = `f${userId}_0${extensionName}`
 
     let filePath = `./src/v1/storages/files/${userId}/${newFileName}`
     if (fs.existsSync(filePath)) {
       for (let k = 0; k < Number.MAX_VALUE; k++) {
-        newFileName = `f_${k}${extensionName}`
+        newFileName = `f${userId}_${k}${extensionName}`
 
         const endPath = `./src/v1/storages/files/${userId}/${newFileName}`
 
@@ -52,7 +52,7 @@ const upload = async (req, res) => {
       uploadedName: attachment.name,
       name: newFileName,
       countOfPages: rCounter,
-      url: 'https://google.com/' + newFileName
+      url: '/' + newFileName
     })
 
     res.status(201).send({

@@ -1,4 +1,4 @@
-const { Router } = require('express')
+const { Router, static } = require('express')
 const router = Router()
 const fileUpload = require('express-fileupload')
 router.use(
@@ -14,7 +14,6 @@ router.use(
 )
 const { users } = require('../../controllers')
 
-//router.use('/media', express.static('./app/v1/storages'))
 router.delete('/id/:id', users.files.hardDelete)
 router.post('/', users.files.upload)
 

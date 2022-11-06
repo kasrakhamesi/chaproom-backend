@@ -1,7 +1,9 @@
 const { sequelize } = require('../models')
 const _ = require('lodash')
+const fs = require('fs')
 const zip = require('adm-zip')
 const { utils } = require('.')
+require('dotenv').config()
 
 const priceCalculator = async (
   color,
@@ -17,7 +19,7 @@ const priceCalculator = async (
     const bindingBreakpoint = {
       springNormal: 300,
       springPapco: 300,
-      stapler: 200
+      stapler: 60
     }
 
     const printTariffs = await getPrintTariffs()
@@ -74,10 +76,29 @@ const priceCalculator = async (
   }
 }
 
-const archiveFiles = (filesPath, userId, folderId) => {
-  var zipper = new zip()
-  for (const entity of files) zipper.addLocalFile(entity)
-  zipper.writeZip('123.zip')
+const archiveFiles = (filesPath, userId, folderId, orderId) => {
+  try {
+    const newFilesPath = __dirname.replace('libs', 'storages/files')
+    const zipper = new zip()
+    for (const entity of filesPath) {
+      zipper.addLocalFile(`${newFilesPath}/${userId}/${entity}`)
+    }
+    let filePath = `${newFilesPath}/${userId}/o${orderId}-f${folderId}`
+    let returnedPath = `/${userId}/o${orderId}-f${folderId}`
+    if (fs.existsSync(filePath)) {
+      for (let k = 0; k < Number.MAX_VALUE; k++) {
+        filePath = `${newFilesPath}/${userId}/${k}-o${orderId}-f${folderId}`
+        returnedPath = `/${userId}/${k}-o${orderId}-f${folderId}`
+        if (fs.existsSync(filePath)) continue
+        break
+      }
+    }
+
+    zipper.writeZip(`${filePath}.zip`)
+    return `${process.env.FRONT_DOMAIN}/v1/prints${returnedPath}.zip`
+  } catch (e) {
+    return false
+  }
 }
 
 const getBindingPriceses = () => {

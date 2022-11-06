@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       countOfCopies: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: true
       },
       description: {
         type: DataTypes.TEXT('medium'),

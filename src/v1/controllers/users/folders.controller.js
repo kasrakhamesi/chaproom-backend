@@ -69,7 +69,7 @@ const create = async (req, res) => {
     if (calculatedPrice === null)
       return httpError(errorTypes.CONTACT_TO_ADMIN, res)
 
-    data.filesUrl = 'https://google.com'
+    data.filesUrl = 'https://chaproom.com'
 
     data.amount = calculatedPrice?.amount
 
@@ -343,7 +343,80 @@ const hardDelete = (req, res) => {
     })
 }
 
-const priceCalculator = (req, res) => {}
+const priceCalculator = async (req, res) => {
+  try {
+    const {
+      color,
+      side,
+      size,
+      countOfPages,
+      countOfCopies,
+      description,
+      binding,
+      files
+    } = req.body
+
+    const userId = req?.user[0]?.id
+
+    const extractedBinding = folders.extractBinding(binding)
+
+    const data = {
+      color,
+      side,
+      size,
+      countOfPages,
+      uploadedPages: 5,
+      countOfCopies,
+      description,
+      binding: extractedBinding,
+      userId
+    }
+
+    if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+
+    const findedFiles = await sequelize.models.files.findAll({
+      where: {
+        userId
+      }
+    })
+
+    const filesInfo = []
+    const ids = []
+    for (const entity of files) {
+      const findedFile = findedFiles.find((item) => item.id === entity.id)
+      if (findedFile) {
+        ids.push(entity?.id)
+        filesInfo.push({ countOfPages: findedFile?.countOfPages })
+      }
+    }
+
+    if (ids.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+
+    data.countOfFiles = ids.length
+
+    const calculatedPrice = await folders.priceCalculator(
+      color,
+      side,
+      size,
+      extractedBinding,
+      data.countOfFiles,
+      countOfPages,
+      countOfCopies,
+      filesInfo
+    )
+
+    if (calculatedPrice === null)
+      return httpError(errorTypes.CONTACT_TO_ADMIN, res)
+
+    res.status(200).send({
+      statusCode: 200,
+      data: { amount: calculatedPrice?.amount },
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
 
 module.exports = {
   create,

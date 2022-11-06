@@ -1,4 +1,4 @@
-const { Router } = require('express')
+const { Router, static } = require('express')
 const router = Router()
 const { passport } = require('../../middlewares')
 
@@ -7,8 +7,12 @@ const usersPassport = passport.usersPassport.authenticate('jwt', {
   failureRedirect: '/v1/failures/unauthorized'
 })
 
-router.use(passport.usersPassport.initialize())
+router.use(
+  '/prints',
+  static(__dirname.replace('users', 'files').replace('routes', 'storages'))
+)
 
+router.use(passport.usersPassport.initialize())
 router.use('/auth', require('./auth.route'))
 router.use('/addresses', usersPassport, require('./addresses.route'))
 router.use('/wallets', usersPassport, require('./wallets.route'))
