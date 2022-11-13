@@ -61,32 +61,8 @@ const findAll = async (req, res) => {
 
 const findOne = (req, res) => {
   const { id } = req.params
-
   return sequelize.models.orders
     .findOne({
-      include: [
-        {
-          model: sequelize.models.folders,
-          attributes: {
-            exclude: ['userId', 'used']
-          },
-          through: {
-            attributes: {
-              exclude: [
-                'userId',
-                'createdAt',
-                'updatedAt',
-                'orderId',
-                'folderId'
-              ]
-            }
-          }
-        },
-        {
-          model: sequelize.models.users,
-          attributes: ['id', 'name', 'phoneNumber']
-        }
-      ],
       where: {
         id
       },
@@ -105,7 +81,43 @@ const findOne = (req, res) => {
           'referralBenefit',
           'referralCommission'
         ]
-      }
+      },
+      include: [
+        {
+          model: sequelize.models.folders,
+          attributes: {
+            exclude: ['userId', 'used']
+          },
+          through: {
+            attributes: {
+              exclude: [
+                'userId',
+                'createdAt',
+                'updatedAt',
+                'orderId',
+                'folderId'
+              ]
+            }
+          },
+          include: {
+            model: sequelize.models.files,
+            attributes: {
+              exclude: ['userId', 'folder_files']
+            },
+            through: {
+              attributes: {
+                exclude: [
+                  'userId',
+                  'createdAt',
+                  'updatedAt',
+                  'fileId',
+                  'folderId'
+                ]
+              }
+            }
+          }
+        }
+      ]
     })
     .then((r) => {
       const folders = r?.folders.map((item) => {

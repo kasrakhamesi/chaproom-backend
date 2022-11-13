@@ -12,6 +12,8 @@ router.put('/categories/id/:id', admins.categories.update)
 router.get('/categories', admins.categories.findAll)
 router.post('/categories', admins.categories.create)
 
+router.get('/category-id/:categoryId', admins.blogs.findAllByCategory)
+
 router.delete('/id/:id', admins.blogs.hardDelete)
 router.get('/id/:id', admins.blogs.findOne)
 router.put('/id/:id', admins.blogs.update)

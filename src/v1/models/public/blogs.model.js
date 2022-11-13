@@ -9,7 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      blogs.belongsTo(models.categories)
+      blogs.belongsToMany(models.categories, {
+        through: 'blog_categories'
+      })
+      blogs.belongsTo(models.admins)
     }
   }
   blogs.init(
@@ -17,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       adminId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
-      },
-      categoryId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true
       },
       title: {
         type: DataTypes.STRING,
@@ -34,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      keyWords: {
-        type: DataTypes.STRING,
+      keywords: {
+        type: DataTypes.TEXT,
         allowNull: true
       },
       metaDescription: {
@@ -46,11 +45,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT('long'),
         allowNull: true
       },
-      imageUrl: {
+      thumbnailUrl: {
         type: DataTypes.TEXT,
         allowNull: true
       },
-      imageAlt: {
+      thumbnailAlt: {
         type: DataTypes.STRING,
         allowNull: true
       },

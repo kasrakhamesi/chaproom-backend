@@ -65,7 +65,8 @@ const create = async (req, res) => {
 
     if (_.isEmpty(folders)) return httpError(errorTypes.DONT_HAVE_FOLDERS, res)
 
-    let totalPrice = 20000
+    let postageFee = 20000
+    let totalPrice = 0
     for (const entity of folders) {
       totalPrice += entity?.amount
     }
@@ -99,7 +100,7 @@ const create = async (req, res) => {
 
     const discountAmount =
       discount !== null
-        ? await discounts.calculator(discount?.data, totalPrice + 20000)
+        ? await discounts.calculator(discount?.data, totalPrice)
         : null
 
     if (discountAmount !== null) {
@@ -237,7 +238,7 @@ const priceCalculator = async (req, res) => {
     const data = {
       discountAmount:
         discount !== null
-          ? await discounts.calculator(discount?.data, amount + 20000)
+          ? await discounts.calculator(discount?.data, amount)
           : null,
       userBalance: user?.balance,
       foldersAmount: amounts,

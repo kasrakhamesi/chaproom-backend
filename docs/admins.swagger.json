@@ -110,63 +110,33 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "currentBlog": {
-                    "id": 1,
-                    "title": "این یک عنوان نمایشی است",
-                    "pageTitle": "این عنوان صفحه میباشد",
-                    "slug": "این-یک-اسلاگ-است",
-                    "keyWords": "این,کلمات,کلیدی,است",
-                    "metaDescription": "این توضیحات متا است",
-                    "body": "این یک بدنه است",
-                    "imageUrl": "http://google.com",
-                    "imageAlt": "this is a alt of image",
-                    "countOfViews": 0,
-                    "display": true,
-                    "createdAt": "2022-11-05T21:39:27.000Z",
-                    "updatedAt": "2022-11-05T21:39:27.000Z",
-                    "category": {
+                  "id": 4,
+                  "title": "این یک عنوان نمایشی است",
+                  "pageTitle": "این عنوان صفحه میباشد",
+                  "slug": "این-یک-اسلاگ3-است",
+                  "keywords": "این,کلمات,کلیدی,است",
+                  "metaDescription": "این توضیحات متا است",
+                  "body": "این یک بدنه است",
+                  "thumbnailUrl": "http://google.com",
+                  "thumbnailAlt": "this is a alt of image",
+                  "countOfViews": 0,
+                  "display": true,
+                  "createdAt": "2022-11-13T18:32:06.000Z",
+                  "updatedAt": "2022-11-13T18:32:06.000Z",
+                  "categories": [
+                    {
                       "id": 1,
-                      "name": "این یک دسته بدی است است"
+                      "name": "این یک دسته بدی است است",
+                      "createdAt": "2022-11-13T18:28:48.000Z",
+                      "updatedAt": "2022-11-13T18:28:48.000Z"
+                    },
+                    {
+                      "id": 3,
+                      "name": "2این یک دسته بدی است است",
+                      "createdAt": "2022-11-13T18:28:56.000Z",
+                      "updatedAt": "2022-11-13T18:28:56.000Z"
                     }
-                  },
-                  "nextBlog": {
-                    "id": 1,
-                    "title": "این یک عنوان نمایشی است",
-                    "pageTitle": "این عنوان صفحه میباشد",
-                    "slug": "این-یک-اسلاگ-است",
-                    "keyWords": "این,کلمات,کلیدی,است",
-                    "metaDescription": "این توضیحات متا است",
-                    "body": "این یک بدنه است",
-                    "imageUrl": "http://google.com",
-                    "imageAlt": "this is a alt of image",
-                    "countOfViews": 0,
-                    "display": true,
-                    "createdAt": "2022-11-05T21:39:27.000Z",
-                    "updatedAt": "2022-11-05T21:39:27.000Z",
-                    "category": {
-                      "id": 1,
-                      "name": "این یک دسته بدی است است"
-                    }
-                  },
-                  "previousBlog": {
-                    "id": 1,
-                    "title": "این یک عنوان نمایشی است",
-                    "pageTitle": "این عنوان صفحه میباشد",
-                    "slug": "این-یک-اسلاگ-است",
-                    "keyWords": "این,کلمات,کلیدی,است",
-                    "metaDescription": "این توضیحات متا است",
-                    "body": "این یک بدنه است",
-                    "imageUrl": "http://google.com",
-                    "imageAlt": "this is a alt of image",
-                    "countOfViews": 0,
-                    "display": true,
-                    "createdAt": "2022-11-05T21:39:27.000Z",
-                    "updatedAt": "2022-11-05T21:39:27.000Z",
-                    "category": {
-                      "id": 1,
-                      "name": "این یک دسته بدی است است"
-                    }
-                  }
+                  ]
                 },
                 "error": null
               }
@@ -290,7 +260,147 @@
         }
       }
     },
-
+    "/admins/blogs/category-id/{categoryId}": {
+      "get": {
+        "tags": ["Blogs"],
+        "summary": "get Blogs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 1,
+                  "pageSize": 25,
+                  "totalCount": 4,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "blogs": [
+                    {
+                      "id": 1,
+                      "title": "این یک عنوان نمایشی است",
+                      "pageTitle": "این عنوان صفحه میباشد",
+                      "slug": "این-یک-اسلاگ-است",
+                      "metaDescription": "این توضیحات متا است",
+                      "thumbnailUrl": "http://google.com",
+                      "thumbnailAlt": "this is a alt of image",
+                      "countOfViews": 0,
+                      "display": true,
+                      "createdAt": "2022-11-13T18:31:09.000Z",
+                      "updatedAt": "2022-11-13T18:31:09.000Z",
+                      "categories": [
+                        {
+                          "id": 1,
+                          "name": "این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:48.000Z",
+                          "updatedAt": "2022-11-13T18:28:48.000Z"
+                        }
+                      ],
+                      "admin": {
+                        "name": "کسری"
+                      }
+                    },
+                    {
+                      "id": 3,
+                      "title": "این یک عنوان نمایشی است",
+                      "pageTitle": "این عنوان صفحه میباشد",
+                      "slug": "این-یک-اسلاگ2-است",
+                      "metaDescription": "این توضیحات متا است",
+                      "thumbnailUrl": "http://google.com",
+                      "thumbnailAlt": "this is a alt of image",
+                      "countOfViews": 0,
+                      "display": true,
+                      "createdAt": "2022-11-13T18:31:42.000Z",
+                      "updatedAt": "2022-11-13T18:31:42.000Z",
+                      "categories": [
+                        {
+                          "id": 1,
+                          "name": "این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:48.000Z",
+                          "updatedAt": "2022-11-13T18:28:48.000Z"
+                        }
+                      ],
+                      "admin": {
+                        "name": "کسری"
+                      }
+                    },
+                    {
+                      "id": 4,
+                      "title": "این یک عنوان نمایشی است",
+                      "pageTitle": "این عنوان صفحه میباشد",
+                      "slug": "این-یک-اسلاگ3-است",
+                      "metaDescription": "این توضیحات متا است",
+                      "thumbnailUrl": "http://google.com",
+                      "thumbnailAlt": "this is a alt of image",
+                      "countOfViews": 0,
+                      "display": true,
+                      "createdAt": "2022-11-13T18:32:06.000Z",
+                      "updatedAt": "2022-11-13T18:32:06.000Z",
+                      "categories": [
+                        {
+                          "id": 1,
+                          "name": "این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:48.000Z",
+                          "updatedAt": "2022-11-13T18:28:48.000Z"
+                        },
+                        {
+                          "id": 3,
+                          "name": "2این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:56.000Z",
+                          "updatedAt": "2022-11-13T18:28:56.000Z"
+                        }
+                      ],
+                      "admin": {
+                        "name": "کسری"
+                      }
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admins/blogs": {
       "get": {
         "tags": ["Blogs"],
@@ -320,9 +430,9 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "page": 0,
+                  "page": 1,
                   "pageSize": 25,
-                  "totalCount": 1,
+                  "totalCount": 4,
                   "totalPageLeft": 0,
                   "totalCountLeft": 0,
                   "blogs": [
@@ -331,18 +441,77 @@
                       "title": "این یک عنوان نمایشی است",
                       "pageTitle": "این عنوان صفحه میباشد",
                       "slug": "این-یک-اسلاگ-است",
-                      "keyWords": "این,کلمات,کلیدی,است",
                       "metaDescription": "این توضیحات متا است",
-                      "body": "این یک بدنه است",
-                      "imageUrl": "http://google.com",
-                      "imageAlt": "this is a alt of image",
+                      "thumbnailUrl": "http://google.com",
+                      "thumbnailAlt": "this is a alt of image",
                       "countOfViews": 0,
                       "display": true,
-                      "createdAt": "2022-11-05T21:39:27.000Z",
-                      "updatedAt": "2022-11-05T21:39:27.000Z",
-                      "category": {
-                        "id": 1,
-                        "name": "این یک دسته بدی است است"
+                      "createdAt": "2022-11-13T18:31:09.000Z",
+                      "updatedAt": "2022-11-13T18:31:09.000Z",
+                      "categories": [
+                        {
+                          "id": 1,
+                          "name": "این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:48.000Z",
+                          "updatedAt": "2022-11-13T18:28:48.000Z"
+                        }
+                      ],
+                      "admin": {
+                        "name": "کسری"
+                      }
+                    },
+                    {
+                      "id": 3,
+                      "title": "این یک عنوان نمایشی است",
+                      "pageTitle": "این عنوان صفحه میباشد",
+                      "slug": "این-یک-اسلاگ2-است",
+                      "metaDescription": "این توضیحات متا است",
+                      "thumbnailUrl": "http://google.com",
+                      "thumbnailAlt": "this is a alt of image",
+                      "countOfViews": 0,
+                      "display": true,
+                      "createdAt": "2022-11-13T18:31:42.000Z",
+                      "updatedAt": "2022-11-13T18:31:42.000Z",
+                      "categories": [
+                        {
+                          "id": 1,
+                          "name": "این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:48.000Z",
+                          "updatedAt": "2022-11-13T18:28:48.000Z"
+                        }
+                      ],
+                      "admin": {
+                        "name": "کسری"
+                      }
+                    },
+                    {
+                      "id": 4,
+                      "title": "این یک عنوان نمایشی است",
+                      "pageTitle": "این عنوان صفحه میباشد",
+                      "slug": "این-یک-اسلاگ3-است",
+                      "metaDescription": "این توضیحات متا است",
+                      "thumbnailUrl": "http://google.com",
+                      "thumbnailAlt": "this is a alt of image",
+                      "countOfViews": 0,
+                      "display": true,
+                      "createdAt": "2022-11-13T18:32:06.000Z",
+                      "updatedAt": "2022-11-13T18:32:06.000Z",
+                      "categories": [
+                        {
+                          "id": 1,
+                          "name": "این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:48.000Z",
+                          "updatedAt": "2022-11-13T18:28:48.000Z"
+                        },
+                        {
+                          "id": 3,
+                          "name": "2این یک دسته بدی است است",
+                          "createdAt": "2022-11-13T18:28:56.000Z",
+                          "updatedAt": "2022-11-13T18:28:56.000Z"
+                        }
+                      ],
+                      "admin": {
+                        "name": "کسری"
                       }
                     }
                   ]
@@ -3843,6 +4012,13 @@
             "required": true
           },
           {
+            "name": "search",
+            "description": "search by phoneNumber or name",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
             "name": "status",
             "description": "set status to filter",
             "in": "query",
@@ -4669,19 +4845,22 @@
     "Blogs": {
       "type": "object",
       "properties": {
-        "categoryId": { "type": "int", "example": 1 },
+        "categories": { "type": "array", "example": [{ "id": 1 }] },
         "title": { "type": "string", "example": "این یک عنوان نمایشی است" },
         "pageTitle": { "type": "string", "example": "این عنوان صفحه میباشد" },
         "slug": { "type": "string", "example": "این-یک-اسلاگ-است" },
         "body": { "type": "string", "example": "این یک بدنه است" },
-        "imageUrl": { "type": "string", "example": "http://google.com" },
-        "imageAlt": { "type": "string", "example": "this is a alt of image" },
+        "thumbnailUrl": { "type": "string", "example": "http://google.com" },
+        "thumbnailAlt": {
+          "type": "string",
+          "example": "this is a alt of image"
+        },
         "display": { "type": "bool", "example": true },
         "metaDescription": {
           "type": "string",
           "example": "این توضیحات متا است"
         },
-        "keyWords": { "type": "string", "example": "این,کلمات,کلیدی,است" }
+        "keywords": { "type": "string", "example": "این,کلمات,کلیدی,است" }
       }
     }
   }

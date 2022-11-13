@@ -200,6 +200,10 @@ const Types = {
   DONT_HAVE_FOLDERS: {
     statusCode: 400,
     message: 'شما هیچ پوشه ای برای ثبت سفارش ندارید'
+  },
+  CATEGORY_NOT_SELECTED: {
+    statusCode: 400,
+    message: 'هیچ دسته بندی معتبری برای این وبلاگ انتخاب نشده است'
   }
 }
 

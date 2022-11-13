@@ -17,9 +17,14 @@ const callback = async (req, res) => {
       }
     })
 
-    if (!payment) return httpError(errorTypes.PAYMENT_FAILED, res)
+    if (!payment)
+      return res.redirect(
+        `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
+      )
     if (!_.isEmpty(payment.status))
-      return httpError(errorTypes.PAYMENT_DOUBLE_SPENDING, res)
+      return res.redirect(
+        `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
+      )
 
     const zarinpal = gateways.zarinpal.create(
       process.env.ZARINPAL_MERCHANT,
@@ -42,8 +47,6 @@ const callback = async (req, res) => {
       return res.redirect(
         `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
       )
-    //return httpError(errorTypes.PAYMENT_VERIFICATION_FAILED, res)
-
     const userWallet = await users.getBalance(payment?.userId)
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
@@ -99,17 +102,6 @@ const callback = async (req, res) => {
     return res.redirect(
       `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=true&paymentId=${payment?.id}&amount=${payment?.amount}`
     )
-
-    res.status(200).send({
-      statusCode: 200,
-      data: {
-        id: payment?.id,
-        message: 'پرداخت با موفقعیت انجام شد',
-        amount: payment?.amount,
-        refId: paymentVerification?.RefID
-      },
-      error: null
-    })
   } catch (e) {
     console.log(e)
     return httpError(e, res)

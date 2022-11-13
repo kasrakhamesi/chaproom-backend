@@ -37,37 +37,27 @@ const findOne = async (req, res) => {
   try {
     const { slug } = req.params
 
-    const nextAndPreviousBlog = await sequelize.models.blogs.findAll({
-      limit: 2,
-      include: {
-        model: sequelize.models.categories,
-        attributes: ['id', 'name']
-      },
-      attributes: {
-        exclude: ['adminId', 'categoryId']
-      }
-    })
-
     const r = await sequelize.models.blogs.findOne({
       include: {
         model: sequelize.models.categories,
-        attributes: ['id', 'name']
+        through: {
+          attributes: {
+            exclude: ['blogId', 'createdAt', 'updatedAt', 'categoryId']
+          }
+        }
       },
       attributes: {
-        exclude: ['adminId', 'categoryId']
+        exclude: ['display', 'adminId']
       },
       where: {
-        slug
+        slug,
+        display: true
       }
     })
 
     res.status(200).send({
       statusCode: 200,
-      data: {
-        currentBlog: r,
-        nextBlog: nextAndPreviousBlog[0] || r,
-        previousBlog: nextAndPreviousBlog[1] || nextAndPreviousBlog[0] || r
-      },
+      data: r,
       error: null
     })
   } catch (e) {
@@ -83,15 +73,21 @@ const findAll = async (req, res) => {
       sequelize.models.blogs
     )
 
+    const newWhere = { ...where, display: true }
+
     const r = await blogs.Get({
       include: {
         model: sequelize.models.categories,
-        attributes: ['id', 'name']
+        through: {
+          attributes: {
+            exclude: ['blogId', 'createdAt', 'updatedAt', 'categoryId']
+          }
+        }
       },
       attributes: {
-        exclude: ['adminId', 'categoryId']
+        exclude: ['adminId', 'display', 'body', 'keywords']
       },
-      where,
+      where: newWhere,
       order,
       pagination: {
         active: true,
@@ -101,6 +97,83 @@ const findAll = async (req, res) => {
     })
 
     res.status(r?.statusCode).send(r)
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
+const findAllByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params
+
+    const category = await sequelize.models.categories.findOne({
+      where: {
+        id: categoryId
+      }
+    })
+
+    if (!category) return httpError(errorTypes.CATEGORY_NOT_FOUND, res)
+
+    const { page, pageSize } = req.query
+
+    const findedBlogCategories = await blogCategories.Get({
+      where: {
+        categoryId
+      },
+      order: [['id', 'desc']],
+      pagination: {
+        active: true,
+        page,
+        pageSize
+      }
+    })
+
+    if (findedBlogCategories?.statusCode !== 200)
+      return res
+        .status(findAllByCategory?.statusCode)
+        .send(findedBlogCategories)
+
+    let condition = []
+    for (const entity of findedBlogCategories?.data?.blogCategories) {
+      condition.push({
+        id: entity?.blogId
+      })
+    }
+
+    const r = await sequelize.models.blogs.findAll({
+      include: [
+        {
+          model: sequelize.models.categories,
+          through: {
+            where: { categoryId },
+            attributes: {
+              exclude: ['blogId', 'createdAt', 'updatedAt', 'categoryId']
+            }
+          }
+        },
+        {
+          model: sequelize.models.admins,
+          attributes: ['name']
+        }
+      ],
+      attributes: {
+        exclude: ['adminId', 'body', 'keywords']
+      },
+      where: { [Op.or]: condition }
+    })
+
+    res.status(200).send({
+      statusCode: 200,
+      data: {
+        page: findedBlogCategories?.data?.page,
+        pageSize: findedBlogCategories?.data?.pageSize,
+        totalCount: findedBlogCategories?.data?.totalCount,
+        totalPageLeft: findedBlogCategories?.data?.totalPageLeft,
+        totalCountLeft: findedBlogCategories?.data?.totalCountLeft,
+        blogs: r
+      },
+      error: null
+    })
   } catch (e) {
     return httpError(e, res)
   }
@@ -129,4 +202,10 @@ const increaseViews = async (req, res) => {
   }
 }
 
-module.exports = { findAllCategories, increaseViews, findOne, findAll }
+module.exports = {
+  findAllCategories,
+  increaseViews,
+  findOne,
+  findAll,
+  findAllByCategory
+}

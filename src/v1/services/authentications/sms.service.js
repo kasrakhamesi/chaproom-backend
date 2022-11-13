@@ -162,7 +162,7 @@ const check = async ({
           message: 'کد با موفقعیت تایید شد'
         }
       : {
-          registerData: JSON.parse(JSON.parse(verifyData?.registerData)),
+          registerData: JSON.parse(verifyData?.registerData),
           isSuccess: true,
           message: 'کد با موفقعیت تایید شد'
         }

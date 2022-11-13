@@ -25,7 +25,7 @@ const findAll = async (req, res) => {
       }
     })
 
-    if (r?.statusCode !== 200) return httpError(e, res)
+    if (r?.statusCode !== 200) return httpError(r?.error?.message, res)
 
     if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
       r.data.users = r?.data?.users.map((item) => {
@@ -110,6 +110,14 @@ const create = async (req, res) => {
       balance: walletBalance
     }
 
+    const user = await sequelize.models.users.findOne({
+      where: {
+        phoneNumber
+      }
+    })
+
+    if (user) return httpError(errorTypes.USER_EXIST_ERROR, res)
+
     const t = await sequelize.transaction()
 
     const r = await sequelize.models.users.create(data, { transaction: t })
@@ -169,11 +177,14 @@ const create = async (req, res) => {
 
     await t.commit()
 
+    console.log('y')
+
     return res
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
-    httpError(e, res)
+    console.log(e)
+    return httpError(e, res)
   }
 }
 

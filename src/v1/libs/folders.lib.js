@@ -71,7 +71,6 @@ const priceCalculator = async (
       shipmentPrice
     }
   } catch (e) {
-    console.log(e)
     return null
   }
 }
@@ -95,8 +94,9 @@ const archiveFiles = (filesPath, userId, folderId, orderId) => {
     }
 
     zipper.writeZip(`${filePath}.zip`)
-    return `${process.env.FRONT_DOMAIN}/v1/prints${returnedPath}.zip`
+    return `${process.env.BACKEND_DOMAIN}/users/v1/prints${returnedPath}.zip`
   } catch (e) {
+    console.log(e)
     return false
   }
 }
@@ -137,11 +137,7 @@ const getPrintTariffs = () => {
       attributes: ['a3', 'a4', 'a5']
     })
     .then((r) => {
-      return {
-        a3: JSON.parse(r?.a3),
-        a4: JSON.parse(r?.a4),
-        a5: JSON.parse(r?.a5)
-      }
+      return r
     })
 }
 const extractBinding = (binding) => {

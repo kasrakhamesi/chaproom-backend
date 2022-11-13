@@ -183,9 +183,6 @@ const update = (req, res) => {
               {
                 include: [
                   {
-                    model: sequelize.models.bindings
-                  },
-                  {
                     model: sequelize.models.files
                   }
                 ]

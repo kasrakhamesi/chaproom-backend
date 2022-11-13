@@ -46,8 +46,8 @@ const findOne = async (req, res) => {
       where: {
         userId,
         status: { [Op.not]: 'sent' },
-        status: { [Op.not]: 'user_canceled' },
-        status: { [Op.not]: 'admin_canceled' }
+        status: { [Op.not]: 'payment_pending' },
+        status: { [Op.not]: 'canceled' }
       },
       attributes: ['id', 'status', 'amount', 'createdAt', 'updatedAt']
     })

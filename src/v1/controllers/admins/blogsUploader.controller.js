@@ -45,10 +45,8 @@ const upload = async (req, res) => {
     const r = await sequelize.models.blogs_images.create({
       adminId,
       name: newFileName,
-      url: 'https://google.com/' + newFileName
+      url: `${process.env.BACKEND_DOMAIN}/users/v1/assets/${newFileName}`
     })
-
-    console.log(r)
 
     res.status(201).send({
       statusCode: 201,
@@ -61,8 +59,6 @@ const upload = async (req, res) => {
       error: null
     })
   } catch (e) {
-    console.log(e)
-    return res.send(e)
     return httpError(e, res)
   }
 }

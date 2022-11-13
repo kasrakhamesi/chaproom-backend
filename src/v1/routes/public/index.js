@@ -1,5 +1,12 @@
-const { Router } = require('express')
+const { Router, static } = require('express')
 const router = Router()
+
+router.use(
+  '/assets',
+  static(
+    __dirname.replace('public', 'blogs-contents').replace('routes', 'storages')
+  )
+)
 
 router.use('/contact-us', require('./contactUs.route'))
 router.use('/cooperations', require('./cooperations.route'))

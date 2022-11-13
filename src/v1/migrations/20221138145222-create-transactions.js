@@ -96,7 +96,7 @@ module.exports = {
         })
       )
       .then(() =>
-        queryInterface.addIndex('transactions', ['orderId'], {
+        queryInterface.addIndex('transactions', ['orderId', 'change'], {
           unique: true
         })
       )

@@ -2,34 +2,26 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
-      .createTable('blog_scores', {
+      .createTable('blog_categories', {
         id: {
           allowNull: false,
           autoIncrement: true,
           primaryKey: true,
           type: Sequelize.BIGINT.UNSIGNED
         },
-        userId: {
-          type: Sequelize.BIGINT.UNSIGNED,
-          references: { model: 'users', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
-          allowNull: true
-        },
         blogId: {
-          type: Sequelize.BIGINT.UNSIGNED,
+          type: Sequelize.INTEGER.UNSIGNED,
           references: { model: 'blogs', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: false
         },
-        score: {
-          type: Sequelize.STRING,
+        categoryId: {
+          type: Sequelize.INTEGER.UNSIGNED,
+          references: { model: 'categories', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           allowNull: false
-        },
-        ip: {
-          type: Sequelize.STRING,
-          allowNull: true
         },
         createdAt: {
           allowNull: true,
@@ -41,12 +33,12 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('blog_scores', ['userId', 'blogId'], {
+        queryInterface.addIndex('blog_categories', ['blogId', 'categoryId'], {
           unique: true
         })
       )
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('blog_scores')
+    await queryInterface.dropTable('blog_categories')
   }
 }

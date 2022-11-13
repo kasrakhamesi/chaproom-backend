@@ -7,18 +7,11 @@ module.exports = {
           allowNull: false,
           autoIncrement: true,
           primaryKey: true,
-          type: Sequelize.BIGINT.UNSIGNED
+          type: Sequelize.INTEGER.UNSIGNED
         },
         adminId: {
           type: Sequelize.INTEGER.UNSIGNED,
           references: { model: 'admins', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
-          allowNull: false
-        },
-        categoryId: {
-          type: Sequelize.INTEGER.UNSIGNED,
-          references: { model: 'categories', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: false
@@ -35,8 +28,8 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false
         },
-        keyWords: {
-          type: Sequelize.STRING,
+        keywords: {
+          type: Sequelize.TEXT,
           allowNull: true
         },
         metaDescription: {
@@ -47,11 +40,11 @@ module.exports = {
           type: Sequelize.TEXT('long'),
           allowNull: true
         },
-        imageUrl: {
+        thumbnailUrl: {
           type: Sequelize.TEXT,
           allowNull: true
         },
-        imageAlt: {
+        thumbnailAlt: {
           type: Sequelize.STRING,
           allowNull: true
         },

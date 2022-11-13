@@ -31,6 +31,10 @@ router.use(
   require('./customersReport.route')
 )
 
+const bodyParser = require('body-parser')
+router.use(bodyParser.urlencoded({ extended: true }))
+router.use(bodyParser.json())
+
 router.put('/id/:id', adminsPassport, admins.admins.update)
 router.get('/id/:id', adminsPassport, admins.admins.findOne)
 router.delete('/id/:id', adminsPassport, admins.admins.softDelete)

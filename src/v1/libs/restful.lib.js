@@ -11,24 +11,37 @@ const paginate = (query, { page, pageSize }) => {
   }
 }
 
-const paging = (tableName, sequelizeResult, page, pageSize) => {
-  const totalCountLeft = _.isEmpty(sequelizeResult.rows)
-    ? 0
-    : sequelizeResult.count - page <= 0
-    ? 1
-    : page * pageSize < 0
-    ? 0
-    : sequelizeResult.count - page <= 0
-    ? 1
-    : page * pageSize
+const paging = (
+  tableName,
+  sequelizeResult,
+  page,
+  pageSize,
+  pagingActive = true
+) => {
+  page = pagingActive ? page + 1 : page
 
-  totalPageLeft = parseInt(totalCountLeft / pageSize)
+  const totalCount = sequelizeResult.count
+
+  let totalCountLeft = 0
+  if (_.isEmpty(sequelizeResult.rows) || totalCount - page * pageSize <= 0) {
+    totalCountLeft = 0
+  } else if (totalCount - page * pageSize > 0) {
+    if (page * pageSize <= 0) {
+      totalCountLeft = 0
+    } else {
+      totalCountLeft = totalCount - page * pageSize
+    }
+  }
+
+  let pageLeft = totalCountLeft / pageSize
+  pageLeft = pageLeft < 1 && pageLeft > 0 ? pageLeft + 1 : pageLeft
+  totalPageLeft = parseInt(pageLeft)
 
   return {
-    page: page,
-    pageSize: pageSize,
-    totalCount: sequelizeResult.count,
-    totalPageLeft: totalPageLeft,
+    page,
+    pageSize,
+    totalCount,
+    totalPageLeft,
     totalCountLeft,
     [tableName]: sequelizeResult.rows
   }
@@ -96,7 +109,7 @@ class Restful {
       else if (!findOne && pagination?.active) {
         if (_.isEmpty(pagination?.pageSize)) pagination.pageSize = 25
 
-        if (_.isEmpty(pagination?.page)) pagination.page = 0
+        if (_.isEmpty(pagination?.page)) pagination.page = 1
 
         if (
           typeof parseInt(pagination?.pageSize) !== 'number' ||
@@ -105,18 +118,26 @@ class Restful {
           throw new Error("'page' and 'pageSize' must be integer")
 
         const pageSize = parseInt(pagination?.pageSize)
+        const page = parseInt(pagination?.page)
 
         if (pageSize > 100) throw new Error('PageSize must under 100')
 
-        if (pageSize === 0) {
-          resGet = await this.#model.findAll({
+        if (page === 0) {
+          resGet = await this.#model.findAndCountAll({
             where: where,
             attributes: attributes,
             include: include,
             order: order
           })
+
+          resGet = paging(
+            this.#generateNewTableName(),
+            resGet,
+            page,
+            Number.MAX_VALUE,
+            false
+          )
         } else {
-          const page = parseInt(pagination?.page)
           resGet = await this.#model.findAndCountAll(
             paginate(
               {
@@ -125,10 +146,15 @@ class Restful {
                 include: include,
                 order: order
               },
-              { page: page > 0 ? page - 1 : page, pageSize }
+              { page: page - 1, pageSize }
             )
           )
-          resGet = paging(this.#generateNewTableName(), resGet, page, pageSize)
+          resGet = paging(
+            this.#generateNewTableName(),
+            resGet,
+            page - 1,
+            pageSize
+          )
         }
       }
 

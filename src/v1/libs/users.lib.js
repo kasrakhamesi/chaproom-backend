@@ -75,6 +75,7 @@ const updateFolderFiles = async (folders, userId, transaction, orderId) => {
     }
     return true
   } catch (e) {
+    console.log(e)
     return false
   }
 }
@@ -125,7 +126,6 @@ const createOrder = async (
       folders,
       userId,
       t,
-      res,
       r?.id
     )
     if (rUpdateFoldersFiles === false)
@@ -142,15 +142,12 @@ const createOrder = async (
       )
     }
 
+    await t.commit()
+
     await sequelize.models.folders.update(
       { used: true },
-      { where: { userId, used: false } },
-      {
-        transaction: t
-      }
+      { where: { userId, used: false } }
     )
-
-    await t.commit()
 
     return res.status(201).send({
       statusCode: 201,
@@ -162,6 +159,7 @@ const createOrder = async (
       error: null
     })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

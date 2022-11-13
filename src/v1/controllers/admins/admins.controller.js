@@ -43,6 +43,7 @@ const createAdminFromUser = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { phoneNumber, name, password } = req.body
+    console.log(req.body)
     const data = { phoneNumber, roleId: 2, name, password }
 
     const admin = await sequelize.models.admins.findOne({
