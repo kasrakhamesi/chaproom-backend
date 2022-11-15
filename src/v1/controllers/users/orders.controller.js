@@ -393,7 +393,7 @@ const update = async (req, res) => {
         balanceAfter: userWallet?.data?.balance + order?.amount,
         status: 'successful',
         amount: order?.amount,
-        description: 'لغو کردن سفارش توسط کاربر'
+        description: 'بازگشت وجه به کیف پول بابت لغو سفارش'
       },
       { transaction: t }
     )

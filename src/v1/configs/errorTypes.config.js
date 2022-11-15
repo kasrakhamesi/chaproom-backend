@@ -204,6 +204,14 @@ const Types = {
   CATEGORY_NOT_SELECTED: {
     statusCode: 400,
     message: 'هیچ دسته بندی معتبری برای این وبلاگ انتخاب نشده است'
+  },
+  TIMEFRAME_NOT_EXIST: {
+    statusCode: 400,
+    message: 'تایم فریم انتخابی شما وجود ندارد'
+  },
+  FILTER_NOT_EXIST: {
+    statusCode: 400,
+    message: 'فیلتر انتخابی شما وجود ندارد'
   }
 }
 

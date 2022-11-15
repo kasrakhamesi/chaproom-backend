@@ -1,128 +1,74 @@
-const { httpError, errorTypes, messageTypes } = require('../../configs')
+const { httpError, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const { utils } = require('../../libs')
 const { Op } = require('sequelize')
 const _ = require('lodash')
-const bcrypt = require('bcrypt')
 
-class PersianDate extends Date {
-  constructor(...args) {
-    super(...args)
-  }
-
-  getParts = () => this.toLocaleDateString('fa-IR-u-nu-latn').split('/')
-  getDay = () => (super.getDay() === 6 ? 0 : super.getDay() + 1)
-  getDate = () => this.getParts()[2]
-  getMonth = () => this.getParts()[1] - 1
-  getYear = () => this.getParts()[0]
-  getMonthName = () => this.toLocaleDateString('fa-IR', { month: 'long' })
-  getDayName = () => this.toLocaleDateString('fa-IR', { weekday: 'long' })
-}
-
-const TIMES = {
-  DAILY: 1000 * 60 * 60 * 24,
-  WEEKLY: 1000 * 60 * 60 * 24 * 7,
-  MONTHYLY: 1000 * 60 * 60 * 24 * 30
-}
-
-const findUsers = async () => {
+const findUsers = async (req, res) => {
   try {
-    /*
-    const { ticker } = req.params
+    let { ticker } = req.params
+
+    ticker = String(ticker).toLowerCase()
+
+    if (ticker !== 'daily' && ticker !== 'weekly' && ticker !== 'monthly')
+      return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
 
     const users = await sequelize.models.users.findAndCountAll({
       attributes: ['createdAt'],
       order: [['id', 'desc']]
     })
 
-    const data = []
-    let currentDay = 0
-    for (const user of users) {
-      const date = new PersianDate(user.createdAt)
+    const timeList = utils.createTimeList(ticker)
+
+    for (const user of users.rows) {
+      const createdAt = new utils.PersianDate(user.createdAt)
+
       if (ticker === 'daily') {
-        currentDay = date.getDate()
-        while (date.getDate() ===)
-          data.push({
-            date: `${date.getMonth()}/${date.getDate()}`
-          })
-      } else if (ticker === 'weekly') {
-      } else if (ticker === 'monthly') {
-      }
-    }
-    */
-  } catch (e) {
-    return httpError(e, res)
-  }
-}
-
-const findOrders = async () => {}
-
-const findSales = async () => {}
-
-const findUserOrder = async () => {}
-
-const findOrdersFromProvince = async () => {}
-
-const findOne = async (req, res) => {
-  try {
-    const userId = req?.user[0]?.id
-    const user = await sequelize.models.users.findOne({
-      where: {
-        id: userId
-      },
-      attributes: {
-        exclude: ['password']
-      }
-    })
-
-    if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
-
-    const orders = await sequelize.models.orders.findAll({
-      where: {
-        userId,
-        status: { [Op.not]: 'sent' },
-        status: { [Op.not]: 'payment_pending' },
-        status: { [Op.not]: 'canceled' }
-      },
-      attributes: ['id', 'status', 'amount', 'createdAt', 'updatedAt']
-    })
-
-    const promises = await Promise.all([
-      getBindingPriceses(),
-      getPrintPriceses()
-    ])
-
-    const binding = _.isEmpty(promises[0])
-      ? null
-      : {
-          springNormal: {
-            a4: promises[0].a4_springNormal,
-            a3: promises[0].a3_springNormal,
-            a5: promises[0].a5_springNormal
-          },
-          springPapco: {
-            a4: promises[0].a4_springPapco,
-            a3: promises[0].a3_springPapco,
-            a5: promises[0].a5_springPapco
-          },
-          stapler: promises[0].stapler
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
         }
+      } else if (ticker === 'weekly') {
+        const userCreatedAt = parseInt(
+          `${createdAt.getMonth()}${createdAt.getDate()}`
+        )
 
-    const print = _.isEmpty(promises[1]) ? null : promises[1]
+        for (let k = 0; k < timeList.length; k++) {
+          const currentTimeList = parseInt(
+            String(timeList[k].time).replace('/', '')
+          )
 
-    const r = {
-      ...user.dataValues,
-      walletBalance: user?.balance - user?.marketingBalance,
-      avatar: null,
-      inProgressOrders: orders,
-      tariffs: {
-        binding,
-        print
+          const previousTimeList = parseInt(
+            String(timeList[k + 1].time).replace('/', '')
+          )
+
+          if (
+            previousTimeList < userCreatedAt &&
+            userCreatedAt >= currentTimeList
+          ) {
+            timeList[k].count++
+            break
+          }
+        }
+      } else if (ticker === 'monthly') {
+        const userCreatedAt = utils.dateFormat(createdAt.getMonth())
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === String(userCreatedAt)
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
       }
     }
 
     res.status(200).send({
       statusCode: 200,
-      data: r,
+      data: { totalUsers: users.count, chart: timeList },
       error: null
     })
   } catch (e) {
@@ -130,4 +76,386 @@ const findOne = async (req, res) => {
   }
 }
 
-module.exports = { findOne }
+const findOrders = async (req, res) => {
+  try {
+    let { ticker } = req.params
+
+    ticker = String(ticker).toLowerCase()
+
+    if (ticker !== 'daily' && ticker !== 'weekly' && ticker !== 'monthly')
+      return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
+
+    const orders = await sequelize.models.orders.findAndCountAll({
+      attributes: ['createdAt'],
+      order: [['id', 'desc']],
+      where: {
+        status: { [Op.not]: 'pending' },
+        status: { [Op.not]: 'payment_pending' },
+        status: { [Op.not]: 'canceled' }
+      }
+    })
+
+    const timeList = utils.createTimeList(ticker)
+
+    for (const order of orders.rows) {
+      const createdAt = new utils.PersianDate(order.createdAt)
+
+      if (ticker === 'daily') {
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      } else if (ticker === 'weekly') {
+        const userCreatedAt = parseInt(
+          `${createdAt.getMonth()}${createdAt.getDate()}`
+        )
+
+        for (let k = 0; k < timeList.length; k++) {
+          const currentTimeList = parseInt(
+            String(timeList[k].time).replace('/', '')
+          )
+
+          const previousTimeList = parseInt(
+            String(timeList[k + 1].time).replace('/', '')
+          )
+
+          if (
+            previousTimeList < userCreatedAt &&
+            userCreatedAt >= currentTimeList
+          ) {
+            timeList[k].count++
+            break
+          }
+        }
+      } else if (ticker === 'monthly') {
+        const userCreatedAt = utils.dateFormat(createdAt.getMonth())
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === String(userCreatedAt)
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      }
+    }
+
+    res.status(200).send({
+      statusCode: 200,
+      data: { totalOrders: orders.count, chart: timeList },
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
+const findSales = async () => {
+  try {
+    let { ticker } = req.params
+
+    ticker = String(ticker).toLowerCase()
+
+    if (ticker !== 'daily' && ticker !== 'weekly' && ticker !== 'monthly')
+      return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
+
+    const orders = await sequelize.models.orders.findAndCountAll({
+      attributes: ['createdAt'],
+      order: [['id', 'desc']]
+    })
+
+    const timeList = utils.createTimeList(ticker)
+
+    for (const order of orders.rows) {
+      const createdAt = new utils.PersianDate(order.createdAt)
+
+      if (ticker === 'daily') {
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      } else if (ticker === 'weekly') {
+        const userCreatedAt = parseInt(
+          `${createdAt.getMonth()}${createdAt.getDate()}`
+        )
+
+        for (let k = 0; k < timeList.length; k++) {
+          const currentTimeList = parseInt(
+            String(timeList[k].time).replace('/', '')
+          )
+
+          const previousTimeList = parseInt(
+            String(timeList[k + 1].time).replace('/', '')
+          )
+
+          if (
+            previousTimeList < userCreatedAt &&
+            userCreatedAt >= currentTimeList
+          ) {
+            timeList[k].count++
+            break
+          }
+        }
+      } else if (ticker === 'monthly') {
+        const userCreatedAt = utils.dateFormat(createdAt.getMonth())
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === String(userCreatedAt)
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      }
+    }
+
+    res.status(200).send({
+      statusCode: 200,
+      data: { totalSales: orders.count, chart: timeList },
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
+const findUserOrder = async (req, res) => {
+  try {
+    let { ticker } = req.params
+    let { orders } = req.query
+
+    ticker = String(ticker).toLowerCase()
+
+    if (ticker !== 'daily' && ticker !== 'weekly' && ticker !== 'monthly')
+      return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
+
+    if (orders !== 'one' && orders !== 'two' && orders !== 'three')
+      return httpError(errorTypes.FILTER_NOT_EXIST, res)
+
+    const findedOrders = await sequelize.models.orders.findAll({
+      attributes: ['id', 'userId'],
+      where: {
+        status: { [Op.not]: 'pending' },
+        status: { [Op.not]: 'payment_pending' },
+        status: { [Op.not]: 'canceled' }
+      }
+    })
+
+    const ordersCount = {}
+    const ordersData = []
+    let totalUsersWithOneOrder = 0
+    let totalUsersWithTwoOrder = 0
+    let totalUsersWithThreeOrder = 0
+
+    findedOrders.forEach((item) => {
+      ordersCount[item?.userId] = (ordersCount[item?.userId] || 0) + 1
+    })
+
+    for (const entity in ordersCount) {
+      if (ordersCount[entity] >= 1) {
+        totalUsersWithOneOrder++
+        if (orders === 'one') ordersData.push({ id: entity })
+      } else if (ordersCount[entity] >= 2) {
+        totalUsersWithTwoOrder++
+        if (orders === 'two') ordersData.push({ id: entity })
+      } else if (ordersCount[entity] >= 3) {
+        totalUsersWithThreeOrder++
+        if (orders === 'three') ordersData.push({ id: entity })
+      }
+    }
+
+    const users = await sequelize.models.users.findAndCountAll({
+      attributes: ['id', 'createdAt'],
+      order: [['id', 'desc']],
+      where: { [Op.or]: ordersData }
+    })
+
+    const timeList = utils.createTimeList(ticker)
+
+    for (const order of users.rows) {
+      const createdAt = new utils.PersianDate(order.createdAt)
+
+      if (ticker === 'daily') {
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      } else if (ticker === 'weekly') {
+        const userCreatedAt = parseInt(
+          `${createdAt.getMonth()}${createdAt.getDate()}`
+        )
+
+        for (let k = 0; k < timeList.length; k++) {
+          const currentTimeList = parseInt(
+            String(timeList[k].time).replace('/', '')
+          )
+
+          const previousTimeList = parseInt(
+            String(timeList[k + 1].time).replace('/', '')
+          )
+
+          if (
+            previousTimeList < userCreatedAt &&
+            userCreatedAt >= currentTimeList
+          ) {
+            timeList[k].count++
+            break
+          }
+        }
+      } else if (ticker === 'monthly') {
+        const userCreatedAt = utils.dateFormat(createdAt.getMonth())
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === String(userCreatedAt)
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      }
+    }
+
+    res.status(200).send({
+      statusCode: 200,
+      data: {
+        totalUsersWithOneOrder,
+        totalUsersWithTwoOrder,
+        totalUsersWithThreeOrder,
+        chart: timeList
+      },
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
+const getOrdersOfProvinces = async () => {
+  try {
+    const provinces = utils.iranProvinces()
+    const data = []
+    for (const province of provinces) {
+      const orders = await sequelize.models.orders.findAndCountAll({
+        attributes: ['id', 'recipientDeliveryProvince', 'amount'],
+        where: {
+          recipientDeliveryProvince: province,
+          status: { [Op.not]: 'pending' },
+          status: { [Op.not]: 'payment_pending' },
+          status: { [Op.not]: 'canceled' }
+        }
+      })
+      let amount = 0
+
+      for (const order of orders?.rows) {
+        amount += order?.amount
+      }
+
+      const addresses = await sequelize.models.addresses.findAll({
+        attributes: ['id', 'userId', 'recipientDeliveryProvince'],
+        where: { recipientDeliveryProvince: province }
+      })
+
+      if (_.isEmpty(addresses)) {
+        data.push({
+          province,
+          amount,
+          totalOrders: orders.count,
+          totalUsers: 0
+        })
+        continue
+      }
+
+      for (const address of addresses) {
+        const users = await sequelize.models.users.count({
+          where: { id: address?.userId }
+        })
+        data.push({
+          province,
+          amount,
+          totalOrders: orders.count,
+          totalUsers: users
+        })
+      }
+    }
+    return {
+      isSuccess: true,
+      data
+    }
+  } catch (e) {
+    return {
+      isSuccess: false,
+      message: e
+    }
+  }
+}
+
+const findOrdersFromProvince = async (req, res) => {
+  try {
+    const r = await getOrdersOfProvinces()
+
+    if (!r?.isSuccess) return httpError(r?.message, res)
+
+    return res.status(200).send({
+      statusCode: 200,
+      data: r?.data,
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
+const findAll = async (req, res) => {
+  try {
+    const ordersOfProvinces = await getOrdersOfProvinces()
+
+    if (!ordersOfProvinces?.isSuccess)
+      return httpError(ordersOfProvinces?.message, res)
+
+    const orders = await sequelize.models.orders.count({
+      attributes: ['createdAt'],
+      order: [['id', 'desc']],
+      where: {
+        status: { [Op.not]: 'sent' },
+        status: { [Op.not]: 'payment_pending' },
+        status: { [Op.not]: 'canceled' }
+      }
+    })
+    const withdrawals = await sequelize.models.withdrawals.count({
+      attributes: ['createdAt'],
+      order: [['id', 'desc']],
+      where: {
+        status: 'pending'
+      }
+    })
+
+    res.status(200).send({
+      statusCode: 200,
+      data: {
+        countOfInProgressOrders: orders,
+        countOfPendingWithdrawals: withdrawals,
+        provincesOrders: ordersOfProvinces?.data
+      }
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
+
+module.exports = {
+  findUsers,
+  findOrders,
+  findOrdersFromProvince,
+  findUserOrder,
+  findSales,
+  findAll
+}

@@ -35,7 +35,7 @@ const findAll = async (req, res) => {
         ]
       },
       where,
-      order,
+      order: [['id', 'desc']],
       pagination: {
         active: true,
         page,

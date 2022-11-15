@@ -108,7 +108,7 @@ const findAll = async (req, res) => {
         'updatedAt'
       ],
       where,
-      order,
+      order: [['id', 'desc']],
       pagination: {
         active: true,
         page,

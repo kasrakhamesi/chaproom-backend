@@ -5,7 +5,7 @@
     "description": "Chaproom Backend Restful-API ( Users Panel )",
     "version": "1.0"
   },
-  "host": "localhost:3000",
+  "host": "78.157.34.146:3000",
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {
@@ -2082,49 +2082,6 @@
       }
     },
 
-    "/public/blogs/slug/{slug}/view": {
-      "put": {
-        "tags": ["Public"],
-        "summary": "increase blog view by slug",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "slug",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "examples": {
-              "application/json": {
-                "statusCode": 200,
-                "data": {
-                  "message": "با موفقعیت افزایش یافت"
-                },
-                "error": null
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "examples": {
-              "application/json": {
-                "statusCode": 400,
-                "data": null,
-                "error": {
-                  "message": "این یک خطا است",
-                  "details": []
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/public/blogs/slug/{slug}": {
       "get": {
         "tags": ["Public"],

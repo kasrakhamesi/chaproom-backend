@@ -45,7 +45,14 @@ module.exports = {
           allowNull: true
         },
         type: {
-          type: Sequelize.ENUM('withdrawal', 'deposit', 'order', 'admin'),
+          type: Sequelize.ENUM(
+            'withdrawal',
+            'deposit',
+            'order',
+            'admin',
+            'marketing_discount',
+            'marketing_referral'
+          ),
           allowNull: false
         },
         status: {

@@ -24,6 +24,7 @@ router.use('/orders', adminsPassport, require('./orders.route'))
 router.use('/profile', adminsPassport, require('./profile.route'))
 router.use('/blogs-uploader', adminsPassport, require('./blogsUploader.route'))
 router.use('/blogs', adminsPassport, require('./blogs.route'))
+router.use('/dashboard', adminsPassport, require('./dashboard.route'))
 
 router.use(
   '/customers-report',

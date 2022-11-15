@@ -24,7 +24,7 @@ const getAll = async (req, res, paginateActive = true) => {
         'createdAt'
       ],
       where,
-      order,
+      order: [['id', 'desc']],
       pagination: {
         active: paginateActive,
         page,

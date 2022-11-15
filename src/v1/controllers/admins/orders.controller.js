@@ -46,7 +46,7 @@ const findAll = async (req, res) => {
     const r = await orders.Get({
       attributes: ['id', 'createdAt', 'amount', 'status', 'cancelReason'],
       where,
-      order,
+      order: [['id', 'desc']],
       pagination: {
         active: true,
         page,

@@ -13,7 +13,7 @@ const findAll = async (req, res) => {
 
     const r = await cooperations.Get({
       where,
-      order,
+      order: [['id', 'desc']],
       pagination: {
         active: true,
         page,

@@ -55,6 +55,12 @@ const findOne = async (req, res) => {
       }
     })
 
+    if (!r) return httpError(errorTypes.BLOG_NOT_FOUND, res)
+
+    await r.update({
+      countOfViews: parseInt(r?.countOfViews) + 1
+    })
+
     res.status(200).send({
       statusCode: 200,
       data: r,
@@ -179,32 +185,8 @@ const findAllByCategory = async (req, res) => {
   }
 }
 
-const increaseViews = async (req, res) => {
-  try {
-    const { slug } = req.params
-    const blog = await sequelize.models.blogs.findOne({
-      where: {
-        slug
-      }
-    })
-
-    if (!blog) return httpError(errorTypes.BLOG_NOT_FOUND, res)
-
-    await blog.update({
-      countOfViews: parseInt(blog?.countOfViews) + 1
-    })
-
-    res
-      .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
-      .send(messageTypes.SUCCESSFUL_UPDATE)
-  } catch (e) {
-    return httpError(e, res)
-  }
-}
-
 module.exports = {
   findAllCategories,
-  increaseViews,
   findOne,
   findAll,
   findAllByCategory

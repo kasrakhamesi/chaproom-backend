@@ -17,7 +17,7 @@ const findAll = async (req, res) => {
     let r = await users.Get({
       attributes: ['id', 'name', 'phoneNumber', 'balance', 'marketingBalance'],
       where,
-      order,
+      order: [['id', 'desc']],
       pagination: {
         active: true,
         page,

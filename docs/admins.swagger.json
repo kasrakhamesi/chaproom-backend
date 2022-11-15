@@ -5,7 +5,7 @@
     "description": "Chaproom Backend Restful-API ( Admins Panel )",
     "version": "1.0"
   },
-  "host": "localhost:3000",
+  "host": "78.157.34.146:3000",
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {
@@ -726,6 +726,704 @@
                 "statusCode": 201,
                 "data": {
                   "message": "با موفقعیت ساخته شد شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/dashboard": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get Dashboard",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "totalUsersWithOneOrder": 2,
+                  "totalUsersWithTwoOrder": 0,
+                  "totalUsersWithThreeOrder": 0,
+                  "chart": [
+                    {
+                      "time": "07/23",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/22",
+                      "count": 2
+                    },
+                    {
+                      "time": "07/21",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/20",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/19",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/18",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/17",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/16",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/15",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/14",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/13",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/12",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/11",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/10",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/09",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/08",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/07",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/06",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/05",
+                      "count": 0
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/dashboard/users-orders/ticker/{ticker}": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get users-orders",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": ["daily", "weekly", "monthly"],
+            "example": "daily"
+          },
+          {
+            "name": "orders",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "enum": ["one", "two", "three"],
+            "example": "one"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "totalUsersWithOneOrder": 2,
+                  "totalUsersWithTwoOrder": 0,
+                  "totalUsersWithThreeOrder": 0,
+                  "chart": [
+                    {
+                      "time": "07/23",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/22",
+                      "count": 2
+                    },
+                    {
+                      "time": "07/21",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/20",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/19",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/18",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/17",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/16",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/15",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/14",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/13",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/12",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/11",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/10",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/09",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/08",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/07",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/06",
+                      "count": 0
+                    },
+                    {
+                      "time": "07/05",
+                      "count": 0
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/dashboard/provinces-orders": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get provinces orders",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": [
+                  {
+                    "province": "کهکیلویه و بویراحمد",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "سیستان و بلوچستان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "خراسان شمالی",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "خراسان رضوی",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "خراسان جنوبی",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "چهارمحال بختیاری",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "آذربایجان غربی",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "آذربایجان شرقی",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "اصفهان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "اردبیل",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "ایلام",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "بوشهر",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "تهران",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "خوزستان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "زنجان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "سمنان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "فارس",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "قزوین",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "قم",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "کرج",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "کردستان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "کرمان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "کرمانشاه",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "گلستان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "گیلان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "لرستان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "مازندران",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "مرکزی",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "هرمزگان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "همدان",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  },
+                  {
+                    "province": "یزد",
+                    "amount": 0,
+                    "totalOrders": 0,
+                    "totalUsers": 0
+                  }
+                ],
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/dashboard/orders/ticker/{ticker}": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get OrdersChart Info",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": ["daily", "weekly", "monthly"],
+            "example": "daily"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "totalOrders": 3,
+                  "chart": [
+                    {
+                      "time": "07",
+                      "count": 2
+                    },
+                    {
+                      "time": "06",
+                      "count": 1
+                    },
+                    {
+                      "time": "05",
+                      "count": 0
+                    },
+                    {
+                      "time": "04",
+                      "count": 0
+                    },
+                    {
+                      "time": "03",
+                      "count": 0
+                    },
+                    {
+                      "time": "02",
+                      "count": 0
+                    },
+                    {
+                      "time": "01",
+                      "count": 0
+                    },
+                    {
+                      "time": "12",
+                      "count": 0
+                    },
+                    {
+                      "time": "11",
+                      "count": 0
+                    },
+                    {
+                      "time": "10",
+                      "count": 0
+                    },
+                    {
+                      "time": "9",
+                      "count": 0
+                    },
+                    {
+                      "time": "8",
+                      "count": 0
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/admins/dashboard/users/ticker/{ticker}": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get UsersChart Info",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": ["daily", "weekly", "monthly"],
+            "example": "daily"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "totalUsers": 3,
+                  "chart": [
+                    {
+                      "time": "07",
+                      "count": 2
+                    },
+                    {
+                      "time": "06",
+                      "count": 1
+                    },
+                    {
+                      "time": "05",
+                      "count": 0
+                    },
+                    {
+                      "time": "04",
+                      "count": 0
+                    },
+                    {
+                      "time": "03",
+                      "count": 0
+                    },
+                    {
+                      "time": "02",
+                      "count": 0
+                    },
+                    {
+                      "time": "01",
+                      "count": 0
+                    },
+                    {
+                      "time": "12",
+                      "count": 0
+                    },
+                    {
+                      "time": "11",
+                      "count": 0
+                    },
+                    {
+                      "time": "10",
+                      "count": 0
+                    },
+                    {
+                      "time": "9",
+                      "count": 0
+                    },
+                    {
+                      "time": "8",
+                      "count": 0
+                    }
+                  ]
                 },
                 "error": null
               }

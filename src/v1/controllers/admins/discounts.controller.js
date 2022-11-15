@@ -71,6 +71,8 @@ const findAll = async (req, res) => {
       sequelize.models.discounts
     )
 
+    const newWhere = { ...where, userMarketing: false }
+
     const r = await discounts.Get({
       include: [
         {
@@ -81,8 +83,8 @@ const findAll = async (req, res) => {
       attributes: {
         exclude: ['userId', 'adminId', 'userMarketing']
       },
-      where,
-      order,
+      where: newWhere,
+      order: [['id', 'desc']],
       pagination: {
         active: true,
         page,
