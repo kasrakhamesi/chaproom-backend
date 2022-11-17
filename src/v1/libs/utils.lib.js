@@ -54,7 +54,7 @@ const getNumberOfDaysFromMonth = (month) => {
   }
 }
 
-const createTimeList = (type) => {
+const createTimeList = (type, transactions = false) => {
   const dateNow = new PersianDate(Date.now())
   const BASE_CHART_TIMES_VALUE = { DAILY: 18, MONTHLY: 12, WEEKLY: 15 }
   let currentLastMonth = 12
@@ -72,10 +72,16 @@ const createTimeList = (type) => {
             ? `0${parseInt(dateNow.getDate()) - k}`
             : parseInt(dateNow.getDate()) - k
 
-        data.push({
-          time: `${typeOfMonth}/${typeOfDay}`,
-          count: 0
-        })
+        !transactions
+          ? data.push({
+              time: `${typeOfMonth}/${typeOfDay}`,
+              count: 0
+            })
+          : data.push({
+              time: `${typeOfMonth}/${typeOfDay}`,
+              debtor: 0,
+              creditor: 0
+            })
       }
     } else {
       const daysOfPreviousMonth = getNumberOfDaysFromMonth(
@@ -92,10 +98,16 @@ const createTimeList = (type) => {
           String(parseInt(dateNow.getDate()) - k).length === 1
             ? `0${parseInt(dateNow.getDate()) - k}`
             : parseInt(dateNow.getDate()) - k
-        data.push({
-          time: `${typeOfMonth}/${typeOfDay}`,
-          count: 0
-        })
+        !transactions
+          ? data.push({
+              time: `${typeOfMonth}/${typeOfDay}`,
+              count: 0
+            })
+          : data.push({
+              time: `${typeOfMonth}/${typeOfDay}`,
+              debtor: 0,
+              creditor: 0
+            })
       }
       for (let k = 0; k <= BASE_CHART_TIMES_VALUE.DAILY - data.length; k++) {
         const currentMonth = `${
@@ -110,10 +122,16 @@ const createTimeList = (type) => {
             ? `0${parseInt(daysOfPreviousMonth) - k}`
             : parseInt(daysOfPreviousMonth) - k
 
-        data.push({
-          time: `${typeOfMonth}/${typeOfDay}`,
-          count: 0
-        })
+        !transactions
+          ? data.push({
+              time: `${typeOfMonth}/${typeOfDay}`,
+              count: 0
+            })
+          : data.push({
+              time: `${typeOfMonth}/${typeOfDay}`,
+              debtor: 0,
+              creditor: 0
+            })
       }
     }
   } else if (type === 'weekly') {
@@ -137,10 +155,16 @@ const createTimeList = (type) => {
       const typeOfDay =
         String(daysOfMonth).length === 1 ? `0${daysOfMonth}` : daysOfMonth
 
-      data.push({
-        time: `${typeOfMonth}/${typeOfDay}`,
-        count: 0
-      })
+      !transactions
+        ? data.push({
+            time: `${typeOfMonth}/${typeOfDay}`,
+            count: 0
+          })
+        : data.push({
+            time: `${typeOfMonth}/${typeOfDay}`,
+            debtor: 0,
+            creditor: 0
+          })
     }
   } else if (type === 'monthly') {
     let isResetMonth = false
@@ -150,19 +174,33 @@ const createTimeList = (type) => {
       if (dateNow.getMonth() - k < 1) {
         k = 0
         currentLastMonth = currentLastMonth - k
-        data.push({
-          time: String(currentLastMonth),
-          count: 0
-        })
+
+        !transactions
+          ? data.push({
+              time: String(currentLastMonth),
+              count: 0
+            })
+          : data.push({
+              time: String(currentLastMonth),
+              debtor: 0,
+              creditor: 0
+            })
+
         isResetMonth = true
         continue
       }
       if (isResetMonth) {
         currentLastMonth--
-        data.push({
-          time: String(currentLastMonth),
-          count: 0
-        })
+        !transactions
+          ? data.push({
+              time: String(currentLastMonth),
+              count: 0
+            })
+          : data.push({
+              time: String(currentLastMonth),
+              debtor: 0,
+              creditor: 0
+            })
         continue
       }
 
@@ -171,10 +209,16 @@ const createTimeList = (type) => {
           ? `0${parseInt(dateNow.getMonth()) - k}`
           : parseInt(dateNow.getMonth()) - k
 
-      data.push({
-        time: typeOfMonth,
-        count: 0
-      })
+      !transactions
+        ? data.push({
+            time: String(typeOfMonth),
+            count: 0
+          })
+        : data.push({
+            time: String(typeOfMonth),
+            debtor: 0,
+            creditor: 0
+          })
     }
   }
   return data

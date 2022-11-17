@@ -126,6 +126,8 @@ const create = async (req, res) => {
 
     const discountCodes = await uniqueGenerates.discountCode(2)
 
+    console.log(discountCodes)
+
     await sequelize.models.discounts.create(
       {
         userId: r?.id,

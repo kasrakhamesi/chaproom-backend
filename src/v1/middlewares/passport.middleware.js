@@ -1,5 +1,6 @@
 const Passport = require('passport').Passport
 const passportJwt = require('passport-jwt')
+const { httpError, errorTypes } = require('../configs')
 const { sequelize } = require('../models')
 const adminsPassport = new Passport()
 const usersPassport = new Passport()
@@ -9,10 +10,35 @@ const StrategyJwt = passportJwt.Strategy
 const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
 
+const jwtExtractor = (req) => {
+  let token = null
+  if (req && req.headers) {
+    let tokenParts = req.headers.authorization.split(' ')
+
+    if (/^Bearer$/i.test(tokenParts[0])) {
+      token = tokenParts[1]
+    }
+  }
+  return token
+  return sequelize.models.jwts
+    .findOne({
+      where: {
+        accessToken: token
+      }
+    })
+    .then((jwt) => {
+      if (jwt) return token
+      else return null
+    })
+    .catch(() => {
+      return null
+    })
+}
+
 adminsPassport.use(
   new StrategyJwt(
     {
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: jwtExtractor,
       secretOrKey: adminAccess
     },
     (jwtPayLoad, done) => {

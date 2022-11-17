@@ -1,7 +1,6 @@
 const { httpError, messageTypes, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 const _ = require('lodash')
-const zip = require('adm-zip')
 const { utils, folders } = require('../../libs')
 
 const create = async (req, res) => {
@@ -98,6 +97,7 @@ const create = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
+    console.log(e)
     return httpError(e?.message || String(e), res)
   }
 }

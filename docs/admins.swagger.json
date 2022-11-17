@@ -769,89 +769,197 @@
               "application/json": {
                 "statusCode": 200,
                 "data": {
-                  "totalUsersWithOneOrder": 2,
-                  "totalUsersWithTwoOrder": 0,
-                  "totalUsersWithThreeOrder": 0,
-                  "chart": [
+                  "countOfInProgressOrders": 6,
+                  "countOfPendingWithdrawals": 0,
+                  "provincesOrders": [
                     {
-                      "time": "07/23",
-                      "count": 0
+                      "province": "کهکیلویه و بویراحمد",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/22",
-                      "count": 2
+                      "province": "سیستان و بلوچستان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/21",
-                      "count": 0
+                      "province": "خراسان شمالی",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/20",
-                      "count": 0
+                      "province": "خراسان رضوی",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/19",
-                      "count": 0
+                      "province": "خراسان جنوبی",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/18",
-                      "count": 0
+                      "province": "چهارمحال بختیاری",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/17",
-                      "count": 0
+                      "province": "آذربایجان غربی",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/16",
-                      "count": 0
+                      "province": "آذربایجان شرقی",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/15",
-                      "count": 0
+                      "province": "اصفهان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/14",
-                      "count": 0
+                      "province": "اردبیل",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/13",
-                      "count": 0
+                      "province": "ایلام",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/12",
-                      "count": 0
+                      "province": "بوشهر",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/11",
-                      "count": 0
+                      "province": "تهران",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/10",
-                      "count": 0
+                      "province": "خوزستان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/09",
-                      "count": 0
+                      "province": "زنجان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/08",
-                      "count": 0
+                      "province": "سمنان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/07",
-                      "count": 0
+                      "province": "فارس",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/06",
-                      "count": 0
+                      "province": "قزوین",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     },
                     {
-                      "time": "07/05",
-                      "count": 0
+                      "province": "قم",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "کرج",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "کردستان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "کرمان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "کرمانشاه",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "گلستان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "گیلان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "لرستان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "مازندران",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "مرکزی",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "هرمزگان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "همدان",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
+                    },
+                    {
+                      "province": "یزد",
+                      "sale": 0,
+                      "totalOrders": 0,
+                      "totalUsers": 0
                     }
                   ]
-                },
-                "error": null
+                }
               }
             }
           },
@@ -1035,191 +1143,340 @@
                 "data": [
                   {
                     "province": "کهکیلویه و بویراحمد",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "سیستان و بلوچستان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "خراسان شمالی",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "خراسان رضوی",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "خراسان جنوبی",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "چهارمحال بختیاری",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "آذربایجان غربی",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "آذربایجان شرقی",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "اصفهان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "اردبیل",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "ایلام",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "بوشهر",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "تهران",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "خوزستان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "زنجان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "سمنان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "فارس",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "قزوین",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "قم",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "کرج",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "کردستان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "کرمان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "کرمانشاه",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "گلستان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "گیلان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "لرستان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "مازندران",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "مرکزی",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "هرمزگان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "همدان",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   },
                   {
                     "province": "یزد",
-                    "amount": 0,
+                    "sale": 0,
                     "totalOrders": 0,
                     "totalUsers": 0
                   }
                 ],
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/dashboard/sales/ticker/{ticker}": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get SalesChart Info",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": ["daily", "weekly", "monthly"],
+            "example": "daily"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "totalSales": 0,
+                  "chart": [
+                    {
+                      "time": "07/25",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/24",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/23",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/22",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/21",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/20",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/19",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/18",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/17",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/16",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/15",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/14",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/13",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/12",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/11",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/10",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/09",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/08",
+                      "debtor": 0,
+                      "creditor": 0
+                    },
+                    {
+                      "time": "07/07",
+                      "debtor": 0,
+                      "creditor": 0
+                    }
+                  ]
+                },
                 "error": null
               }
             }
@@ -2056,6 +2313,22 @@
             "in": "query",
             "type": "string",
             "enum": ["successful", "unsuccessful"],
+            "required": false
+          },
+          {
+            "name": "startAt",
+            "description": "set start date filter",
+            "in": "query",
+            "type": "string",
+            "example": "2022-11-01T13:21:31.000Z",
+            "required": false
+          },
+          {
+            "name": "endAt",
+            "description": "set end date filter",
+            "in": "query",
+            "type": "string",
+            "example": "2022-11-01T13:21:31.000Z",
             "required": false
           },
           {
@@ -3549,6 +3822,49 @@
             "required": false
           },
           {
+            "name": "paperSize",
+            "description": "set paper size",
+            "in": "query",
+            "type": "string",
+            "enum": ["a3", "a4", "a5"],
+            "required": false
+          },
+          {
+            "name": "paperSide",
+            "description": "set paper side",
+            "in": "query",
+            "type": "string",
+            "enum": ["single_sided", "double_sided"],
+            "required": false
+          },
+          {
+            "name": "paperColor",
+            "description": "set paper color",
+            "in": "query",
+            "type": "string",
+            "enum": ["black_and_white", "full_color", "normal_color"],
+            "required": false
+          },
+          {
+            "name": "sortOrder",
+            "description": "set sort order",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "without_order",
+              "one_order",
+              "two_order",
+              "three_and_more_order",
+              "most_to_lowest_order",
+              "lowest_to_most_order",
+              "most_to_lowest_balance",
+              "lowest_to_most_balance",
+              "most_to_lowest_payment",
+              "lowest_to_most_payment"
+            ],
+            "required": false
+          },
+          {
             "name": "page",
             "description": "set page number",
             "in": "query",
@@ -3663,6 +3979,49 @@
             "description": "search by phoneNumber or name",
             "in": "query",
             "type": "string",
+            "required": false
+          },
+          {
+            "name": "paperSize",
+            "description": "set paper size",
+            "in": "query",
+            "type": "string",
+            "enum": ["a3", "a4", "a5"],
+            "required": false
+          },
+          {
+            "name": "paperSide",
+            "description": "set paper side",
+            "in": "query",
+            "type": "string",
+            "enum": ["single_sided", "double_sided"],
+            "required": false
+          },
+          {
+            "name": "paperColor",
+            "description": "set paper color",
+            "in": "query",
+            "type": "string",
+            "enum": ["black_and_white", "full_color", "normal_color"],
+            "required": false
+          },
+          {
+            "name": "sortOrder",
+            "description": "set sort order",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "without_order",
+              "one_order",
+              "two_order",
+              "three_and_more_order",
+              "most_to_lowest_order",
+              "lowest_to_most_order",
+              "most_to_lowest_balance",
+              "lowest_to_most_balance",
+              "most_to_lowest_payment",
+              "lowest_to_most_payment"
+            ],
             "required": false
           }
         ],

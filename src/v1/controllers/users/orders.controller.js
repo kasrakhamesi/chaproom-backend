@@ -121,8 +121,8 @@ const create = async (req, res) => {
 
       const balance = user?.balance
 
-      if (balance >= totalPrice) {
-        data.walletPaidAmount = balance - totalPrice
+      if (balance >= totalPrice + postageFee) {
+        data.walletPaidAmount = totalPrice + postageFee
         data.status = 'pending'
         const t = await sequelize.transaction()
         const r = await sequelize.models.orders.create(data, { transaction: t })
@@ -174,6 +174,11 @@ const create = async (req, res) => {
           { transaction: t }
         )
 
+        await user.update(
+          { balance: user?.balance - data.walletPaidAmount },
+          { transaction }
+        )
+
         await t.commit()
 
         return res.status(messageTypes.SUCCESSFUL_CREATED.statusCode).send({
@@ -185,7 +190,7 @@ const create = async (req, res) => {
           error: null
         })
       } else {
-        const gatewayPayAmount = totalPrice - balance
+        const gatewayPayAmount = totalPrice + postageFee - balance
 
         return await users.createOrder(
           userId,
@@ -198,9 +203,15 @@ const create = async (req, res) => {
       }
     }
 
-    return await users.createOrder(userId, totalPrice, 0, folders, data, res)
+    return await users.createOrder(
+      userId,
+      totalPrice + postageFee,
+      0,
+      folders,
+      data,
+      res
+    )
   } catch (e) {
-    console.log(e)
     return httpError(e || String(e) || e?.message, res)
   }
 }
@@ -407,5 +418,9 @@ const update = async (req, res) => {
     return httpError(e, res)
   }
 }
+
+//TODOs , Decrease Amount After Order
+// Transaction order increase error
+// walletPaidAmount is invalid
 
 module.exports = { create, findAll, findOne, update, priceCalculator }

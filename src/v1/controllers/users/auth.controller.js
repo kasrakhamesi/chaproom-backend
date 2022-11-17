@@ -16,7 +16,7 @@ const register = async (req, res) => {
       }
     })
 
-    if (user) return httpError(errorTypes.USER_EXIST_ERROR, res)
+    if (!_.isEmpty(user)) return httpError(errorTypes.USER_EXIST_ERROR, res)
 
     const r = await authentications.sms.send({
       phoneNumber,

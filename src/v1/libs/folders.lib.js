@@ -138,6 +138,13 @@ const getPrintTariffs = () => {
     })
     .then((r) => {
       return r
+      /*
+      return {
+        a3: JSON.parse(r.a3),
+        a4: JSON.parse(r.a4),
+        a5: JSON.parse(r.a5)
+      }
+      */
     })
 }
 const extractBinding = (binding) => {

@@ -153,7 +153,7 @@ const findOrders = async (req, res) => {
   }
 }
 
-const findSales = async () => {
+const findSales = async (req, res) => {
   try {
     let { ticker } = req.params
 
@@ -162,15 +162,17 @@ const findSales = async () => {
     if (ticker !== 'daily' && ticker !== 'weekly' && ticker !== 'monthly')
       return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
 
-    const orders = await sequelize.models.orders.findAndCountAll({
-      attributes: ['createdAt'],
+    const transactions = await sequelize.models.transactions.findAndCountAll({
+      attributes: ['id', 'amount', 'change', 'createdAt'],
       order: [['id', 'desc']]
     })
 
-    const timeList = utils.createTimeList(ticker)
+    let totalSales = 0
 
-    for (const order of orders.rows) {
-      const createdAt = new utils.PersianDate(order.createdAt)
+    const timeList = utils.createTimeList(ticker, true)
+
+    for (const transaction of transactions.rows) {
+      const createdAt = new utils.PersianDate(transaction.createdAt)
 
       if (ticker === 'daily') {
         const userCreatedAt = `${utils.dateFormat(
@@ -180,7 +182,12 @@ const findSales = async () => {
           (item) => item.time === userCreatedAt
         )
         if (findedCreatedAt) {
-          findedCreatedAt.count++
+          if (transaction?.change === 'decrease')
+            findedCreatedAt.debtor += transaction?.amount
+          else {
+            findedCreatedAt.creditor += transaction?.amount
+            totalSales += transaction?.amount
+          }
         }
       } else if (ticker === 'weekly') {
         const userCreatedAt = parseInt(
@@ -200,7 +207,12 @@ const findSales = async () => {
             previousTimeList < userCreatedAt &&
             userCreatedAt >= currentTimeList
           ) {
-            timeList[k].count++
+            if (transaction?.change === 'decrease')
+              timeList[k].debtor += transaction?.amount
+            else {
+              timeList[k].creditor += transaction?.amount
+              totalSales += transaction?.amount
+            }
             break
           }
         }
@@ -210,14 +222,19 @@ const findSales = async () => {
           (item) => item.time === String(userCreatedAt)
         )
         if (findedCreatedAt) {
-          findedCreatedAt.count++
+          if (transaction?.change === 'decrease')
+            findedCreatedAt.debtor += transaction?.amount
+          else {
+            findedCreatedAt.creditor += transaction?.amount
+            totalSales += transaction?.amount
+          }
         }
       }
     }
 
     res.status(200).send({
       statusCode: 200,
-      data: { totalSales: orders.count, chart: timeList },
+      data: { totalSales, chart: timeList },
       error: null
     })
   } catch (e) {
@@ -367,7 +384,7 @@ const getOrdersOfProvinces = async () => {
       if (_.isEmpty(addresses)) {
         data.push({
           province,
-          amount,
+          sale: amount,
           totalOrders: orders.count,
           totalUsers: 0
         })
@@ -380,7 +397,7 @@ const getOrdersOfProvinces = async () => {
         })
         data.push({
           province,
-          amount,
+          sale: amount,
           totalOrders: orders.count,
           totalUsers: users
         })
@@ -422,8 +439,7 @@ const findAll = async (req, res) => {
       return httpError(ordersOfProvinces?.message, res)
 
     const orders = await sequelize.models.orders.count({
-      attributes: ['createdAt'],
-      order: [['id', 'desc']],
+      attributes: ['id', 'createdAt'],
       where: {
         status: { [Op.not]: 'sent' },
         status: { [Op.not]: 'payment_pending' },
@@ -431,8 +447,7 @@ const findAll = async (req, res) => {
       }
     })
     const withdrawals = await sequelize.models.withdrawals.count({
-      attributes: ['createdAt'],
-      order: [['id', 'desc']],
+      attributes: ['id', 'createdAt'],
       where: {
         status: 'pending'
       }

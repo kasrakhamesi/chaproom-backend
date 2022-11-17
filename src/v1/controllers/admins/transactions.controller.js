@@ -1,16 +1,23 @@
 const { sequelize } = require('../../models')
-const { restful, filters } = require('../../libs')
+const { restful, filters, utils } = require('../../libs')
 const { httpError, errorTypes } = require('../../configs')
 const { Op } = require('sequelize')
 const transactions = new restful(sequelize.models.transactions)
 
 const findAll = async (req, res) => {
   try {
+    let { startAt, endAt } = req.query
     const { page, pageSize } = req.query
     const [order, where] = await filters.filter(
       req.query,
       sequelize.models.transactions
     )
+
+    const newWhere = {
+      ...where
+    }
+    if (startAt) newWhere.startAt = { [Op.gte]: startAt }
+    if (endAt) newWhere.endAt = { [Op.lte]: endAt }
 
     const r = await transactions.Get({
       include: [
@@ -34,7 +41,7 @@ const findAll = async (req, res) => {
           'type'
         ]
       },
-      where,
+      where: newWhere,
       order: [['id', 'desc']],
       pagination: {
         active: true,
@@ -57,7 +64,7 @@ const findAll = async (req, res) => {
           return {
             id: item.id,
             orderId: item.orderId,
-            type: 'debtor',
+            type: item.change === 'decrease' ? 'debtor' : 'creditor',
             status: item.status,
             amount: item.amount,
             description: item.description,
@@ -112,7 +119,7 @@ const findOne = async (req, res) => {
       data: {
         id: r?.data?.id,
         orderId: r?.data?.orderId,
-        type: 'debtor',
+        type: item.change === 'decrease' ? 'debtor' : 'creditor',
         status: r?.data?.status,
         amount: r?.data?.amount,
         description: r?.data?.description,
@@ -159,7 +166,9 @@ const create = async (req, res) => {
   try {
     const adminId = req?.user[0]?.id
     const { userId, type, amount, description } = req.body
-    const data = { adminId, userId, type, amount, description }
+    const change = type === 'debtor' ? 'decrease' : 'increase'
+
+    const data = { adminId, userId, change, type: 'admin', amount, description }
 
     const user = await sequelize.models.users.findOne({
       where: { id }

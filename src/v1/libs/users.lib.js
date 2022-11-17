@@ -144,11 +144,6 @@ const createOrder = async (
 
     await t.commit()
 
-    await sequelize.models.folders.update(
-      { used: true },
-      { where: { userId, used: false } }
-    )
-
     return res.status(201).send({
       statusCode: 201,
       data: {
@@ -159,7 +154,6 @@ const createOrder = async (
       error: null
     })
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }
@@ -200,11 +194,30 @@ const submitOrder = async (
       { transaction }
     )
 
+    const user = await sequelize.models.users.findOne(
+      {
+        where: {
+          id: userId
+        }
+      },
+      { transaction }
+    )
+
+    await user.update(
+      { balance: user?.balance - paymentAmount },
+      { transaction }
+    )
+
     await order.update(
       {
         status: 'pending'
       },
       { transaction }
+    )
+
+    await sequelize.models.folders.update(
+      { used: true },
+      { where: { userId, used: false } }
     )
 
     return {

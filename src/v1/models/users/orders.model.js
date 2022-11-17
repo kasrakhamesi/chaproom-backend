@@ -51,7 +51,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       postageMethod: {
         type: DataTypes.STRING,
-        defaultValue: 'پست پیشتاز',
         allowNull: true
       },
       postageFee: {

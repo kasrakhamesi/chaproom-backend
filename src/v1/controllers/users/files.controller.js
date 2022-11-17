@@ -17,6 +17,13 @@ const upload = async (req, res) => {
 
     attachment.name = attachment.name === '.docx' ? '1.docx' : attachment.name
 
+    attachment.name =
+      String(path.extname(attachment.name)).toLowerCase() === '.ocx'
+        ? `${String(attachment.name).replace('d.ocx', '')}.docx`
+        : attachment.name
+
+    attachment.name = attachment.name === '.ocx' ? '1.docx' : attachment.name
+
     const extensionName = path.extname(attachment.name)
 
     const allowedExtension = ['.pdf', '.docx']

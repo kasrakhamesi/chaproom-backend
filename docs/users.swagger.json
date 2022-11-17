@@ -1949,7 +1949,7 @@
 
     "/public/blogs/category-id/{categoryId}": {
       "get": {
-        "tags": ["Blogs"],
+        "tags": ["Public"],
         "summary": "get Blogs",
         "consumes": ["application/json"],
         "produces": ["application/json"],

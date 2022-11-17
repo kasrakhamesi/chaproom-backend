@@ -1,6 +1,6 @@
 const { sequelize } = require('../models')
-//const errors = require('../errors')
 const _ = require('lodash')
+const { httpError } = require('../configs')
 
 const check = (...permissions) => {
   return async (req, res, next) => {
@@ -44,9 +44,7 @@ const check = (...permissions) => {
       }
       throw new Error('Forbidden')
     } catch (e) {
-      //res
-      // .status(errors.codes.errorsCode.forbidden.statusCode)
-      //.send(errors.codes.errorsCode.forbidden)
+      return httpError(e, res)
     }
   }
 }

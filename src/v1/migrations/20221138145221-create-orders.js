@@ -53,7 +53,6 @@ module.exports = {
         },
         postageMethod: {
           type: Sequelize.STRING,
-          defaultValue: 'پست پیشتاز',
           allowNull: true
         },
         postageFee: {
