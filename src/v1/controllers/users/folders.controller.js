@@ -97,7 +97,6 @@ const create = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
-    console.log(e)
     return httpError(e?.message || String(e), res)
   }
 }
@@ -258,7 +257,11 @@ const findAll = (req, res) => {
         statusCode: 200,
         data: r.map((item) => {
           if (item?.binding !== null) {
-            item.binding = JSON.parse(item?.binding)
+            item.binding =
+              process.env.RUN_ENVIRONMENT === 'local'
+                ? JSON.parse(JSON.parse(item?.binding))
+                : JSON.parse(item?.binding)
+
             return item
           }
           return item
@@ -306,7 +309,11 @@ const findOne = (req, res) => {
       ]
     })
     .then((r) => {
-      if (r?.binding !== null) r.binding = JSON.parse(r?.binding)
+      if (r?.binding !== null)
+        r.binding =
+          process.env.RUN_ENVIRONMENT === 'local'
+            ? JSON.parse(JSON.parse(r?.binding))
+            : JSON.parse(r?.binding)
 
       return res.status(200).send({
         statusCode: 200,

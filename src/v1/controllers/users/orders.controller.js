@@ -273,7 +273,11 @@ const findAll = async (req, res) => {
 
     const [where] = await filters.filter(req.query, sequelize.models.orders)
 
-    const newWhere = { ...where, userId }
+    const newWhere = {
+      ...where,
+      userId,
+      status: { [Op.not]: 'payment_pending' }
+    }
 
     const r = await orders.Get({
       where: newWhere,
@@ -356,7 +360,10 @@ const findOne = (req, res) => {
     .then((r) => {
       const folders = r?.folders.map((item) => {
         if (item?.binding !== null) {
-          item.binding = JSON.parse(item?.binding)
+          item.binding =
+            process.env.RUN_ENVIRONMENT === 'local'
+              ? JSON.parse(JSON.parse(item?.binding))
+              : JSON.parse(item?.binding)
           return item
         }
         return item
@@ -401,7 +408,8 @@ const update = async (req, res) => {
         type: 'deposit',
         change: 'increase',
         balance: userWallet?.data?.balance,
-        balanceAfter: userWallet?.data?.balance + order?.amount,
+        balanceAfter:
+          userWallet?.data?.balance + order?.amount + order?.postageFee,
         status: 'successful',
         amount: order?.amount,
         description: 'بازگشت وجه به کیف پول بابت لغو سفارش'

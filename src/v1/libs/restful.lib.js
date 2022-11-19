@@ -164,6 +164,7 @@ class Restful {
         error: null
       }
     } catch (e) {
+      console.log(e)
       return httpError(e)
     }
   }

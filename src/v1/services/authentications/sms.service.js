@@ -3,6 +3,7 @@ const { uniqueGenerates, regex, utils } = require('../../libs')
 const _ = require('lodash')
 const Kavenegar = require('kavenegar')
 const { httpError, errorTypes } = require('../../configs')
+require('dotenv').config()
 const api = Kavenegar.KavenegarApi({
   apikey: 'your apikey here'
 })
@@ -162,7 +163,10 @@ const check = async ({
           message: 'کد با موفقعیت تایید شد'
         }
       : {
-          registerData: JSON.parse(verifyData?.registerData),
+          registerData:
+            process.env.RUN_ENVIRONMENT === 'local'
+              ? JSON.parse(JSON.parse(verifyData?.registerData))
+              : JSON.parse(verifyData?.registerData),
           isSuccess: true,
           message: 'کد با موفقعیت تایید شد'
         }

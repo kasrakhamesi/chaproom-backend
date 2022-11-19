@@ -4,6 +4,39 @@ const { utils } = require('../../libs')
 const { Op } = require('sequelize')
 const _ = require('lodash')
 
+const getUsers = async () => {
+  try {
+    const ticker = 'daily'
+
+    const users = await sequelize.models.users.findAndCountAll({
+      attributes: ['createdAt'],
+      order: [['id', 'desc']]
+    })
+
+    const timeList = utils.createTimeList(ticker)
+
+    for (const user of users.rows) {
+      const createdAt = new utils.PersianDate(user.createdAt)
+
+      if (ticker === 'daily') {
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      }
+    }
+
+    return { totalUsers: users.count, chart: timeList }
+  } catch {
+    return null
+  }
+}
+
 const findUsers = async (req, res) => {
   try {
     let { ticker } = req.params
@@ -73,6 +106,44 @@ const findUsers = async (req, res) => {
     })
   } catch (e) {
     return httpError(e, res)
+  }
+}
+
+const getOrders = async () => {
+  try {
+    const ticker = 'daily'
+
+    const orders = await sequelize.models.orders.findAndCountAll({
+      attributes: ['createdAt'],
+      order: [['id', 'desc']],
+      where: {
+        status: { [Op.not]: 'pending' },
+        status: { [Op.not]: 'payment_pending' },
+        status: { [Op.not]: 'canceled' }
+      }
+    })
+
+    const timeList = utils.createTimeList(ticker)
+
+    for (const order of orders.rows) {
+      const createdAt = new utils.PersianDate(order.createdAt)
+
+      if (ticker === 'daily') {
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      }
+    }
+
+    return { totalOrders: orders.count, chart: timeList }
+  } catch (e) {
+    return null
   }
 }
 
@@ -150,6 +221,46 @@ const findOrders = async (req, res) => {
     })
   } catch (e) {
     return httpError(e, res)
+  }
+}
+
+const getSales = async () => {
+  try {
+    const ticker = 'daily'
+
+    const transactions = await sequelize.models.transactions.findAndCountAll({
+      attributes: ['id', 'amount', 'change', 'createdAt'],
+      order: [['id', 'desc']]
+    })
+
+    let totalSales = 0
+
+    const timeList = utils.createTimeList(ticker, true)
+
+    for (const transaction of transactions.rows) {
+      const createdAt = new utils.PersianDate(transaction.createdAt)
+
+      if (ticker === 'daily') {
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          if (transaction?.change === 'decrease')
+            findedCreatedAt.debtor += transaction?.amount
+          else {
+            findedCreatedAt.creditor += transaction?.amount
+            totalSales += transaction?.amount
+          }
+        }
+      }
+    }
+
+    return { totalSales, chart: timeList }
+  } catch {
+    return null
   }
 }
 
@@ -359,7 +470,7 @@ const findUserOrder = async (req, res) => {
 const getOrdersOfProvinces = async () => {
   try {
     const provinces = utils.iranProvinces()
-    const data = []
+    const data = {}
     for (const province of provinces) {
       const orders = await sequelize.models.orders.findAndCountAll({
         attributes: ['id', 'recipientDeliveryProvince', 'amount'],
@@ -382,12 +493,11 @@ const getOrdersOfProvinces = async () => {
       })
 
       if (_.isEmpty(addresses)) {
-        data.push({
-          province,
+        data[province] = {
           sale: amount,
           totalOrders: orders.count,
           totalUsers: 0
-        })
+        }
         continue
       }
 
@@ -395,12 +505,11 @@ const getOrdersOfProvinces = async () => {
         const users = await sequelize.models.users.count({
           where: { id: address?.userId }
         })
-        data.push({
-          province,
+        data[province] = {
           sale: amount,
           totalOrders: orders.count,
           totalUsers: users
-        })
+        }
       }
     }
     return {
@@ -415,19 +524,74 @@ const getOrdersOfProvinces = async () => {
   }
 }
 
-const findOrdersFromProvince = async (req, res) => {
+const getUsersOrders = async () => {
   try {
-    const r = await getOrdersOfProvinces()
+    const ticker = 'daily'
+    const orders = 'one'
 
-    if (!r?.isSuccess) return httpError(r?.message, res)
-
-    return res.status(200).send({
-      statusCode: 200,
-      data: r?.data,
-      error: null
+    const findedOrders = await sequelize.models.orders.findAll({
+      attributes: ['id', 'userId'],
+      where: {
+        status: { [Op.not]: 'pending' },
+        status: { [Op.not]: 'payment_pending' },
+        status: { [Op.not]: 'canceled' }
+      }
     })
-  } catch (e) {
-    return httpError(e, res)
+
+    const ordersCount = {}
+    const ordersData = []
+    let totalUsersWithOneOrder = 0
+    let totalUsersWithTwoOrder = 0
+    let totalUsersWithThreeOrder = 0
+
+    findedOrders.forEach((item) => {
+      ordersCount[item?.userId] = (ordersCount[item?.userId] || 0) + 1
+    })
+
+    for (const entity in ordersCount) {
+      if (ordersCount[entity] >= 1) {
+        totalUsersWithOneOrder++
+        if (orders === 'one') ordersData.push({ id: entity })
+      } else if (ordersCount[entity] >= 2) {
+        totalUsersWithTwoOrder++
+        if (orders === 'two') ordersData.push({ id: entity })
+      } else if (ordersCount[entity] >= 3) {
+        totalUsersWithThreeOrder++
+        if (orders === 'three') ordersData.push({ id: entity })
+      }
+    }
+
+    const users = await sequelize.models.users.findAndCountAll({
+      attributes: ['id', 'createdAt'],
+      order: [['id', 'desc']],
+      where: { [Op.or]: ordersData }
+    })
+
+    const timeList = utils.createTimeList(ticker)
+
+    for (const order of users.rows) {
+      const createdAt = new utils.PersianDate(order.createdAt)
+
+      if (ticker === 'daily') {
+        const userCreatedAt = `${utils.dateFormat(
+          createdAt.getMonth()
+        )}/${utils.dateFormat(createdAt.getDate())}`
+        const findedCreatedAt = timeList.find(
+          (item) => item.time === userCreatedAt
+        )
+        if (findedCreatedAt) {
+          findedCreatedAt.count++
+        }
+      }
+    }
+    return {
+      totalUsersWithOneOrder,
+      totalUsersWithTwoOrder,
+      totalUsersWithThreeOrder,
+      chart: timeList
+    }
+  } catch {
+    return null
   }
 }
 
@@ -439,7 +603,6 @@ const findAll = async (req, res) => {
       return httpError(ordersOfProvinces?.message, res)
 
     const orders = await sequelize.models.orders.count({
-      attributes: ['id', 'createdAt'],
       where: {
         status: { [Op.not]: 'sent' },
         status: { [Op.not]: 'payment_pending' },
@@ -447,17 +610,53 @@ const findAll = async (req, res) => {
       }
     })
     const withdrawals = await sequelize.models.withdrawals.count({
-      attributes: ['id', 'createdAt'],
       where: {
         status: 'pending'
       }
     })
 
+    const cooperations = await sequelize.models.cooperations.count({
+      where: {
+        status: 'pending'
+      }
+    })
+
+    const adminId = req?.user[0]?.id
+    const admin = await sequelize.models.admins.findOne({
+      include: {
+        model: sequelize.models.admins_roles,
+        as: 'role',
+        attributes: ['id', 'name']
+      },
+      where: {
+        id: adminId
+      },
+      attributes: {
+        exclude: ['password', 'roleId']
+      }
+    })
+
+    const usersOrders = await getUsersOrders()
+
+    const sales = await getSales()
+
+    const ordersChart = await getOrders()
+
+    const users = await getUsers()
+
     res.status(200).send({
       statusCode: 200,
       data: {
-        countOfInProgressOrders: orders,
-        countOfPendingWithdrawals: withdrawals,
+        admin,
+        orders: ordersChart,
+        users,
+        usersOrders,
+        sales,
+        sidebarData: {
+          countOfPendingCooperations: cooperations,
+          countOfInProgressOrders: orders,
+          countOfPendingWithdrawals: withdrawals
+        },
         provincesOrders: ordersOfProvinces?.data
       }
     })
@@ -469,7 +668,6 @@ const findAll = async (req, res) => {
 module.exports = {
   findUsers,
   findOrders,
-  findOrdersFromProvince,
   findUserOrder,
   findSales,
   findAll

@@ -52,7 +52,8 @@ const findAll = async (req, res) => {
         totalPageLeft: r?.data?.totalPageLeft,
         totalCountLeft: r?.data?.totalCountLeft,
         transactions: r?.data?.transactions.map((item) => {
-          if (!_.isEmpty(item.orderId) && item.change === 'increase') {
+          console.log(item.orderId, item.change)
+          if (item.orderId !== null && item.change === 'increase') {
             return {
               id: item.id,
               orderId: null,

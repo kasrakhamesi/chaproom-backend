@@ -1,5 +1,6 @@
 const { httpError } = require('../../configs')
 const { sequelize } = require('../../models')
+require('dotenv').config()
 const _ = require('lodash')
 
 const getBindingPriceses = () => {
@@ -22,7 +23,16 @@ const getPrintPriceses = () => {
       attributes: ['a3', 'a4', 'a5']
     })
     .then((r) => {
-      return r
+      const data =
+        process.env.RUN_ENVIRONMENT === 'local'
+          ? {
+              a3: JSON.parse(r.a3),
+              a4: JSON.parse(r.a4),
+              a5: JSON.parse(r.a5)
+            }
+          : r
+
+      return data
     })
 }
 

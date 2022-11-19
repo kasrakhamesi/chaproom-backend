@@ -17,6 +17,8 @@ const callback = async (req, res) => {
       }
     })
 
+    console.log(payment)
+
     if (!payment)
       return res.redirect(
         `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
@@ -34,6 +36,8 @@ const callback = async (req, res) => {
       Amount: payment?.amount,
       Authority
     })
+
+    console.log(paymentVerification)
 
     await payment.update({
       status: Status,

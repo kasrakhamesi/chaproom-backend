@@ -9,7 +9,7 @@ const StrategyJwt = passportJwt.Strategy
 
 const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
-
+/*
 const jwtExtractor = (req) => {
   let token = null
   if (req && req.headers) {
@@ -34,11 +34,12 @@ const jwtExtractor = (req) => {
       return null
     })
 }
+*/
 
 adminsPassport.use(
   new StrategyJwt(
     {
-      jwtFromRequest: jwtExtractor,
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: adminAccess
     },
     (jwtPayLoad, done) => {

@@ -165,6 +165,7 @@ const submitOrder = async (
   refId,
   transaction
 ) => {
+  //TODO Check this
   try {
     const order = await sequelize.models.orders.findOne({
       where: {

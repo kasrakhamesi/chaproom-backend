@@ -12,7 +12,7 @@ const findAllCategories = async (req, res) => {
     const blogAndCategories = []
 
     for (const entity of categories) {
-      const countOfBlogs = await sequelize.models.blogs.count({
+      const countOfBlogs = await sequelize.models.blog_categories.count({
         where: { categoryId: entity?.id }
       })
 

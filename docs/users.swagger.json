@@ -5,7 +5,7 @@
     "description": "Chaproom Backend Restful-API ( Users Panel )",
     "version": "1.0"
   },
-  "host": "78.157.34.146:3000",
+  "host": "localhost:3000",
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {

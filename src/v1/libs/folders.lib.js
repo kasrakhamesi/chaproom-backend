@@ -31,7 +31,9 @@ const priceCalculator = async (
       if (countOfPages >= tariff.breakpoints[k].at)
         shipmentPrice = tariff.breakpoints[k][utils.camelCase(side)]
 
-    let amount = shipmentPrice * countOfPages * countOfCopies || 1
+    countOfCopies = countOfCopies === null ? 1 : countOfCopies + 1
+    let amount = shipmentPrice * countOfPages
+    amount = countOfCopies * amount
 
     let bindingValue = 0
     let bindingPrice = 0
@@ -94,7 +96,7 @@ const archiveFiles = (filesPath, userId, folderId, orderId) => {
     }
 
     zipper.writeZip(`${filePath}.zip`)
-    return `${process.env.BACKEND_DOMAIN}/users/v1/prints${returnedPath}.zip`
+    return `${process.env.BACKEND_DOMAIN}/v1/users/prints${returnedPath}.zip`
   } catch (e) {
     console.log(e)
     return false
@@ -137,14 +139,16 @@ const getPrintTariffs = () => {
       attributes: ['a3', 'a4', 'a5']
     })
     .then((r) => {
-      return r
-      /*
-      return {
-        a3: JSON.parse(r.a3),
-        a4: JSON.parse(r.a4),
-        a5: JSON.parse(r.a5)
-      }
-      */
+      const data =
+        process.env.RUN_ENVIRONMENT === 'local'
+          ? {
+              a3: JSON.parse(r.a3),
+              a4: JSON.parse(r.a4),
+              a5: JSON.parse(r.a5)
+            }
+          : r
+
+      return data
     })
 }
 const extractBinding = (binding) => {

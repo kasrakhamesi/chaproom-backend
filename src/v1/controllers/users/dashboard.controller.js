@@ -2,6 +2,7 @@ const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 const { Op } = require('sequelize')
 const _ = require('lodash')
+require('dotenv').config()
 const bcrypt = require('bcrypt')
 
 const getBindingPriceses = () => {
@@ -24,7 +25,16 @@ const getPrintPriceses = () => {
       attributes: ['a3', 'a4', 'a5']
     })
     .then((r) => {
-      return r
+      const data =
+        process.env.RUN_ENVIRONMENT === 'local'
+          ? {
+              a3: JSON.parse(r.a3),
+              a4: JSON.parse(r.a4),
+              a5: JSON.parse(r.a5)
+            }
+          : r
+
+      return data
     })
 }
 
@@ -45,9 +55,14 @@ const findOne = async (req, res) => {
     const orders = await sequelize.models.orders.findAll({
       where: {
         userId,
-        status: { [Op.not]: 'sent' },
-        status: { [Op.not]: 'payment_pending' },
-        status: { [Op.not]: 'canceled' }
+        [Op.or]: [
+          {
+            status: 'pending'
+          },
+          {
+            status: 'preparing'
+          }
+        ]
       },
       attributes: ['id', 'status', 'amount', 'createdAt', 'updatedAt']
     })
