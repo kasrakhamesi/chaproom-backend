@@ -1798,18 +1798,26 @@
             "examples": {
               "application/json": {
                 "statusCode": 200,
-                "data": [
-                  {
-                    "id": 1,
-                    "name": "این یک دسته بدی است است",
-                    "countOfBlogs": 1
-                  },
-                  {
-                    "id": 2,
-                    "name": "این یک دسته بدی2ست",
-                    "countOfBlogs": 0
-                  }
-                ],
+                "data": {
+                  "totalCategories": 3,
+                  "categories": [
+                    {
+                      "id": 3,
+                      "name": "2این یک دسته بدی است است",
+                      "countOfBlogs": 1
+                    },
+                    {
+                      "id": 1,
+                      "name": "این یک دسته بدی است است",
+                      "countOfBlogs": 3
+                    },
+                    {
+                      "id": 4,
+                      "name": "بسیبسیب",
+                      "countOfBlogs": 0
+                    }
+                  ]
+                },
                 "error": null
               }
             }
@@ -1842,6 +1850,14 @@
             "description": "set page number",
             "in": "query",
             "type": "int",
+            "required": false
+          },
+          {
+            "name": "blogType",
+            "description": "set blog type",
+            "in": "query",
+            "type": "string",
+            "enum": ["popular"],
             "required": false
           }
         ],
@@ -1959,6 +1975,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "blogType",
+            "description": "set blog type",
+            "in": "query",
+            "type": "string",
+            "enum": ["popular"],
+            "required": false
           },
           {
             "name": "page",

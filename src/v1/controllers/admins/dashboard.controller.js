@@ -406,8 +406,8 @@ const findUserOrder = async (req, res) => {
 
     const timeList = utils.createTimeList(ticker)
 
-    for (const order of users.rows) {
-      const createdAt = new utils.PersianDate(order.createdAt)
+    for (const user of users.rows) {
+      const createdAt = new utils.PersianDate(user.createdAt)
 
       if (ticker === 'daily') {
         const userCreatedAt = `${utils.dateFormat(
@@ -532,7 +532,6 @@ const getUsersOrders = async () => {
     const findedOrders = await sequelize.models.orders.findAll({
       attributes: ['id', 'userId'],
       where: {
-        status: { [Op.not]: 'pending' },
         status: { [Op.not]: 'payment_pending' },
         status: { [Op.not]: 'canceled' }
       }

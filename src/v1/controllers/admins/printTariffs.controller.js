@@ -129,7 +129,14 @@ const findAll = (req, res) => {
     .then((r) => {
       return res.status(200).send({
         statusCode: 200,
-        data: r,
+        data:
+          process.env.RUN_ENVIRONMENT === 'local'
+            ? {
+                a3: JSON.parse(r.a3),
+                a4: JSON.parse(r.a4),
+                a5: JSON.parse(r.a5)
+              }
+            : r,
         error: null
       })
     })

@@ -43,9 +43,14 @@ const findAll = async (req, res) => {
       sequelize.models.orders
     )
 
+    const newWhere = {
+      ...where,
+      status: { [Op.not]: 'payment_pending' }
+    }
+
     const r = await orders.Get({
       attributes: ['id', 'createdAt', 'amount', 'status', 'cancelReason'],
-      where,
+      where: newWhere,
       order: [['id', 'desc']],
       pagination: {
         active: true,
@@ -53,6 +58,7 @@ const findAll = async (req, res) => {
         pageSize
       }
     })
+
     res.status(r?.statusCode).send(r)
   } catch (e) {
     httpError(e, res)
@@ -122,7 +128,10 @@ const findOne = (req, res) => {
     .then((r) => {
       const folders = r?.folders.map((item) => {
         if (item?.binding !== null) {
-          item.binding = JSON.parse(item?.binding)
+          item.binding =
+            process.env.RUN_ENVIRONMENT === 'local'
+              ? JSON.parse(JSON.parse(item?.binding))
+              : JSON.parse(item?.binding)
           return item
         }
         return item

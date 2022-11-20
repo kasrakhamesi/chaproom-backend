@@ -175,8 +175,8 @@ const create = async (req, res) => {
         )
 
         await user.update(
-          { balance: user?.balance - data.walletPaidAmount },
-          { transaction }
+          { balance: userWallet?.data?.balance - data.walletPaidAmount },
+          { transaction: t }
         )
 
         await t.commit()
@@ -271,7 +271,10 @@ const findAll = async (req, res) => {
     const userId = req?.user[0]?.id
     const { page, pageSize } = req.query
 
-    const [where] = await filters.filter(req.query, sequelize.models.orders)
+    const [order, where] = await filters.filter(
+      req.query,
+      sequelize.models.orders
+    )
 
     const newWhere = {
       ...where,
@@ -426,9 +429,5 @@ const update = async (req, res) => {
     return httpError(e, res)
   }
 }
-
-//TODOs , Decrease Amount After Order
-// Transaction order increase error
-// walletPaidAmount is invalid
 
 module.exports = { create, findAll, findOne, update, priceCalculator }

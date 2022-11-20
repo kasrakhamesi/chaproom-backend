@@ -1,9 +1,13 @@
 const { utils } = require('.')
 const { httpError, errorTypes } = require('../configs')
 const { sequelize } = require('../models')
+const _ = require('lodash')
 
 const check = async (discountCode) => {
   try {
+    if (_.isEmpty(discountCode))
+      return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND)
+
     const discount = await sequelize.models.discounts.findOne({
       where: {
         code: discountCode

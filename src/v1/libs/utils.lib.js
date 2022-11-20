@@ -54,6 +54,37 @@ const getNumberOfDaysFromMonth = (month) => {
   }
 }
 
+const createTimeListForTotalTransactions = (type, monthId) => {
+  const data = []
+  if (type === 'monthly') {
+    monthId = parseInt(monthId)
+    monthId = monthId > 12 ? 12 : monthId
+    monthId = monthId < 1 ? 1 : monthId
+    const numberOfDaysFromMonth = getNumberOfDaysFromMonth(monthId)
+    for (let k = 1; k <= numberOfDaysFromMonth; k++) {
+      const typeOfDay = String(k).length === 1 ? `0${k}` : k
+
+      const typeOfMonth = String(monthId).length === 1 ? `0${monthId}` : monthId
+
+      data.push({
+        time: `${typeOfMonth}/${typeOfDay}`,
+        debtor: 0,
+        creditor: 0
+      })
+    }
+  } else if (type === 'yearly') {
+    for (let k = 1; k < 13; k++) {
+      const typeOfMonth = String(k).length === 1 ? `0${k}` : String(k)
+      data.push({
+        time: `${typeOfMonth}`,
+        debtor: 0,
+        creditor: 0
+      })
+    }
+  }
+  return data
+}
+
 const createTimeList = (type, transactions = false) => {
   const dateNow = new PersianDate(Date.now())
   const BASE_CHART_TIMES_VALUE = { DAILY: 18, MONTHLY: 12, WEEKLY: 15 }
@@ -175,13 +206,18 @@ const createTimeList = (type, transactions = false) => {
         k = 0
         currentLastMonth = currentLastMonth - k
 
+        const typeOfMonth =
+          String(currentLastMonth).length === 1
+            ? `0${parseInt(currentLastMonth)}`
+            : currentLastMonth
+
         !transactions
           ? data.push({
-              time: String(currentLastMonth),
+              time: String(typeOfMonth),
               count: 0
             })
           : data.push({
-              time: String(currentLastMonth),
+              time: String(typeOfMonth),
               debtor: 0,
               creditor: 0
             })
@@ -191,13 +227,19 @@ const createTimeList = (type, transactions = false) => {
       }
       if (isResetMonth) {
         currentLastMonth--
+
+        const typeOfMonth =
+          String(currentLastMonth).length === 1
+            ? `0${parseInt(currentLastMonth)}`
+            : currentLastMonth
+
         !transactions
           ? data.push({
-              time: String(currentLastMonth),
+              time: String(typeOfMonth),
               count: 0
             })
           : data.push({
-              time: String(currentLastMonth),
+              time: String(typeOfMonth),
               debtor: 0,
               creditor: 0
             })
@@ -228,12 +270,12 @@ const dateFormat = (date) => (String(date).length === 1 ? `0${date}` : date)
 
 const iranProvinces = () => {
   return [
-    'کهکیلویه و بویراحمد',
+    'کهکیلویه و بویر احمد',
     'سیستان و بلوچستان',
     'خراسان شمالی',
     'خراسان رضوی',
     'خراسان جنوبی',
-    'چهارمحال بختیاری',
+    'چهار محال و بختیاری',
     'آذربایجان غربی',
     'آذربایجان شرقی',
     'اصفهان',
@@ -247,7 +289,7 @@ const iranProvinces = () => {
     'فارس',
     'قزوین',
     'قم',
-    'کرج',
+    'البرز',
     'کردستان',
     'کرمان',
     'کرمانشاه',
@@ -269,5 +311,6 @@ module.exports = {
   createTimeList,
   PersianDate,
   dateFormat,
-  iranProvinces
+  iranProvinces,
+  createTimeListForTotalTransactions
 }

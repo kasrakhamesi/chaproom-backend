@@ -25,7 +25,10 @@ const findAllCategories = async (req, res) => {
 
     res.status(200).send({
       statusCode: 200,
-      data: blogAndCategories,
+      data: {
+        totalCategories: categories.length,
+        categories: blogAndCategories
+      },
       error: null
     })
   } catch (e) {
@@ -73,7 +76,7 @@ const findOne = async (req, res) => {
 
 const findAll = async (req, res) => {
   try {
-    const { page, pageSize } = req.query
+    const { page, pageSize, blogType } = req.query
     const [order, where] = await filters.filter(
       req.query,
       sequelize.models.blogs
@@ -94,7 +97,8 @@ const findAll = async (req, res) => {
         exclude: ['adminId', 'display', 'body', 'keywords']
       },
       where: newWhere,
-      order,
+      order:
+        blogType === 'popular' ? [['countOfViews', 'desc']] : [['id', 'desc']],
       pagination: {
         active: true,
         page,
@@ -110,6 +114,8 @@ const findAll = async (req, res) => {
 
 const findAllByCategory = async (req, res) => {
   try {
+    const { blogType } = req.query
+
     const { categoryId } = req.params
 
     const category = await sequelize.models.categories.findOne({
@@ -165,7 +171,9 @@ const findAllByCategory = async (req, res) => {
       attributes: {
         exclude: ['adminId', 'body', 'keywords']
       },
-      where: { [Op.or]: condition }
+      where: { [Op.or]: condition },
+      order:
+        blogType === 'popular' ? [['countOfViews', 'desc']] : [['id', 'desc']]
     })
 
     res.status(200).send({

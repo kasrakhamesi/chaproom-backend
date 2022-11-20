@@ -34,7 +34,6 @@ const getBalance = async (userId) => {
       }
     }
   } catch (e) {
-    console.log(e)
     return {
       isSuccess: false,
       message: e.message
@@ -165,7 +164,6 @@ const submitOrder = async (
   refId,
   transaction
 ) => {
-  //TODO Check this
   try {
     const order = await sequelize.models.orders.findOne({
       where: {
