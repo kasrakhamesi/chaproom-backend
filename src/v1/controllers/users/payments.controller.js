@@ -9,20 +9,37 @@ const callback = async (req, res) => {
   try {
     const { Authority, Status } = req.query
 
-    if (Status !== 'OK') return httpError(errorTypes.PAYMENT_FAILED, res)
-
     const payment = await sequelize.models.payments.findOne({
       where: {
         authority: Authority
       }
     })
 
-    console.log(payment)
+    if (Status !== 'OK') {
+      if (!payment)
+        return res.redirect(
+          `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
+        )
 
-    if (!payment)
+      const order = await sequelize.models.orders.findOne({
+        where: {
+          paymentId: payment?.id
+        }
+      })
+
+      await payment.update({
+        status: Status
+      })
+
+      if (order)
+        return res.redirect(
+          `${process.env.FRONT_DOMAIN}/dashboard/orders/payment-result?isSuccessful=false&orderId=${order?.orderId}`
+        )
       return res.redirect(
         `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
       )
+    }
+
     if (!_.isEmpty(payment.status))
       return res.redirect(
         `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
@@ -36,8 +53,6 @@ const callback = async (req, res) => {
       Amount: payment?.amount,
       Authority
     })
-
-    console.log(paymentVerification)
 
     await payment.update({
       status: Status,

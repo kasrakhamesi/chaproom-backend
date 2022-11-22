@@ -1,7 +1,9 @@
 const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
 const { httpError, errorTypes, messageTypes } = require('../../configs')
+const { Op } = require('sequelize')
 const blogs = new restful(sequelize.models.blogs)
+const blogCategories = new restful(sequelize.models.blog_categories)
 
 const findAllCategories = async (req, res) => {
   try {
@@ -23,10 +25,12 @@ const findAllCategories = async (req, res) => {
       })
     }
 
+    const totalBlogs = await sequelize.models.blogs.count()
+
     res.status(200).send({
       statusCode: 200,
       data: {
-        totalCategories: categories.length,
+        totalBlogs,
         categories: blogAndCategories
       },
       error: null

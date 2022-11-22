@@ -5,9 +5,7 @@ const _ = require('lodash')
 
 const check = async (discountCode) => {
   try {
-    if (_.isEmpty(discountCode))
-      return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND)
-
+    console.log('areeeeeeeeeeeeeeeeeeeeeeeeeeee')
     const discount = await sequelize.models.discounts.findOne({
       where: {
         code: discountCode
@@ -40,14 +38,13 @@ const check = async (discountCode) => {
 const calculator = (discountData, price) => {
   const { type, value } = discountData
   if (type === 'percentage') {
-    const totalDiscount = parseFloat((price * parseInt(value)) / 100)
-    const payableAmount = parseFloat(price - totalDiscount)
+    const payableAmount = parseFloat((price * parseInt(value)) / 100)
     return payableAmount
-  } else if (type === 'fix') {
-    const payableAmount = parseFloat(price - value)
+  } else if (type === 'fixed') {
+    const payableAmount = value //parseFloat(price - value)
     return payableAmount
   } else if (type === 'page') {
-    const payableAmount = parseFloat(price - value)
+    const payableAmount = value //parseFloat(price - value)
     return payableAmount
   }
   return price

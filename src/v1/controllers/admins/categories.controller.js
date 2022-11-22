@@ -16,7 +16,6 @@ const create = (req, res) => {
         .send(messageTypes.SUCCESSFUL_CREATED)
     })
     .catch((e) => {
-      console.log(e)
       return httpError(e, res)
     })
 }

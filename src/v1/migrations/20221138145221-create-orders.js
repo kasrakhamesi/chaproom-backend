@@ -32,7 +32,7 @@ module.exports = {
         },
         discountId: {
           type: Sequelize.BIGINT.UNSIGNED,
-          references: { model: 'addresses', key: 'id' },
+          references: { model: 'discounts', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: true

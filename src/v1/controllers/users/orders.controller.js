@@ -101,9 +101,9 @@ const create = async (req, res) => {
     const discountAmount =
       discount !== null
         ? await discounts.calculator(discount?.data, totalPrice)
-        : null
+        : 0
 
-    if (discountAmount !== null) {
+    if (discountAmount !== 0) {
       data.discountId = discount?.data?.id
       data.discountType = discount?.data?.type
       data.discountValue = discount?.data?.value
@@ -121,8 +121,8 @@ const create = async (req, res) => {
 
       const balance = user?.balance
 
-      if (balance >= totalPrice + postageFee) {
-        data.walletPaidAmount = totalPrice + postageFee
+      if (balance >= totalPrice + postageFee - discountAmount) {
+        data.walletPaidAmount = totalPrice + postageFee - discountAmount
         data.status = 'pending'
         const t = await sequelize.transaction()
         const r = await sequelize.models.orders.create(data, { transaction: t })
@@ -166,7 +166,7 @@ const create = async (req, res) => {
             type: 'order',
             change: 'decrease',
             balance: userWallet?.data?.balance,
-            balanceAfter: userWallet?.data?.balance - totalPrice,
+            balanceAfter: userWallet?.data?.balance - data.walletPaidAmount,
             status: 'successful',
             amount: data.walletPaidAmount,
             description: 'ثبت سفارش'
@@ -190,7 +190,8 @@ const create = async (req, res) => {
           error: null
         })
       } else {
-        const gatewayPayAmount = totalPrice + postageFee - balance
+        const gatewayPayAmount =
+          totalPrice - discountAmount + postageFee - balance
 
         return await users.createOrder(
           userId,
@@ -205,13 +206,14 @@ const create = async (req, res) => {
 
     return await users.createOrder(
       userId,
-      totalPrice + postageFee,
+      totalPrice + postageFee - discountAmount,
       0,
       folders,
       data,
       res
     )
   } catch (e) {
+    console.log(e)
     return httpError(e || String(e) || e?.message, res)
   }
 }
@@ -221,8 +223,9 @@ const priceCalculator = async (req, res) => {
     const userId = req?.user[0]?.id
     const { discountCode } = req.body
     let discount = null
+    if (discountCode === '')
+      return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND, res)
     if (discountCode) discount = await discounts.check(discountCode)
-
     if (discount !== null && discount?.statusCode !== 200)
       return httpError(discount, res)
 

@@ -238,7 +238,7 @@ const totalTransactions = async (req, res) => {
       return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
 
     const timeList = utils.createTimeListForTotalTransactions(ticker, month)
-    console.log(timeList)
+
     if (startAt) where.createdAt = { [Op.gte]: startAt }
     if (endAt) where.createdAt = { [Op.lte]: endAt }
 
@@ -284,9 +284,13 @@ const totalTransactions = async (req, res) => {
     }
 
     res.status(200).send({
-      totalDebtor: outgoing,
-      totalCreditor: incoming,
-      chart: timeList
+      statusCode: 200,
+      data: {
+        totalDebtor: outgoing,
+        totalCreditor: incoming,
+        chart: timeList
+      },
+      error: null
     })
   } catch (e) {
     console.log(e)
