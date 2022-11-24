@@ -103,15 +103,14 @@ const callback = async (req, res) => {
       { transaction: t }
     )
 
+    await t.commit()
+
     const submitOrderResult = await submitOrder(
       payment?.userId,
       payment?.id,
       payment?.amount,
-      paymentVerification?.RefID,
-      t
+      paymentVerification?.RefID
     )
-
-    await t.commit()
 
     if (submitOrderResult !== null)
       return res.redirect(
@@ -121,9 +120,10 @@ const callback = async (req, res) => {
     return res.redirect(
       `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=true&paymentId=${payment?.id}&amount=${payment?.amount}`
     )
-  } catch (e) {
-    console.log(e)
-    return httpError(e, res)
+  } catch {
+    return res.redirect(
+      `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
+    )
   }
 }
 

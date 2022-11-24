@@ -157,13 +157,7 @@ const createOrder = async (
   }
 }
 
-const submitOrder = async (
-  userId,
-  paymentId,
-  paymentAmount,
-  refId,
-  transaction
-) => {
+const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
   try {
     const order = await sequelize.models.orders.findOne({
       where: {
@@ -178,6 +172,8 @@ const submitOrder = async (
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message)
 
+    const t = await sequelize.transaction()
+
     await sequelize.models.transactions.create(
       {
         userId,
@@ -190,7 +186,7 @@ const submitOrder = async (
         amount: paymentAmount,
         description: 'ثبت سفارش'
       },
-      { transaction }
+      { transaction: t }
     )
 
     const user = await sequelize.models.users.findOne(
@@ -199,20 +195,22 @@ const submitOrder = async (
           id: userId
         }
       },
-      { transaction }
+      { transaction: t }
     )
 
     await user.update(
       { balance: user?.balance - paymentAmount },
-      { transaction }
+      { transaction: t }
     )
 
     await order.update(
       {
         status: 'pending'
       },
-      { transaction }
+      { transaction: t }
     )
+
+    await t.commit()
 
     await sequelize.models.folders.update(
       { used: true },

@@ -14,7 +14,6 @@ router.use(
 )
 const { admins } = require('../../controllers')
 
-//router.use('/media', express.static('./app/v1/storages'))
 router.delete('/id/:id', admins.blogsUploader.hardDelete)
 router.post('/', admins.blogsUploader.upload)
 

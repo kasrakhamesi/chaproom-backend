@@ -45,7 +45,7 @@ const upload = async (req, res) => {
     const r = await sequelize.models.blogs_images.create({
       adminId,
       name: newFileName,
-      url: `${process.env.BACKEND_DOMAIN}/users/v1/assets/${newFileName}`
+      url: `${process.env.BACKEND_DOMAIN}/v1/public/assets/${newFileName}`
     })
 
     res.status(201).send({

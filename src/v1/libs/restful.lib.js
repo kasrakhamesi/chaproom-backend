@@ -107,7 +107,7 @@ class Restful {
               limit: limit
             })
       else if (!findOne && pagination?.active) {
-        if (_.isEmpty(pagination?.pageSize)) pagination.pageSize = 25
+        if (_.isEmpty(pagination?.pageSize)) pagination.pageSize = 5
 
         if (_.isEmpty(pagination?.page)) pagination.page = 1
 
