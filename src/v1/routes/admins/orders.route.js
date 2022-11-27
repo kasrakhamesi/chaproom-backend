@@ -9,6 +9,6 @@ const { admins } = require('../../controllers')
 router.get('/user-id/:userId', admins.orders.findAllByUserId)
 router.put('/id/:id', admins.orders.update)
 router.get('/id/:id', admins.orders.findOne)
-router.get('/a', admins.orders.findAll)
+router.get('/', admins.orders.findAll)
 
 module.exports = router
