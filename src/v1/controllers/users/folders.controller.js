@@ -1,7 +1,51 @@
 const { httpError, messageTypes, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
+const { folders } = require('../../libs')
+const { Op } = require('sequelize')
 const _ = require('lodash')
-const { utils, folders } = require('../../libs')
+
+const findOrCreateOrder = async (req, res) => {
+  try {
+    const userId = req?.user[0]?.id
+
+    const [row, created] = await sequelize.models.orders.findOrCreate({
+      where: {
+        userId,
+        addressId: null
+      }
+    })
+
+    const folders = await sequelize.models.folders.findAll({
+      where: {
+        userId,
+        used: false
+      }
+    })
+
+    const folderId = _.isEmpty(folders) ? 1 : folders.length + 1
+
+    if (!_.isEmpty(row))
+      return res.status(200).send({
+        statusCode: 200,
+        data: {
+          folderCode: `${String(row?.id)}-${folderId}`,
+          phoneNumberToSendFile: '09385667274'
+        },
+        error: null
+      })
+
+    res.status(200).send({
+      statusCode: 200,
+      data: {
+        folderCode: `${String(created?.id)}-${folderId}`,
+        phoneNumberToSendFile: '09385667274'
+      },
+      error: null
+    })
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
 
 const create = async (req, res) => {
   try {
@@ -13,6 +57,7 @@ const create = async (req, res) => {
       countOfCopies,
       description,
       binding,
+      filesManuallySent,
       files
     } = req.body
 
@@ -25,32 +70,36 @@ const create = async (req, res) => {
       side,
       size,
       countOfPages,
-      uploadedPages: 5,
       countOfCopies,
       description,
       binding: extractedBinding,
+      filesManuallySent,
       userId
     }
 
-    if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
-
-    const findedFiles = await sequelize.models.files.findAll({
-      where: {
-        userId
-      }
-    })
-
-    const filesInfo = []
     const ids = []
-    for (const entity of files) {
-      const findedFile = findedFiles.find((item) => item.id === entity.id)
-      if (findedFile) {
-        ids.push(entity?.id)
-        filesInfo.push({ countOfPages: findedFile?.countOfPages })
-      }
-    }
+    const filesInfo = []
+    let uploadedPages = 0
 
-    if (ids.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+    if (filesManuallySent === false) {
+      if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+
+      const findedFiles = await sequelize.models.files.findAll({
+        where: {
+          userId
+        }
+      })
+
+      for (const entity of files) {
+        const findedFile = findedFiles.find((item) => item.id === entity.id)
+        if (findedFile) {
+          ids.push(entity?.id)
+          filesInfo.push({ countOfPages: findedFile?.countOfPages })
+          uploadedPages += findedFile?.countOfPages
+        }
+      }
+      if (ids.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+    }
 
     data.countOfFiles = ids.length
 
@@ -68,11 +117,13 @@ const create = async (req, res) => {
     if (calculatedPrice === null)
       return httpError(errorTypes.CONTACT_TO_ADMIN, res)
 
-    data.filesUrl = 'https://chaproom.com'
+    data.filesUrl = process.env.FRONT_DOMAIN
 
     data.amount = calculatedPrice?.amount
 
     data.shipmentPrice = calculatedPrice?.shipmentPrice
+
+    data.uploadedPages = uploadedPages
 
     const t = await sequelize.transaction()
 
@@ -125,7 +176,6 @@ const update = (req, res) => {
     side,
     size,
     countOfPages,
-    uploadedPages: 4,
     binding: extractedBinding,
     countOfCopies,
     description
@@ -140,11 +190,13 @@ const update = (req, res) => {
     .then((rFiles) => {
       const filesId = []
       const filesInfo = []
+      let uploadedPages = 0
       for (const entity of files) {
         const findedFile = rFiles.find((item) => item.id === entity.id)
         if (findedFile) {
           filesId.push(entity?.id)
           filesInfo.push({ countOfPages: findedFile?.countOfPages })
+          uploadedPages += findedFile?.countOfPages
         }
       }
 
@@ -168,6 +220,8 @@ const update = (req, res) => {
             return httpError(errorTypes.CONTACT_TO_ADMIN, res)
 
           data.amount = calculatedPrice?.amount
+
+          data.uploadedPages = uploadedPages
 
           data.shipmentPrice = calculatedPrice?.shipmentPrice
 
@@ -428,5 +482,6 @@ module.exports = {
   hardDelete,
   findOne,
   update,
-  priceCalculator
+  priceCalculator,
+  findOrCreateOrder
 }

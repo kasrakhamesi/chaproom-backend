@@ -213,7 +213,15 @@ const update = async (req, res) => {
         }
       )
     }
-    await user.update({ balance: balanceAfter }, { transaction: t })
+    await user.update(
+      {
+        balance:
+          change === 'decrease'
+            ? balanceAfter
+            : userWallet?.data?.balance + amount
+      },
+      { transaction: t }
+    )
 
     await t.commit()
 
@@ -293,7 +301,6 @@ const totalTransactions = async (req, res) => {
       error: null
     })
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }
@@ -339,7 +346,15 @@ const create = async (req, res) => {
       { transaction: t }
     )
 
-    await user.update({ balance: balanceAfter }, { transaction: t })
+    await user.update(
+      {
+        balance:
+          change === 'decrease'
+            ? balanceAfter
+            : userWallet?.data?.balance + amount
+      },
+      { transaction: t }
+    )
 
     await t.commit()
 
@@ -365,8 +380,42 @@ const softDelete = async (req, res) => {
     if (!transaction)
       return httpError(errorTypes.ADMIN_CANT_DELETE_NORMAL_TRANSACTION, res)
 
-    const r = await transactions.Delete({ req, where: { id } })
-    res.status(r?.statusCode).send(r)
+    const user = await sequelize.models.users.findOne({
+      where: {
+        id: transaction?.userId
+      }
+    })
+
+    if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
+
+    const t = await sequelize.transaction()
+
+    await transaction.destroy({
+      transaction: t
+    })
+
+    const userWallet = await users.getBalance(user?.id)
+
+    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+
+    const balanceAfter =
+      transaction?.change === 'decrease' &&
+      userWallet?.data?.balance >= transaction?.amount
+        ? userWallet?.data?.balance - transaction?.amount
+        : transaction?.amount - userWallet?.data?.balance
+
+    await user.update({
+      balance:
+        change === 'decrease'
+          ? balanceAfter
+          : userWallet?.data?.balance + transaction?.amount
+    })
+
+    await t.commit()
+
+    res
+      .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
+      .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
     httpError(e, res)
   }

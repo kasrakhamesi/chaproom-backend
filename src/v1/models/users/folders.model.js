@@ -49,10 +49,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
-      uploadedPages: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true
-      },
       countOfCopies: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true
@@ -77,12 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      telegramUploadFile: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-      },
-      whatsappUploadFile: {
+      filesManuallySent: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull: false

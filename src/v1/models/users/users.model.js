@@ -46,6 +46,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
         allowNull: true
+      },
+      countOfOrders: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
+      },
+      incomingPayment: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
       }
     },
     {

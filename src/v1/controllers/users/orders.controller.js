@@ -13,6 +13,12 @@ const create = async (req, res) => {
 
     const { addressId, discountCode, paidWithWallet } = req.body
 
+    if (typeof addressId !== 'number')
+      return httpError(errorTypes.INVALID_INPUTS, res)
+
+    if (typeof paidWithWallet !== 'boolean')
+      return httpError(errorTypes.INVALID_INPUTS, res)
+
     const referral = await sequelize.models.referrals.findOne({
       where: {
         userId,
@@ -125,7 +131,15 @@ const create = async (req, res) => {
         data.walletPaidAmount = totalPrice + postageFee - discountAmount
         data.status = 'pending'
         const t = await sequelize.transaction()
-        const r = await sequelize.models.orders.create(data, { transaction: t })
+
+        const r = await utils.upsert(
+          sequelize.models.orders,
+          data,
+          { addressId: null, userId },
+          t
+        )
+
+        if (!r) return httpError(errorTypes.INVALID_INPUTS, res)
 
         const rUpdateFiles = await users.updateFolderFiles(
           folders,
@@ -133,6 +147,7 @@ const create = async (req, res) => {
           t,
           r?.id || 0
         )
+
         if (rUpdateFiles === false)
           return httpError(errorTypes.CONTACT_TO_ADMIN, res)
 
@@ -417,8 +432,21 @@ const update = async (req, res) => {
         balanceAfter:
           userWallet?.data?.balance + order?.amount + order?.postageFee,
         status: 'successful',
-        amount: order?.amount,
+        amount: order?.amount + order?.postageFee,
         description: 'بازگشت وجه به کیف پول بابت لغو سفارش'
+      },
+      { transaction: t }
+    )
+
+    const user = await sequelize.models.users.findOne({
+      where: {
+        id: userId
+      }
+    })
+
+    await user.update(
+      {
+        balance: userWallet?.data?.balance + order?.amount + order?.postageFee
       },
       { transaction: t }
     )

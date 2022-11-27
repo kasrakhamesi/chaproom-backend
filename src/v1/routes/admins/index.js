@@ -1,4 +1,4 @@
-const { Router } = require('express')
+const { Router, static } = require('express')
 const router = Router()
 const { passport } = require('../../middlewares')
 
@@ -6,6 +6,11 @@ const adminsPassport = passport.adminsPassport.authenticate('jwt', {
   session: false,
   failureRedirect: '/v1/failures/unauthorized'
 })
+
+router.use(
+  '/outputs/excels',
+  static(__dirname.replace('admins', 'excels').replace('routes', 'storages'))
+)
 
 const { admins } = require('../../controllers')
 

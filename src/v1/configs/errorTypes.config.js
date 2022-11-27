@@ -7,10 +7,6 @@ const Types = {
     statusCode: 400,
     message: 'رمزعبور یا شماره تماس اشتباه است'
   },
-  INVALID_USERNAME_PASSWORD: {
-    statusCode: 400,
-    message: 'رمزعبور یا نام کاربری اشتباه است'
-  },
   UNAUTHORIZED: {
     statusCode: 401,
     message: 'دسترسی غیر مجاز'
@@ -175,6 +171,10 @@ const Types = {
   CANT_DELETE_FOUNDER: {
     statusCode: 400,
     message: 'امکان حذف حساب مالک سایت وجود ندارد'
+  },
+  ORDER_NOT_FOUND: {
+    statusCode: 400,
+    message: 'سفارش با شماره یکتای وارد شده یافت نشد'
   },
   CONTACT_TO_ADMIN: {
     statusCode: 400,

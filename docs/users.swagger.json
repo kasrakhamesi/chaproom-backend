@@ -885,6 +885,51 @@
         ]
       }
     },
+    "/users/folders/code": {
+      "get": {
+        "tags": ["Users Folders"],
+        "summary": "get folder code for manually send file",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "folderCode": "1-1",
+                  "phoneNumberToSendFile": "09385667274"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "مشکلی پیش آمده است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/folders/price-calculator": {
       "post": {
         "tags": ["Users Folders"],

@@ -4,7 +4,7 @@ module.exports = {
     await queryInterface
       .createTable('orders', {
         id: {
-          allowNull: false,
+          allowNull: true,
           autoIncrement: true,
           primaryKey: true,
           type: Sequelize.BIGINT.UNSIGNED
@@ -14,14 +14,14 @@ module.exports = {
           references: { model: 'users', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
-          allowNull: false
+          allowNull: true
         },
         addressId: {
           type: Sequelize.BIGINT.UNSIGNED,
           references: { model: 'addresses', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
-          allowNull: false
+          allowNull: true
         },
         referralId: {
           type: Sequelize.BIGINT.UNSIGNED,
@@ -45,11 +45,11 @@ module.exports = {
             'canceled',
             'sent'
           ),
-          allowNull: false
+          allowNull: true
         },
         amount: {
           type: Sequelize.BIGINT.UNSIGNED,
-          allowNull: false
+          allowNull: true
         },
         postageMethod: {
           type: Sequelize.STRING,
@@ -62,27 +62,27 @@ module.exports = {
         },
         recipientName: {
           type: Sequelize.STRING,
-          allowNull: false
+          allowNull: true
         },
         recipientPhoneNumber: {
           type: Sequelize.STRING,
-          allowNull: false
+          allowNull: true
         },
         recipientPostalCode: {
           type: Sequelize.STRING,
-          allowNull: false
+          allowNull: true
         },
         recipientDeliveryProvince: {
           type: Sequelize.STRING,
-          allowNull: false
+          allowNull: true
         },
         recipientDeliveryCity: {
           type: Sequelize.STRING,
-          allowNull: false
+          allowNull: true
         },
         recipientDeliveryAddress: {
           type: Sequelize.TEXT,
-          allowNull: false
+          allowNull: true
         },
         discountType: {
           type: Sequelize.STRING,
@@ -136,10 +136,12 @@ module.exports = {
         },
         walletPaidAmount: {
           type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
           allowNull: true
         },
         gatewayPaidAmount: {
           type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
           allowNull: true
         },
         sentAt: {

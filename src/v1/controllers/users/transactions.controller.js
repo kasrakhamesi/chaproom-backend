@@ -18,7 +18,8 @@ const findAll = async (req, res) => {
     const newWhere = {
       ...where,
       userId,
-      status: { [Op.not]: 'pending' }
+      status: { [Op.not]: 'pending' },
+      description: { [Op.not]: 'increase_for_order' }
     }
 
     const r = await transactions.Get({
@@ -52,7 +53,6 @@ const findAll = async (req, res) => {
         totalPageLeft: r?.data?.totalPageLeft,
         totalCountLeft: r?.data?.totalCountLeft,
         transactions: r?.data?.transactions.map((item) => {
-          console.log(item.orderId, item.change)
           if (item.orderId !== null && item.change === 'increase') {
             return {
               id: item.id,

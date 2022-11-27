@@ -34,6 +34,4 @@ app.use('*', (req, res) => {
   })
 })
 
-//،TODO Transaction is not defind when payment with wallet in increase admin balance
-
 app.listen(process.env.PORT)

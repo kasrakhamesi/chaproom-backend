@@ -16,11 +16,16 @@ const getBalance = async (userId) => {
 
     let incoming = 0
     let outgoing = 0
-
+    let marketingBalance = 0
     for (const transaction of userTransactions) {
-      if (transaction?.change === 'increase')
+      if (transaction?.change === 'increase') {
+        if (
+          transaction?.type === 'marketing_discount' ||
+          transaction?.type === 'marketing_referral'
+        )
+          marketingBalance += parseInt(transaction?.amount)
         incoming += parseInt(transaction?.amount)
-      else outgoing += parseInt(transaction?.amount)
+      } else outgoing += parseInt(transaction?.amount)
     }
 
     const balance = incoming - outgoing
@@ -30,7 +35,8 @@ const getBalance = async (userId) => {
       data: {
         outgoing,
         incoming,
-        balance
+        balance,
+        marketingBalance
       }
     }
   } catch (e) {
@@ -47,7 +53,7 @@ const updateFolderFiles = async (folders, userId, transaction, orderId) => {
     for (const folder of folders) {
       if (error) return false
       const filesPath = []
-      for (const file of folder?.files) filesPath.push(file?.name)
+      for (const file of folder?.files) filesPath.push(file?.uniqueName)
 
       const rArchive = libs.folders.archiveFiles(
         filesPath,
@@ -117,9 +123,14 @@ const createOrder = async (
     data.gatewayPaidAmount = gatewayPayAmount
     data.walletPaidAmount = walletPayAmount
 
-    const r = await sequelize.models.orders.create(data, {
-      transaction: t
-    })
+    const r = await libs.utils.upsert(
+      sequelize.models.orders,
+      data,
+      { addressId: null, userId },
+      t
+    )
+
+    if (!r) return httpError(errorTypes.INVALID_INPUTS, res)
 
     const rUpdateFoldersFiles = await updateFolderFiles(
       folders,

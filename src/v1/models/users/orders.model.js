@@ -21,11 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: {
         type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
+        allowNull: true
       },
       addressId: {
         type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
+        allowNull: true
       },
       referralId: {
         type: DataTypes.BIGINT.UNSIGNED,
@@ -43,11 +43,11 @@ module.exports = (sequelize, DataTypes) => {
           'canceled',
           'sent'
         ),
-        allowNull: false
+        allowNull: true
       },
       amount: {
         type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
+        allowNull: true
       },
       postageMethod: {
         type: DataTypes.STRING,
@@ -60,27 +60,27 @@ module.exports = (sequelize, DataTypes) => {
       },
       recipientName: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       recipientPhoneNumber: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       recipientPostalCode: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       recipientDeliveryProvince: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       recipientDeliveryCity: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       recipientDeliveryAddress: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: true
       },
       discountType: {
         type: DataTypes.STRING,
@@ -134,10 +134,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       walletPaidAmount: {
         type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
         allowNull: true
       },
       gatewayPaidAmount: {
         type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
         allowNull: true
       },
       sentAt: {

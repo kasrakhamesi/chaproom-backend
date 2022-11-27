@@ -122,6 +122,8 @@ class Restful {
 
         if (pageSize > 100) throw new Error('PageSize must under 100')
 
+        console.log(page)
+
         if (page === 0) {
           resGet = await this.#model.findAndCountAll({
             where: where,

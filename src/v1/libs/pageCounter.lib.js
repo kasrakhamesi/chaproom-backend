@@ -17,7 +17,8 @@ const docx = async (filePath) => {
     const dataBuffer = fs.readFileSync(filePath)
     const r = await DocxCounter.count(dataBuffer)
     return r
-  } catch {
+  } catch (e) {
+    console.log(e)
     return 0
   }
 }

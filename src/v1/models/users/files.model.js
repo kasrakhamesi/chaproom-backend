@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      uploadedName: {
+      uniqueName: {
         type: DataTypes.STRING,
         allowNull: false
       },

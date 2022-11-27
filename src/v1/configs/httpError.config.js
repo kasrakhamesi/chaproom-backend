@@ -1,7 +1,6 @@
 const errorTypes = require('../configs/errorTypes.config')
 
 const Config = (err, res = null) => {
-  console.log(err)
   if (err?.statusCode && res !== null)
     return res.status(err?.statusCode).send({
       statusCode: err?.statusCode,

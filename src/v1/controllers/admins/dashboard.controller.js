@@ -67,11 +67,18 @@ const findUsers = async (req, res) => {
           findedCreatedAt.count++
         }
       } else if (ticker === 'weekly') {
+        const newStyleCreatedAt =
+          String(createdAt.getDate()).length === 1
+            ? `0${String(createdAt.getDate())}`
+            : String(createdAt.getDate())
+
         const userCreatedAt = parseInt(
-          `${createdAt.getMonth()}${createdAt.getDate()}`
+          `${createdAt.getMonth()}${newStyleCreatedAt}`
         )
 
         for (let k = 0; k < timeList.length; k++) {
+          if (k + 1 === timeList.length) break
+
           const currentTimeList = parseInt(
             String(timeList[k].time).replace('/', '')
           )
@@ -117,9 +124,12 @@ const getOrders = async () => {
       attributes: ['createdAt'],
       order: [['id', 'desc']],
       where: {
-        status: { [Op.not]: 'pending' },
-        status: { [Op.not]: 'payment_pending' },
-        status: { [Op.not]: 'canceled' }
+        [Op.or]: [
+          {
+            status: 'preparing'
+          },
+          { status: 'sent' }
+        ]
       }
     })
 
@@ -160,9 +170,12 @@ const findOrders = async (req, res) => {
       attributes: ['createdAt'],
       order: [['id', 'desc']],
       where: {
-        status: { [Op.not]: 'pending' },
-        status: { [Op.not]: 'payment_pending' },
-        status: { [Op.not]: 'canceled' }
+        [Op.or]: [
+          {
+            status: 'preparing'
+          },
+          { status: 'sent' }
+        ]
       }
     })
 
@@ -182,11 +195,18 @@ const findOrders = async (req, res) => {
           findedCreatedAt.count++
         }
       } else if (ticker === 'weekly') {
+        const newStyleCreatedAt =
+          String(createdAt.getDate()).length === 1
+            ? `0${String(createdAt.getDate())}`
+            : String(createdAt.getDate())
+
         const userCreatedAt = parseInt(
-          `${createdAt.getMonth()}${createdAt.getDate()}`
+          `${createdAt.getMonth()}${newStyleCreatedAt}`
         )
 
         for (let k = 0; k < timeList.length; k++) {
+          if (k + 1 === timeList.length) break
+
           const currentTimeList = parseInt(
             String(timeList[k].time).replace('/', '')
           )
@@ -301,11 +321,17 @@ const findSales = async (req, res) => {
           }
         }
       } else if (ticker === 'weekly') {
-        const userCreatedAt = parseInt(
-          `${createdAt.getMonth()}${createdAt.getDate()}`
-        )
+        const newStyleCreatedAt =
+          String(createdAt.getDate()).length === 1
+            ? `0${String(createdAt.getDate())}`
+            : String(createdAt.getDate())
 
+        const userCreatedAt = parseInt(
+          `${createdAt.getMonth()}${newStyleCreatedAt}`
+        )
         for (let k = 0; k < timeList.length; k++) {
+          if (k + 1 === timeList.length) break
+
           const currentTimeList = parseInt(
             String(timeList[k].time).replace('/', '')
           )
@@ -369,9 +395,12 @@ const findUserOrder = async (req, res) => {
     const findedOrders = await sequelize.models.orders.findAll({
       attributes: ['id', 'userId'],
       where: {
-        status: { [Op.not]: 'pending' },
-        status: { [Op.not]: 'payment_pending' },
-        status: { [Op.not]: 'canceled' }
+        [Op.or]: [
+          {
+            status: 'preparing'
+          },
+          { status: 'sent' }
+        ]
       }
     })
 
@@ -420,11 +449,18 @@ const findUserOrder = async (req, res) => {
           findedCreatedAt.count++
         }
       } else if (ticker === 'weekly') {
+        const newStyleCreatedAt =
+          String(createdAt.getDate()).length === 1
+            ? `0${String(createdAt.getDate())}`
+            : String(createdAt.getDate())
+
         const userCreatedAt = parseInt(
-          `${createdAt.getMonth()}${createdAt.getDate()}`
+          `${createdAt.getMonth()}${newStyleCreatedAt}`
         )
 
         for (let k = 0; k < timeList.length; k++) {
+          if (k + 1 === timeList.length) break
+
           const currentTimeList = parseInt(
             String(timeList[k].time).replace('/', '')
           )
@@ -476,9 +512,12 @@ const getOrdersOfProvinces = async () => {
         attributes: ['id', 'recipientDeliveryProvince', 'amount'],
         where: {
           recipientDeliveryProvince: province,
-          status: { [Op.not]: 'pending' },
-          status: { [Op.not]: 'payment_pending' },
-          status: { [Op.not]: 'canceled' }
+          [Op.or]: [
+            {
+              status: 'preparing'
+            },
+            { status: 'sent' }
+          ]
         }
       })
       let amount = 0
@@ -532,8 +571,12 @@ const getUsersOrders = async () => {
     const findedOrders = await sequelize.models.orders.findAll({
       attributes: ['id', 'userId'],
       where: {
-        status: { [Op.not]: 'payment_pending' },
-        status: { [Op.not]: 'canceled' }
+        [Op.or]: [
+          {
+            status: 'preparing'
+          },
+          { status: 'sent' }
+        ]
       }
     })
 
@@ -603,9 +646,12 @@ const findAll = async (req, res) => {
 
     const orders = await sequelize.models.orders.count({
       where: {
-        status: { [Op.not]: 'sent' },
-        status: { [Op.not]: 'payment_pending' },
-        status: { [Op.not]: 'canceled' }
+        [Op.or]: [
+          {
+            status: 'preparing'
+          },
+          { status: 'sent' }
+        ]
       }
     })
     const withdrawals = await sequelize.models.withdrawals.count({

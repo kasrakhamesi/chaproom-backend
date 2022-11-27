@@ -16,7 +16,7 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: false
         },
-        uploadedName: {
+        uniqueName: {
           type: Sequelize.STRING,
           allowNull: false
         },
@@ -46,7 +46,7 @@ module.exports = {
         }
       })
       .then(() =>
-        queryInterface.addIndex('users', ['name'], {
+        queryInterface.addIndex('files', ['uniqueName'], {
           unique: true
         })
       )

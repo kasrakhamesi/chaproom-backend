@@ -31,7 +31,7 @@ const priceCalculator = async (
       if (countOfPages >= tariff.breakpoints[k].at)
         shipmentPrice = tariff.breakpoints[k][utils.camelCase(side)]
 
-    countOfCopies = countOfCopies === null ? 1 : countOfCopies + 1
+    countOfCopies = countOfCopies === null ? 1 : countOfCopies
     let amount = shipmentPrice * countOfPages
     amount = countOfCopies * amount
 
@@ -40,6 +40,7 @@ const priceCalculator = async (
     if (extractedBinding !== null) {
       const bindingData = JSON.parse(extractedBinding)
       const { method, countOfFiles, type } = bindingData
+      console.log(bindingBreakpoint[utils.camelCase(type)])
       if (method === 'each_file_separated') {
         for (const entity of filesInfo) {
           bindingValue +=
@@ -55,8 +56,7 @@ const priceCalculator = async (
             parseInt(countOfPages) / bindingBreakpoint[utils.camelCase(type)]
           ) + 1
       } else if (method === 'count_of_files') {
-        bindingValue +=
-          parseInt(countOfFiles / bindingBreakpoint[utils.camelCase(type)]) + 1
+        bindingValue += parseInt(countOfFiles)
       }
 
       bindingValue = bindingValue * countOfCopies || 1

@@ -69,12 +69,7 @@ module.exports = {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       },
-      telegramUploadFile: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-      },
-      whatsappUploadFile: {
+      filesManuallySent: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         allowNull: false

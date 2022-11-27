@@ -43,6 +43,16 @@ module.exports = {
           defaultValue: true,
           allowNull: true
         },
+        countOfOrders: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
+        incomingPayment: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
         createdAt: {
           allowNull: true,
           type: Sequelize.DATE

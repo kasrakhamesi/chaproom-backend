@@ -6,7 +6,7 @@ const adminsPassport = new Passport()
 const usersPassport = new Passport()
 const ExtractJwt = passportJwt.ExtractJwt
 const StrategyJwt = passportJwt.Strategy
-
+const _ = require('lodash')
 const adminAccess = 'qqqqq'
 const userAccess = 'rrrr'
 /*
@@ -53,6 +53,8 @@ adminsPassport.use(
           }
         })
         .then((r) => {
+          if (_.isEmpty(r)) return done({ statusCode: 401 })
+
           return done(null, r)
         })
         .catch((err) => {
@@ -79,10 +81,12 @@ usersPassport.use(
           }
         })
         .then((r) => {
+          if (_.isEmpty(r)) return done({ statusCode: 401 })
+
           return done(null, r)
         })
-        .catch((e) => {
-          return done(e)
+        .catch(() => {
+          return done({ statusCode: 401 })
         })
     }
   )

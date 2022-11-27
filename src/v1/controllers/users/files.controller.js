@@ -51,13 +51,14 @@ const upload = async (req, res) => {
     let rCounter = 0
     if (String(extensionName).toLowerCase().includes('pdf'))
       rCounter = await pageCounter.pdf(filePath)
-    else if (String(extensionName).toLowerCase().includes('docx'))
-      rCounter = await pageCounter.docx(filePath)
+    else if (String(extensionName).toLowerCase().includes('docx')) {
+      //   rCounter = await pageCounter.docx('./src/v1/storages/files/1/f1_20.docx')
+    }
 
     const r = await sequelize.models.files.create({
       userId,
-      uploadedName: attachment.name,
-      name: newFileName,
+      uniqueName: newFileName,
+      name: attachment.name,
       countOfPages: rCounter,
       url: '/' + newFileName
     })

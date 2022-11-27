@@ -15,17 +15,17 @@ const callback = async (req, res) => {
       }
     })
 
+    const order = await sequelize.models.orders.findOne({
+      where: {
+        paymentId: payment?.id
+      }
+    })
+
     if (Status !== 'OK') {
       if (!payment)
         return res.redirect(
           `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
         )
-
-      const order = await sequelize.models.orders.findOne({
-        where: {
-          paymentId: payment?.id
-        }
-      })
 
       await payment.update({
         status: Status
@@ -82,7 +82,7 @@ const callback = async (req, res) => {
         balanceAfter: userWallet?.data?.balance + payment?.amount,
         status: 'successful',
         amount: payment?.amount,
-        description: 'افزایش موجودی کیف پول'
+        description: order ? 'increase_for_order' : 'افزایش موجودی کیف پول'
       },
       { transaction: t }
     )
@@ -98,7 +98,8 @@ const callback = async (req, res) => {
 
     await user.update(
       {
-        balance: user?.balance + payment?.amount
+        balance: user?.balance + payment?.amount,
+        incomingPayment: user?.incomingPayment + parseInt(amount)
       },
       { transaction: t }
     )

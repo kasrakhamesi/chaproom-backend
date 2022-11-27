@@ -20,21 +20,8 @@ const camelCase = (entity) => {
   return newEntity
 }
 
-class PersianDate extends Date {
-  constructor(...args) {
-    super(...args)
-  }
-
-  getParts = () => this.toLocaleDateString('fa-IR-u-nu-latn').split('/')
-  getDay = () => (super.getDay() === 6 ? 0 : super.getDay() + 1)
-  getDate = () => this.getParts()[2]
-  getMonth = () => this.getParts()[1] - 1
-  getYear = () => this.getParts()[0]
-  getMonthName = () => this.toLocaleDateString('fa-IR', { month: 'long' })
-  getDayName = () => this.toLocaleDateString('fa-IR', { weekday: 'long' })
-}
-
 const getNumberOfDaysFromMonth = (month) => {
+  month = parseInt(month)
   switch (month) {
     case 1:
     case 2:
@@ -52,6 +39,32 @@ const getNumberOfDaysFromMonth = (month) => {
     case 12:
       return 29
   }
+}
+
+class PersianDate extends Date {
+  constructor(...args) {
+    super(...args)
+  }
+
+  getParts = () => {
+    const date = this.toLocaleDateString('fa-IR-u-nu-latn').split('/')
+    return String(date)
+      .replace(',', '/')
+      .replace(',', '/')
+      .replace(',', '/')
+      .replace(',', '/')
+  }
+  getDay = () => (super.getDay() === 6 ? 0 : super.getDay() + 1)
+  getDate = () => {
+    const now = parseInt(this.getParts()[2])
+    const daysOfMonth = getNumberOfDaysFromMonth(this.getParts()[1])
+    if (now + 1 > daysOfMonth) return 1
+    return now + 1
+  }
+  getMonth = () => this.getParts()[1]
+  getYear = () => this.getParts()[0]
+  getMonthName = () => this.toLocaleDateString('fa-IR', { month: 'long' })
+  getDayName = () => this.toLocaleDateString('fa-IR', { weekday: 'long' })
 }
 
 const createTimeListForTotalTransactions = (type, monthId) => {
@@ -171,8 +184,6 @@ const createTimeList = (type, transactions = false) => {
     for (let k = 0; k <= BASE_CHART_TIMES_VALUE.WEEKLY; k++) {
       if (data.length === BASE_CHART_TIMES_VALUE.WEEKLY) break
 
-      daysOfMonth = daysOfMonth - 7
-
       if (daysOfMonth <= 0) {
         lastMonth = lastMonth === 1 ? 12 : lastMonth - 1
 
@@ -196,6 +207,8 @@ const createTimeList = (type, transactions = false) => {
             debtor: 0,
             creditor: 0
           })
+
+      daysOfMonth = daysOfMonth - 7
     }
   } else if (type === 'monthly') {
     let isResetMonth = false
@@ -263,6 +276,7 @@ const createTimeList = (type, transactions = false) => {
           })
     }
   }
+
   return data
 }
 
@@ -304,6 +318,29 @@ const iranProvinces = () => {
   ]
 }
 
+const upsert = async (model, values, condition, transaction) => {
+  try {
+    const find = await model.findOne({ where: condition })
+    let r
+    if (find)
+      await find.update(values, {
+        transaction
+      })
+    else r = await model.create(values, { transaction })
+
+    if (find)
+      r = await model.findOne({
+        where: {
+          id: find?.id
+        }
+      })
+
+    return r
+  } catch {
+    return false
+  }
+}
+
 module.exports = {
   timestampToIso,
   isoToTimestamp,
@@ -312,5 +349,6 @@ module.exports = {
   PersianDate,
   dateFormat,
   iranProvinces,
-  createTimeListForTotalTransactions
+  createTimeListForTotalTransactions,
+  upsert
 }

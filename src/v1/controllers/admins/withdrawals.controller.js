@@ -71,7 +71,7 @@ const update = async (req, res) => {
       description
     }
 
-    if (status !== 'successful' && status !== 'unsuccessful')
+    if (status !== 'rejected' && status !== 'done')
       return httpError(errorTypes.STATUS_NOT_ALLOWED, res)
 
     const t = await sequelize.transaction()
