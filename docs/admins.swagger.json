@@ -5649,6 +5649,85 @@
         }
       }
     },
+    "/admins/orders/global": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "get all users orders",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "search",
+            "description": "search by phoneNumber or name or order id",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 1,
+                  "pageSize": 5,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "orders": [
+                    {
+                      "id": 4,
+                      "createdAt": "2022-11-26T21:43:45.000Z",
+                      "amount": 68948880,
+                      "status": "canceled",
+                      "cancelReason": "لغو شخصی",
+                      "updatedAt": "2022-11-26T21:47:01.000Z",
+                      "recipientName": "کسری",
+                      "trackingNumber": null,
+                      "user": {
+                        "id": 1,
+                        "name": "kasra",
+                        "phoneNumber": "09385667274"
+                      }
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admins/orders": {
       "get": {
         "tags": ["Orders"],

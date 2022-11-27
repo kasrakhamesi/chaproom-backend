@@ -99,7 +99,7 @@ const callback = async (req, res) => {
     await user.update(
       {
         balance: user?.balance + payment?.amount,
-        incomingPayment: user?.incomingPayment + parseInt(amount)
+        incomingPayment: user?.incomingPayment + parseInt(payment?.amount)
       },
       { transaction: t }
     )

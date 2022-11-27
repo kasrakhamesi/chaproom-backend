@@ -81,7 +81,7 @@ const create = async (req, res) => {
     const filesInfo = []
     let uploadedPages = 0
 
-    if (filesManuallySent === false) {
+    if (!filesManuallySent || filesManuallySent === false) {
       if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
       const findedFiles = await sequelize.models.files.findAll({

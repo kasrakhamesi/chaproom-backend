@@ -110,20 +110,24 @@ const searchStructre = async (model, value) => {
     })
 
     const condition = []
-    for (let k in find.dataValues) {
-      if (typeof find[k] === 'string')
-        condition.push({
-          [k]: {
-            [Op.like]: `%${value}%`
-          }
-        })
+
+    if (model.tableName === 'orders') {
+      condition.push({ id: { [Op.like]: `${value}%` } })
+    } else {
+      for (let k in find.dataValues) {
+        if (typeof find[k] === 'string')
+          condition.push({
+            [k]: {
+              [Op.like]: `%${value}%`
+            }
+          })
+      }
     }
 
     const relationConditions = []
     if (
       model.tableName === 'withdrawals' ||
-      model.tableName === 'transactions' ||
-      model.tableName === 'orders'
+      model.tableName === 'transactions'
     ) {
       relationConditions.push(
         {
@@ -138,6 +142,7 @@ const searchStructre = async (model, value) => {
         }
       )
     }
+
     return [...condition, ...relationConditions]
   } catch {
     return null

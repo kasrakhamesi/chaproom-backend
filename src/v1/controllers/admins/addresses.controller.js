@@ -1,6 +1,6 @@
 const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
-const { httpError } = require('../../configs')
+const { httpError, errorTypes } = require('../../configs')
 const addresses = new restful(sequelize.models.addresses)
 
 const findAll = async (req, res) => {
@@ -14,11 +14,16 @@ const findAll = async (req, res) => {
 
     const newWhere = { ...where, userId }
 
+    const user = await sequelize.models.users.findOne({
+      attributes: ['id', 'name', 'phoneNumber'],
+      where: {
+        id: userId
+      }
+    })
+
+    if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
+
     const r = await addresses.Get({
-      include: {
-        model: sequelize.models.users,
-        attributes: ['id', 'name', 'phoneNumber']
-      },
       where: newWhere,
       order,
       pagination: {
@@ -27,7 +32,21 @@ const findAll = async (req, res) => {
         pageSize
       }
     })
-    res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
+
+    res.status(r?.statusCode).send({
+      statusCode: 200,
+      data: {
+        page: r?.data?.page,
+        pageSize: r?.data?.pageSize,
+        totalCount: r?.data?.totalCount,
+        totalPageLeft: r?.data?.totalPageLeft,
+        totalCountLeft: r?.data?.totalCountLeft,
+        user,
+        addresses: r?.data?.addresses
+      },
+      error: null
+    })
   } catch (e) {
     httpError(e, res)
   }

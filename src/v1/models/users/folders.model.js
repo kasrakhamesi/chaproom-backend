@@ -49,6 +49,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
+      uploadedPages: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true
+      },
       countOfCopies: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: true

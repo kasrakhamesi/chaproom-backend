@@ -2,7 +2,69 @@ const { sequelize } = require('../../models')
 const { restful, filters, users } = require('../../libs')
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { Op } = require('sequelize')
+const { isNumber } = require('lodash')
 const orders = new restful(sequelize.models.orders)
+
+const globalFindAll = async (req, res) => {
+  try {
+    const { page, pageSize, search } = req.query
+
+    const where = []
+
+    if (
+      String(search).length > 0 &&
+      !isNaN(parseInt(search)) &&
+      String(search)[0] !== '0'
+    )
+      where.push({ id: { [Op.like]: `${search}%` } })
+    else
+      where.push(
+        {
+          '$user.name$': {
+            [Op.like]: `%${search}%`
+          }
+        },
+        {
+          '$user.phoneNumber$': {
+            [Op.like]: `%${search}%`
+          }
+        }
+      )
+
+    const newWhere = {
+      [Op.or]: where,
+      status: { [Op.not]: 'payment_pending' }
+    }
+
+    const r = await orders.Get({
+      attributes: [
+        'id',
+        'createdAt',
+        'amount',
+        'status',
+        'cancelReason',
+        'updatedAt',
+        'recipientName',
+        'trackingNumber'
+      ],
+      include: {
+        model: sequelize.models.users,
+        attributes: ['id', 'name', 'phoneNumber']
+      },
+      where: newWhere,
+      order: [['id', 'desc']],
+      pagination: {
+        active: true,
+        page,
+        pageSize
+      }
+    })
+
+    res.status(r?.statusCode).send(r)
+  } catch (e) {
+    return httpError(e, res)
+  }
+}
 
 const findAllByUserId = async (req, res) => {
   try {
@@ -12,6 +74,15 @@ const findAllByUserId = async (req, res) => {
       req.query,
       sequelize.models.orders
     )
+
+    const user = await sequelize.models.users.findOne({
+      attributes: ['id', 'name', 'phoneNumber'],
+      where: {
+        id: userId
+      }
+    })
+
+    if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
 
     const newWhere = {
       ...where,
@@ -33,7 +104,21 @@ const findAllByUserId = async (req, res) => {
         pageSize
       }
     })
-    res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
+
+    res.status(r?.statusCode).send({
+      statusCode: 200,
+      data: {
+        page: r?.data?.page,
+        pageSize: r?.data?.pageSize,
+        totalCount: r?.data?.totalCount,
+        totalPageLeft: r?.data?.totalPageLeft,
+        totalCountLeft: r?.data?.totalCountLeft,
+        user,
+        orders: r?.data?.orders
+      },
+      error: null
+    })
   } catch (e) {
     httpError(e, res)
   }
@@ -319,7 +404,7 @@ const update = async (req, res) => {
         await sequelize.models.transactions.create(
           {
             userId: ownerOfReferral?.id,
-            type: 'marketing_discount',
+            type: 'marketing_referral',
             change: 'increase',
             balance: ownerOfReferralWallet?.data?.balance,
             balanceAfter:
@@ -352,4 +437,4 @@ const update = async (req, res) => {
   }
 }
 
-module.exports = { findAll, findOne, update, findAllByUserId }
+module.exports = { findAll, findOne, update, findAllByUserId, globalFindAll }

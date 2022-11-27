@@ -49,65 +49,64 @@ const reportStructure = async (users) => {
     })
     */
 
-    console.log(users)
-
     const usersData = _.isEmpty(users?.data?.users)
       ? users?.data
       : users?.data?.users
 
-    for (const user of usersData) {
-      const countOfOrders = await sequelize.models.orders.count({
-        where: {
-          userId: user?.id,
-          status: { [Op.not]: 'payment_pending' }
+    if (!usersData.hasOwnProperty('users'))
+      for (const user of usersData) {
+        const countOfOrders = await sequelize.models.orders.count({
+          where: {
+            userId: user?.id,
+            status: { [Op.not]: 'payment_pending' }
+          }
+        })
+
+        const userTransactions = await sequelize.models.transactions.findAll({
+          where: {
+            userId: user?.id,
+            status: 'successful',
+            adminId: null
+          }
+        })
+
+        const lastOrder = await sequelize.models.orders.findAll({
+          limit: 1,
+          where: {
+            userId: user?.id,
+            status: { [Op.not]: 'payment_pending' }
+          },
+          order: [['createdAt', 'ASC']]
+        })
+
+        const firstOrder = await sequelize.models.orders.findAll({
+          limit: 1,
+          where: {
+            userId: user?.id,
+            status: { [Op.not]: 'payment_pending' }
+          },
+          order: [['createdAt', 'DESC']]
+        })
+
+        let incoming = 0
+
+        for (const transaction of userTransactions) {
+          if (transaction?.change === 'increase')
+            incoming += parseInt(transaction?.amount)
         }
-      })
 
-      const userTransactions = await sequelize.models.transactions.findAll({
-        where: {
-          userId: user?.id,
-          status: 'successful',
-          adminId: null
-        }
-      })
+        const newStyleUser = _.isEmpty({ ...user.dataValues })
+          ? { ...user }
+          : { ...user.dataValues }
 
-      const lastOrder = await sequelize.models.orders.findAll({
-        limit: 1,
-        where: {
-          userId: user?.id,
-          status: { [Op.not]: 'payment_pending' }
-        },
-        order: [['createdAt', 'ASC']]
-      })
-
-      const firstOrder = await sequelize.models.orders.findAll({
-        limit: 1,
-        where: {
-          userId: user?.id,
-          status: { [Op.not]: 'payment_pending' }
-        },
-        order: [['createdAt', 'DESC']]
-      })
-
-      let incoming = 0
-
-      for (const transaction of userTransactions) {
-        if (transaction?.change === 'increase')
-          incoming += parseInt(transaction?.amount)
+        data.push({
+          ...newStyleUser,
+          countOfOrders,
+          totalPaidAmount: incoming,
+          firstOrderAt: firstOrder[0]?.createdAt || null,
+          lastOrderAt: lastOrder[0]?.createdAt || null
+        })
       }
-
-      const newStyleUser = _.isEmpty({ ...user.dataValues })
-        ? { ...user }
-        : { ...user.dataValues }
-
-      data.push({
-        ...newStyleUser,
-        countOfOrders,
-        totalPaidAmount: incoming,
-        firstOrderAt: firstOrder[0]?.createdAt || null,
-        lastOrderAt: lastOrder[0]?.createdAt || null
-      })
-    }
 
     const newData = []
     const isFoundWalletBalance = data.some((item) => {
@@ -270,7 +269,6 @@ const createSortOrder = async (
       const reportData = await reportStructure(r)
       return reportData
     } else if (sortOrder === 'three_and_more_order') {
-      console.log(inputUsersId)
       let r = await users.Get({
         attributes: [
           'id',
@@ -537,7 +535,6 @@ const getAll = async (req, res, paginateActive = true) => {
 
     return filteredSortOrder
   } catch (e) {
-    console.log(e)
     return {
       isSuccess: false,
       message:
@@ -574,12 +571,18 @@ const createExcel = (req, res) => {
             phoneNumber: entity?.phoneNumber,
             balance: entity?.balance,
             marketingBalance: entity?.marketingBalance,
-            createdAt: new utils.PersianDate(entity.createdAt).getParts(),
+            createdAt: new utils.PersianDate(
+              entity.createdAt
+            ).getPartsWithBackSlash(),
             walletBalance: entity?.walletBalance,
             countOfOrders: entity?.countOfOrders,
             totalPaidAmount: entity?.totalPaidAmount,
-            firstOrderAt: new utils.PersianDate(entity.firstOrderAt).getParts(),
-            lastOrderAt: new utils.PersianDate(entity.lastOrderAt).getParts()
+            firstOrderAt: new utils.PersianDate(
+              entity.firstOrderAt
+            ).getPartsWithBackSlash(),
+            lastOrderAt: new utils.PersianDate(
+              entity.lastOrderAt
+            ).getPartsWithBackSlash()
           })
         }
         const exc = {
@@ -629,7 +632,6 @@ const createExcel = (req, res) => {
       )
     })
     .catch((e) => {
-      console.log(e)
       return httpError(e, res)
     })
 }
