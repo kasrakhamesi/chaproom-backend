@@ -126,6 +126,17 @@ const registerConfirm = async (req, res) => {
       { transaction: t }
     )
 
+    const userDiscount = await sequelize.models.discounts.findAll({
+      where: { phoneNumber: data?.phoneNumber }
+    })
+
+    await userDiscount.update(
+      {
+        userId: r?.id
+      },
+      { transaction: t }
+    )
+
     await t.commit()
 
     const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
@@ -205,7 +216,7 @@ const passwordReset = async (req, res) => {
       isPasswordReset: true
     })
 
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)
   }

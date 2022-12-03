@@ -20,9 +20,9 @@ const findAll = async (req, res) => {
         pageSize
       }
     })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -36,9 +36,9 @@ const update = async (req, res) => {
       status
     }
     const r = await cooperations.Put({ body: data, req, where: { id } })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

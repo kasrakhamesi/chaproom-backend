@@ -47,7 +47,6 @@ class PersianDate extends Date {
   }
 
   getParts = () => this.toLocaleDateString('fa-IR-u-nu-latn').split('/')
-
   getPartsWithBackSlash = () => {
     const date = this.toLocaleDateString('fa-IR-u-nu-latn').split('/')
     return String(date)

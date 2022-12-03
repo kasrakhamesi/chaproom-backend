@@ -30,9 +30,9 @@ const findAll = async (req, res) => {
         pageSize
       }
     })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -54,9 +54,9 @@ const findOne = async (req, res) => {
         id
       }
     })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -106,7 +106,7 @@ const update = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

@@ -18,10 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false
       },
-      label: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       recipientName: {
         type: DataTypes.STRING,
         allowNull: false

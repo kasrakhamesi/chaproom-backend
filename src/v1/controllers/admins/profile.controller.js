@@ -4,7 +4,7 @@ const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 
 const update = (req, res) => {
-  const { name, password } = req.body
+  const { name, password, phoneNumber } = req.body
   const adminId = req?.user[0]?.id
   const data =
     password === '' || password === null

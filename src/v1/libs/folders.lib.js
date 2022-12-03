@@ -73,6 +73,7 @@ const priceCalculator = async (
       shipmentPrice
     }
   } catch (e) {
+    console.log(e)
     return null
   }
 }

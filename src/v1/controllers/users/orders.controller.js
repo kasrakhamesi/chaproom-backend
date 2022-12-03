@@ -303,14 +303,43 @@ const findAll = async (req, res) => {
     const r = await orders.Get({
       where: newWhere,
       order: [['id', 'desc']],
-      attributes: ['id', 'status', 'cancelReason', 'amount', 'createdAt'],
+      attributes: [
+        'id',
+        'status',
+        'cancelReason',
+        'amount',
+        'createdAt',
+        'updatedAt',
+        'trackingNumber',
+        'recipientName'
+      ],
       pagination: {
         active: true,
         page,
         pageSize
       }
     })
-    res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
+
+    res.status(r?.statusCode).send({
+      statusCode: 200,
+      data: {
+        page: r?.data?.page,
+        pageSize: r?.data?.pageSize,
+        totalCount: r?.data?.totalCount,
+        totalPageLeft: r?.data?.totalPageLeft,
+        totalCountLeft: r?.data?.totalCountLeft,
+        orders: _.isEmpty(r?.data?.orders)
+          ? null
+          : r?.data?.orders.map((item) => {
+              return {
+                ...item.dataValues,
+                trackingUrl: null
+              }
+            })
+      },
+      error: null
+    })
   } catch (e) {
     return httpError(e, res)
   }

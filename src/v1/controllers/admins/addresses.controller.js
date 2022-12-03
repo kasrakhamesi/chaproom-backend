@@ -48,7 +48,7 @@ const findAll = async (req, res) => {
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -64,9 +64,9 @@ const findOne = async (req, res) => {
         id
       }
     })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -94,9 +94,9 @@ const update = async (req, res) => {
     }
 
     const r = await addresses.Put({ body: data, req, where: { id } })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -104,9 +104,9 @@ const softDelete = async (req, res) => {
   try {
     const { id } = req.params
     const r = await addresses.Delete({ req, where: { id } })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

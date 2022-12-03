@@ -8,6 +8,10 @@ const upload = async (req, res) => {
   try {
     const userId = req?.user[0]?.id
 
+    const { fileName } = req.body
+
+    if (!fileName) return httpError(errorTypes.FILE_NOT_SELECTED, res)
+
     const { attachment } = req.files
 
     if (!req.files || Object.keys(req.files).length === 0 || !attachment)
@@ -17,16 +21,18 @@ const upload = async (req, res) => {
 
     attachment.name = attachment.name === '.docx' ? '1.docx' : attachment.name
 
+    attachment.name = attachment.name === '.doc' ? '1.doc' : attachment.name
+
     attachment.name =
       String(path.extname(attachment.name)).toLowerCase() === '.ocx'
-        ? `${String(attachment.name).replace('d.ocx', '')}.docx`
+        ? `1${String(attachment.name).replace('d.ocx', '')}.docx`
         : attachment.name
 
     attachment.name = attachment.name === '.ocx' ? '1.docx' : attachment.name
 
     const extensionName = path.extname(attachment.name)
 
-    const allowedExtension = ['.pdf', '.docx']
+    const allowedExtension = ['.pdf', '.docx', '.doc']
 
     if (!allowedExtension.includes(extensionName.toLowerCase()))
       return httpError(errorTypes.INVALID_PDF_DOCX_FORMAT, res)
@@ -51,14 +57,17 @@ const upload = async (req, res) => {
     let rCounter = 0
     if (String(extensionName).toLowerCase().includes('pdf'))
       rCounter = await pageCounter.pdf(filePath)
-    else if (String(extensionName).toLowerCase().includes('docx')) {
-      //   rCounter = await pageCounter.docx('./src/v1/storages/files/1/f1_20.docx')
+    else if (
+      String(extensionName).toLowerCase().includes('docx') ||
+      String(extensionName).toLowerCase().includes('doc')
+    ) {
+      rCounter = await pageCounter.docx(filePath)
     }
 
     const r = await sequelize.models.files.create({
       userId,
       uniqueName: newFileName,
-      name: attachment.name,
+      name: fileName,
       countOfPages: rCounter,
       url: '/' + newFileName
     })

@@ -244,4 +244,49 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
   }
 }
 
-module.exports = { getBalance, submitOrder, createOrder, updateFolderFiles }
+const getTransactionTypeAndAmount = async (transaction) => {
+  try {
+    let type =
+      transaction?.type === 'withdrawal'
+        ? 'بدهکار'
+        : transaction?.type === 'marketing_referral'
+        ? 'بازاریابی'
+        : transaction?.type === 'marketing_discount'
+        ? 'بازاریابی'
+        : 'بستانکار'
+
+    if (transaction?.adminId !== null && transaction?.type === 'admin')
+      return {
+        type: transaction?.change === 'decrease' ? 'بدهکار' : 'بستانکار',
+        amount: transaction?.amount
+      }
+    else if (transaction?.orderId === null)
+      return { type, amount: transaction?.amount }
+
+    const order = await sequelize.models.orders.findOne({
+      where: {
+        id: transaction?.orderId
+      }
+    })
+
+    let amount = transaction?.amount
+    if (order?.status === 'canceled') type = order?.cancelReason
+    else if (order?.gatewayPaidAmount === 0) type = 'خرج کیف پول'
+    else if (order?.gatewayPaidAmount !== 0) {
+      type = 'بستانکار'
+      amount = order?.gatewayPaidAmount + order?.postageFee
+    }
+
+    return { type, amount }
+  } catch {
+    return { type: transaction?.type, amount: transaction?.amount }
+  }
+}
+
+module.exports = {
+  getBalance,
+  submitOrder,
+  createOrder,
+  updateFolderFiles,
+  getTransactionTypeAndAmount
+}

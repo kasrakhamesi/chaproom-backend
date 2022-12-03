@@ -59,7 +59,7 @@ const create = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -91,9 +91,9 @@ const findAll = async (req, res) => {
         pageSize
       }
     })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -114,9 +114,9 @@ const findOne = async (req, res) => {
         id
       }
     })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -182,9 +182,9 @@ const update = async (req, res) => {
     }
 
     const r = await discounts.Put({ body: data, req, where: { id } })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -195,9 +195,9 @@ const softDelete = async (req, res) => {
       req,
       where: { id, userMarketing: false }
     })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

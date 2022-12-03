@@ -126,7 +126,7 @@ const passwordReset = async (req, res) => {
       isPasswordReset: true
     })
 
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)
   }

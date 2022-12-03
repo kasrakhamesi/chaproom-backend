@@ -110,7 +110,7 @@ const findAll = async (req, res) => {
       }
     })
 
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)
   }

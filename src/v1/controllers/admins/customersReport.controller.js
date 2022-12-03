@@ -36,11 +36,12 @@ const getUsersIdByFilter = async (query) => {
   }
 }
 
-const reportStructure = async (users) => {
+const reportStructure = async (users, req, res) => {
   try {
     const data = []
 
-    const totalOrdersCount = 0
+    let totalOrdersCount = 0
+
     /*
     await sequelize.models.orders.count({
       where: {
@@ -48,6 +49,8 @@ const reportStructure = async (users) => {
       }
     })
     */
+
+    console.log(users)
 
     const usersData = _.isEmpty(users?.data?.users)
       ? users?.data
@@ -58,7 +61,12 @@ const reportStructure = async (users) => {
         const countOfOrders = await sequelize.models.orders.count({
           where: {
             userId: user?.id,
-            status: { [Op.not]: 'payment_pending' }
+            [Op.or]: [
+              {
+                status: 'preparing'
+              },
+              { status: 'pending' }
+            ]
           }
         })
 
@@ -74,7 +82,12 @@ const reportStructure = async (users) => {
           limit: 1,
           where: {
             userId: user?.id,
-            status: { [Op.not]: 'payment_pending' }
+            [Op.or]: [
+              {
+                status: 'preparing'
+              },
+              { status: 'pending' }
+            ]
           },
           order: [['createdAt', 'ASC']]
         })
@@ -83,7 +96,12 @@ const reportStructure = async (users) => {
           limit: 1,
           where: {
             userId: user?.id,
-            status: { [Op.not]: 'payment_pending' }
+            [Op.or]: [
+              {
+                status: 'preparing'
+              },
+              { status: 'pending' }
+            ]
           },
           order: [['createdAt', 'DESC']]
         })
@@ -136,7 +154,7 @@ const reportStructure = async (users) => {
         data: {
           page: users?.data?.page || 0,
           pageSize: users?.data?.pageSize || Number.MAX_VALUE,
-          totalCount: users?.data?.totalCount || users?.data?.length,
+          totalCount: users?.data?.totalCount || users?.data?.length || 0,
           totalPageLeft: users?.data?.totalPageLeft || 0,
           totalCountLeft: users?.data?.totalCountLeft || 0,
           totalUsersCount: users.data?.users?.length || users?.data?.length,
@@ -163,9 +181,31 @@ const createSortOrder = async (
   query,
   inputUsersId,
   paginateActive = true,
-  res
+  res,
+  req
 ) => {
   try {
+    if (_.isEmpty(inputUsersId))
+      return {
+        isSuccess: true,
+        data: {
+          statusCode: 200,
+          data: {
+            page: 1,
+            pageSize: 5,
+            totalCount: 0,
+            totalPageLeft: 0,
+            totalCountLeft: 0,
+            totalUsersCount: 0,
+            totalOrdersCount: 0,
+            totalDebtor: 0,
+            totalCreditor: 0,
+            customersReport: []
+          },
+          error: null
+        }
+      }
+
     const { page, pageSize, sortOrder } = query
     const [order, where] = await filters.filter(query, sequelize.models.users)
 
@@ -200,7 +240,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'one_order') {
       let r = await users.Get({
@@ -233,7 +273,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'two_order') {
       let r = await users.Get({
@@ -266,7 +306,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'three_and_more_order') {
       let r = await users.Get({
@@ -303,7 +343,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'most_to_lowest_order') {
       let r = await users.Get({
@@ -339,7 +379,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'lowest_to_most_order') {
       let r = await users.Get({
@@ -375,7 +415,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'most_to_lowest_balance') {
       let r = await users.Get({
@@ -408,7 +448,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'lowest_to_most_balance') {
       let r = await users.Get({
@@ -441,7 +481,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'most_to_lowest_payment') {
       let r = await users.Get({
@@ -477,7 +517,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     } else if (sortOrder === 'lowest_to_most_payment') {
       let r = await users.Get({
@@ -513,7 +553,7 @@ const createSortOrder = async (
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r)
+      const reportData = await reportStructure(r, req, res)
       return reportData
     }
     return null
@@ -530,7 +570,8 @@ const getAll = async (req, res, paginateActive = true) => {
       req.query,
       filteredUsers,
       paginateActive,
-      res
+      res,
+      req
     )
 
     return filteredSortOrder

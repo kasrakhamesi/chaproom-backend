@@ -1089,8 +1089,7 @@
                     "countOfFiles": 1,
                     "filesUrl": "https://google.com",
                     "amount": 7000,
-                    "telegramUploadFile": false,
-                    "whatsappUploadFile": false,
+                    "filesManuallySent": true,
                     "createdAt": "2022-10-26T22:44:44.000Z",
                     "updatedAt": "2022-10-26T22:44:44.000Z",
                     "binding": {
@@ -1099,17 +1098,7 @@
                       "countOfFiles": 1,
                       "coverColor": "colorful"
                     },
-                    "files": [
-                      {
-                        "id": 1,
-                        "uploadedName": "f.pdf3",
-                        "name": "f.pdf3",
-                        "url": "https://google.com/f.pdf",
-                        "countOfPages": 2,
-                        "createdAt": "2022-10-26T22:41:56.000Z",
-                        "updatedAt": "2022-10-26T22:41:56.000Z"
-                      }
-                    ]
+                    "files": []
                   },
                   {
                     "id": 2,
@@ -1124,8 +1113,7 @@
                     "countOfFiles": 1,
                     "filesUrl": "https://google.com",
                     "amount": 7000,
-                    "telegramUploadFile": false,
-                    "whatsappUploadFile": false,
+                    "filesManuallySent": false,
                     "createdAt": "2022-10-26T22:54:01.000Z",
                     "updatedAt": "2022-10-26T22:54:01.000Z",
                     "binding": null,
@@ -1347,8 +1335,9 @@
                   "countOfFiles": 1,
                   "filesUrl": "https://google.com",
                   "amount": 7000,
-                  "telegramUploadFile": false,
-                  "whatsappUploadFile": false,
+                  "filesManuallySent": false,
+                  "folderCode": "1-1",
+                  "phoneNumberToSendFile": "09385667274",
                   "createdAt": "2022-10-26T22:44:44.000Z",
                   "updatedAt": "2022-10-26T22:44:44.000Z",
                   "binding": {
@@ -3272,6 +3261,7 @@
     "UsersFolders": {
       "type": "object",
       "properties": {
+        "filesManuallySent": { "type": "bool", "example": false },
         "color": {
           "type": "string",
           "example": "full_color",

@@ -6,6 +6,7 @@ router.use(
     defCharset: 'utf8',
     defParamCharset: 'utf8',
     limits: { fileSize: 200 * 1024 * 1024 },
+    safeFileNames: true,
     abortOnLimit: true,
     preserveExtension: true,
     createParentPath: true

@@ -26,7 +26,7 @@ const update = async (req, res) => {
     const { name } = req.body
     const data = { name }
     const r = await categories.Put({ body: data, where: { id } })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)
   }
@@ -112,7 +112,7 @@ const hardDelete = async (req, res) => {
   try {
     const { id } = req.params
     const r = await categories.Delete({ where: { id } })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)
   }

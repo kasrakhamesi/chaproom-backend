@@ -1,6 +1,6 @@
 const { httpError, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
-const { utils } = require('../../libs')
+const { utils, users } = require('../../libs')
 const { Op } = require('sequelize')
 const _ = require('lodash')
 
@@ -249,7 +249,15 @@ const getSales = async () => {
     const ticker = 'daily'
 
     const transactions = await sequelize.models.transactions.findAndCountAll({
-      attributes: ['id', 'amount', 'change', 'createdAt'],
+      attributes: [
+        'id',
+        'amount',
+        'change',
+        'createdAt',
+        'type',
+        'adminId',
+        'orderId'
+      ],
       order: [['id', 'desc']]
     })
 
@@ -259,7 +267,6 @@ const getSales = async () => {
 
     for (const transaction of transactions.rows) {
       const createdAt = new utils.PersianDate(transaction.createdAt)
-
       if (ticker === 'daily') {
         const userCreatedAt = `${utils.dateFormat(
           createdAt.getMonth()
@@ -268,10 +275,14 @@ const getSales = async () => {
           (item) => item.time === userCreatedAt
         )
         if (findedCreatedAt) {
-          if (transaction?.change === 'decrease')
-            findedCreatedAt.debtor += transaction?.amount
-          else {
-            findedCreatedAt.creditor += transaction?.amount
+          const transactionInfo = await users.getTransactionTypeAndAmount(
+            transaction
+          )
+
+          if (transactionInfo?.type === 'بدهکار')
+            findedCreatedAt.debtor += transactionInfo?.amount
+          else if (transactionInfo?.type === 'بستانکار') {
+            findedCreatedAt.creditor += transactionInfo?.amount
             totalSales += transaction?.amount
           }
         }
@@ -294,7 +305,15 @@ const findSales = async (req, res) => {
       return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
 
     const transactions = await sequelize.models.transactions.findAndCountAll({
-      attributes: ['id', 'amount', 'change', 'createdAt'],
+      attributes: [
+        'id',
+        'amount',
+        'change',
+        'createdAt',
+        'type',
+        'adminId',
+        'orderId'
+      ],
       order: [['id', 'desc']]
     })
 
@@ -313,10 +332,14 @@ const findSales = async (req, res) => {
           (item) => item.time === userCreatedAt
         )
         if (findedCreatedAt) {
-          if (transaction?.change === 'decrease')
-            findedCreatedAt.debtor += transaction?.amount
-          else {
-            findedCreatedAt.creditor += transaction?.amount
+          const transactionInfo = await users.getTransactionTypeAndAmount(
+            transaction
+          )
+
+          if (transactionInfo?.type === 'بدهکار')
+            findedCreatedAt.debtor += transactionInfo?.amount
+          else if (transactionInfo?.type === 'بستانکار') {
+            findedCreatedAt.creditor += transactionInfo?.amount
             totalSales += transaction?.amount
           }
         }
@@ -344,12 +367,17 @@ const findSales = async (req, res) => {
             previousTimeList < userCreatedAt &&
             userCreatedAt >= currentTimeList
           ) {
-            if (transaction?.change === 'decrease')
-              timeList[k].debtor += transaction?.amount
-            else {
-              timeList[k].creditor += transaction?.amount
+            const transactionInfo = await users.getTransactionTypeAndAmount(
+              transaction
+            )
+
+            if (transactionInfo?.type === 'بدهکار')
+              timeList[k].debtor += transactionInfo?.amount
+            else if (transactionInfo?.type === 'بستانکار') {
+              timeList[k].creditor += transactionInfo?.amount
               totalSales += transaction?.amount
             }
+
             break
           }
         }
@@ -359,10 +387,14 @@ const findSales = async (req, res) => {
           (item) => item.time === String(userCreatedAt)
         )
         if (findedCreatedAt) {
-          if (transaction?.change === 'decrease')
-            findedCreatedAt.debtor += transaction?.amount
-          else {
-            findedCreatedAt.creditor += transaction?.amount
+          const transactionInfo = await users.getTransactionTypeAndAmount(
+            transaction
+          )
+
+          if (transactionInfo?.type === 'بدهکار')
+            findedCreatedAt.debtor += transactionInfo?.amount
+          else if (transactionInfo?.type === 'بستانکار') {
+            findedCreatedAt.creditor += transactionInfo?.amount
             totalSales += transaction?.amount
           }
         }
@@ -650,7 +682,7 @@ const findAll = async (req, res) => {
           {
             status: 'preparing'
           },
-          { status: 'sent' }
+          { status: 'pending' }
         ]
       }
     })

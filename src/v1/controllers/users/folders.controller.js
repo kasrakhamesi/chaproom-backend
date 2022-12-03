@@ -1,7 +1,6 @@
 const { httpError, messageTypes, errorTypes } = require('../../configs')
 const { sequelize } = require('../../models')
 const { folders } = require('../../libs')
-const { Op } = require('sequelize')
 const _ = require('lodash')
 
 const findOrCreateOrder = async (req, res) => {
@@ -23,22 +22,13 @@ const findOrCreateOrder = async (req, res) => {
     })
 
     const folderId = _.isEmpty(folders) ? 1 : folders.length + 1
-
-    if (!_.isEmpty(row))
-      return res.status(200).send({
-        statusCode: 200,
-        data: {
-          folderCode: `${String(row?.id)}-${folderId}`,
-          phoneNumberToSendFile: '09385667274'
-        },
-        error: null
-      })
+    const orderId = !_.isEmpty(row) ? row?.id : created?.id
 
     res.status(200).send({
       statusCode: 200,
       data: {
-        folderCode: `${String(created?.id)}-${folderId}`,
-        phoneNumberToSendFile: '09385667274'
+        folderCode: `${String(orderId)}-${folderId}`,
+        phoneNumberToSendFile: String(process.env.PHONENUMBER_TO_SEND_FILE)
       },
       error: null
     })
@@ -148,6 +138,7 @@ const create = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
+    console.log(e)
     return httpError(e?.message || String(e), res)
   }
 }
@@ -191,17 +182,18 @@ const update = (req, res) => {
       const filesId = []
       const filesInfo = []
       let uploadedPages = 0
-      for (const entity of files) {
-        const findedFile = rFiles.find((item) => item.id === entity.id)
-        if (findedFile) {
-          filesId.push(entity?.id)
-          filesInfo.push({ countOfPages: findedFile?.countOfPages })
-          uploadedPages += findedFile?.countOfPages
+      if (!filesManuallySent || filesManuallySent === false) {
+        for (const entity of files) {
+          const findedFile = rFiles.find((item) => item.id === entity.id)
+          if (findedFile) {
+            filesId.push(entity?.id)
+            filesInfo.push({ countOfPages: findedFile?.countOfPages })
+            uploadedPages += findedFile?.countOfPages
+          }
         }
+
+        if (filesId.length === 0) return httpError(errorTypes.MISSING_FILE, res)
       }
-
-      if (filesId.length === 0) return httpError(errorTypes.MISSING_FILE, res)
-
       data.countOfFiles = filesId.length
 
       return folders
@@ -331,6 +323,7 @@ const findAll = (req, res) => {
 const findOne = (req, res) => {
   const { id } = req.params
   const userId = req?.user[0]?.id
+
   return sequelize.models.folders
     .findOne({
       where: {
@@ -369,11 +362,27 @@ const findOne = (req, res) => {
             ? JSON.parse(JSON.parse(r?.binding))
             : JSON.parse(r?.binding)
 
-      return res.status(200).send({
-        statusCode: 200,
-        data: r,
-        error: null
-      })
+      return sequelize.models.orders
+        .findOrCreate({
+          where: {
+            userId,
+            addressId: null
+          }
+        })
+        .then(([row, created]) => {
+          const orderId = !_.isEmpty(row) ? row?.id : created?.id
+          return res.status(200).send({
+            statusCode: 200,
+            data: {
+              ...r.dataValues,
+              folderCode: `${String(orderId)}-${id}`,
+              phoneNumberToSendFile: String(
+                process.env.PHONENUMBER_TO_SEND_FILE
+              )
+            },
+            error: null
+          })
+        })
     })
     .catch((e) => {
       return httpError(e, res)
@@ -418,17 +427,20 @@ const priceCalculator = async (req, res) => {
 
     const extractedBinding = folders.extractBinding(binding)
 
+    console.log(extractedBinding)
+
     const data = {
       color,
       side,
       size,
       countOfPages,
-      uploadedPages: 5,
       countOfCopies,
       description,
       binding: extractedBinding,
       userId
     }
+
+    //TODO Error
 
     if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
 
@@ -472,6 +484,7 @@ const priceCalculator = async (req, res) => {
       error: null
     })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

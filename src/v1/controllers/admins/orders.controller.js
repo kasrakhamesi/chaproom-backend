@@ -2,8 +2,8 @@ const { sequelize } = require('../../models')
 const { restful, filters, users } = require('../../libs')
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { Op } = require('sequelize')
-const { isNumber } = require('lodash')
 const orders = new restful(sequelize.models.orders)
+const _ = require('lodash')
 
 const globalFindAll = async (req, res) => {
   try {
@@ -37,16 +37,22 @@ const globalFindAll = async (req, res) => {
     }
 
     const r = await orders.Get({
-      attributes: [
-        'id',
-        'createdAt',
-        'amount',
-        'status',
-        'cancelReason',
-        'updatedAt',
-        'recipientName',
-        'trackingNumber'
-      ],
+      attributes: {
+        exclude: [
+          'userId',
+          'addressId',
+          'discountId',
+          'discountType',
+          'discountValue',
+          'paymentId',
+          'adminId',
+          'order_folders',
+          'referralId',
+          'marketerBenefit',
+          'referralBenefit',
+          'referralCommission'
+        ]
+      },
       include: {
         model: sequelize.models.users,
         attributes: ['id', 'name', 'phoneNumber']
@@ -60,7 +66,27 @@ const globalFindAll = async (req, res) => {
       }
     })
 
-    res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
+
+    res.status(r?.statusCode).send({
+      statusCode: 200,
+      data: {
+        page: r?.data?.page,
+        pageSize: r?.data?.pageSize,
+        totalCount: r?.data?.totalCount,
+        totalPageLeft: r?.data?.totalPageLeft,
+        totalCountLeft: r?.data?.totalCountLeft,
+        orders: _.isEmpty(r?.data?.orders)
+          ? []
+          : r?.data?.orders.map((item) => {
+              return {
+                ...item.dataValues,
+                trackingUrl: null
+              }
+            })
+      },
+      error: null
+    })
   } catch (e) {
     return httpError(e, res)
   }
@@ -91,7 +117,22 @@ const findAllByUserId = async (req, res) => {
     }
 
     const r = await orders.Get({
-      attributes: ['id', 'createdAt', 'amount', 'status', 'cancelReason'],
+      attributes: {
+        exclude: [
+          'userId',
+          'addressId',
+          'discountId',
+          'discountType',
+          'discountValue',
+          'paymentId',
+          'adminId',
+          'order_folders',
+          'referralId',
+          'marketerBenefit',
+          'referralBenefit',
+          'referralCommission'
+        ]
+      },
       include: {
         model: sequelize.models.users,
         attributes: ['id', 'name', 'phoneNumber']
@@ -115,12 +156,19 @@ const findAllByUserId = async (req, res) => {
         totalPageLeft: r?.data?.totalPageLeft,
         totalCountLeft: r?.data?.totalCountLeft,
         user,
-        orders: r?.data?.orders
+        orders: _.isEmpty(r?.data?.orders)
+          ? []
+          : r?.data?.orders.map((item) => {
+              return {
+                ...item.dataValues,
+                trackingUrl: null
+              }
+            })
       },
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -138,7 +186,22 @@ const findAll = async (req, res) => {
     }
 
     const r = await orders.Get({
-      attributes: ['id', 'createdAt', 'amount', 'status', 'cancelReason'],
+      attributes: {
+        exclude: [
+          'userId',
+          'addressId',
+          'discountId',
+          'discountType',
+          'discountValue',
+          'paymentId',
+          'adminId',
+          'order_folders',
+          'referralId',
+          'marketerBenefit',
+          'referralBenefit',
+          'referralCommission'
+        ]
+      },
       include: {
         model: sequelize.models.users,
         attributes: ['id', 'name', 'phoneNumber']
@@ -152,9 +215,29 @@ const findAll = async (req, res) => {
       }
     })
 
-    res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
+
+    res.status(r?.statusCode).send({
+      statusCode: 200,
+      data: {
+        page: r?.data?.page,
+        pageSize: r?.data?.pageSize,
+        totalCount: r?.data?.totalCount,
+        totalPageLeft: r?.data?.totalPageLeft,
+        totalCountLeft: r?.data?.totalCountLeft,
+        orders: _.isEmpty(r?.data?.orders)
+          ? []
+          : r?.data?.orders.map((item) => {
+              return {
+                ...item.dataValues,
+                trackingUrl: null
+              }
+            })
+      },
+      error: null
+    })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -182,6 +265,10 @@ const findOne = (req, res) => {
         ]
       },
       include: [
+        {
+          model: sequelize.models.users,
+          attributes: ['id', 'name', 'phoneNumber']
+        },
         {
           model: sequelize.models.folders,
           attributes: {
@@ -433,7 +520,7 @@ const update = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

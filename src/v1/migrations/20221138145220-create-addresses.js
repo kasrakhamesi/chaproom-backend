@@ -15,7 +15,6 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false
       },
-      label: { type: Sequelize.STRING, allowNull: false },
       recipientName: {
         type: Sequelize.STRING,
         allowNull: false

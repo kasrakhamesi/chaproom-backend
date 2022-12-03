@@ -116,7 +116,7 @@ const findAll = async (req, res) => {
       }
     })
 
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)
   }
@@ -162,7 +162,7 @@ const softDelete = async (req, res) => {
 
     const r = await admins.Delete({ req, where: { id } })
 
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)
   }

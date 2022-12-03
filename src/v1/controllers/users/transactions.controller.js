@@ -42,7 +42,7 @@ const findAll = async (req, res) => {
       }
     })
 
-    if (r?.statusCode !== 200) res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
     res.status(200).send({
       statusCode: 200,
@@ -84,7 +84,7 @@ const findAll = async (req, res) => {
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

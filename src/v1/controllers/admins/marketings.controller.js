@@ -6,7 +6,21 @@ const orders = new restful(sequelize.models.orders)
 
 const findAllDiscounts = async (req, res) => {
   try {
-    const { page, pageSize } = req.query
+    const { page, pageSize, search } = req.query
+    const where = []
+    where.push(
+      {
+        '$user.name$': {
+          [Op.like]: `%${search}%`
+        }
+      },
+      {
+        '$user.phoneNumber$': {
+          [Op.like]: `%${search}%`
+        }
+      }
+    )
+
     const r = await orders.Get({
       include: [
         {
@@ -22,6 +36,7 @@ const findAllDiscounts = async (req, res) => {
         }
       ],
       where: {
+        [Op.or]: where,
         discountId: { [Op.not]: null },
         status: { [Op.or]: ['sent', 'preparing'] }
       },
@@ -82,13 +97,26 @@ const findAllDiscounts = async (req, res) => {
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
 const findAllReferrals = async (req, res) => {
   try {
-    const { page, pageSize } = req.query
+    const { page, pageSize, search } = req.query
+    const where = []
+    where.push(
+      {
+        '$user.name$': {
+          [Op.like]: `%${search}%`
+        }
+      },
+      {
+        '$user.phoneNumber$': {
+          [Op.like]: `%${search}%`
+        }
+      }
+    )
     const r = await orders.Get({
       include: [
         {
@@ -115,6 +143,7 @@ const findAllReferrals = async (req, res) => {
         }
       ],
       where: {
+        [Op.or]: where,
         referralId: { [Op.not]: null },
         status: { [Op.or]: ['sent', 'preparing'] }
       },
@@ -168,7 +197,7 @@ const findAllReferrals = async (req, res) => {
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

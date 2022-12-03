@@ -67,7 +67,7 @@ const findAll = async (req, res) => {
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -258,7 +258,7 @@ const update = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -266,9 +266,9 @@ const softDelete = async (req, res) => {
   try {
     const { id } = req.params
     const r = await users.Delete({ req, where: { id } })
-    res.status(r?.statusCode).send(r)
+    return res.status(r?.statusCode).send(r)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -295,7 +295,7 @@ const generateAccessToken = async (req, res) => {
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 

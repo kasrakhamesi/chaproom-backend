@@ -14,11 +14,34 @@ const findAll = async (req, res) => {
       sequelize.models.transactions
     )
 
-    const newWhere = {
-      ...where
-    }
-    if (startAt) newWhere.createdAt = { [Op.gte]: startAt }
-    if (endAt) newWhere.createdAt = { [Op.lte]: endAt }
+    let newWhere
+    const timeWhere = []
+    if (startAt && endAt)
+      timeWhere.push(
+        {
+          createdAt: { [Op.gte]: startAt }
+        },
+        {
+          createdAt: { [Op.lte]: endAt }
+        }
+      )
+    else if (startAt) timeWhere.push({ createdAt: { [Op.gte]: startAt } })
+    else if (endAt)
+      timeWhere.push({
+        createdAt: { [Op.lte]: endAt }
+      })
+    else
+      newWhere = {
+        ...where,
+        description: { [Op.not]: 'increase_for_order' }
+      }
+
+    if (_.isEmpty(newWhere))
+      newWhere = [
+        { [Op.and]: timeWhere },
+        { [Op.and]: where || [] },
+        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } }
+      ]
 
     const r = await transactions.Get({
       include: [
@@ -38,8 +61,7 @@ const findAll = async (req, res) => {
           'adminId',
           'paymentId',
           'balance',
-          'balanceAfter',
-          'type'
+          'balanceAfter'
         ]
       },
       where: newWhere,
@@ -51,7 +73,27 @@ const findAll = async (req, res) => {
       }
     })
 
-    if (r?.statusCode !== 200) res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
+
+    const newTransactions = []
+    for (const transaction of r?.data?.transactions) {
+      const transactionInfo = await users.getTransactionTypeAndAmount(
+        transaction
+      )
+
+      newTransactions.push({
+        id: transaction.id,
+        orderId: transaction.orderId,
+        type: transactionInfo?.type,
+        status: transaction.status,
+        amount: transactionInfo?.amount,
+        description: transaction.description,
+        createdAt: transaction.createdAt,
+        updatedAt: transaction.updatedAt,
+        user: transaction.user,
+        admin: transaction.admin
+      })
+    }
 
     res.status(r?.statusCode).send({
       statusCode: r?.statusCode,
@@ -61,25 +103,13 @@ const findAll = async (req, res) => {
         totalCount: r?.data?.totalCount,
         totalPageLeft: r?.data?.totalPageLeft,
         totalCountLeft: r?.data?.totalCountLeft,
-        transactions: r?.data?.transactions.map((item) => {
-          return {
-            id: item.id,
-            orderId: item.orderId,
-            type: item.change === 'decrease' ? 'debtor' : 'creditor',
-            status: item.status,
-            amount: item.amount,
-            description: item.description,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt,
-            user: item.user,
-            admin: item.admin
-          }
-        })
+        transactions: newTransactions
       },
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    console.log(e)
+    return httpError(e, res)
   }
 }
 
@@ -109,11 +139,12 @@ const findOne = async (req, res) => {
         ]
       },
       where: {
-        id
+        id,
+        adminId: { [Op.not]: null }
       }
     })
 
-    if (r?.statusCode !== 200) res.status(r?.statusCode).send(r)
+    if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
     res.status(r?.statusCode).send({
       statusCode: r?.statusCode,
@@ -132,7 +163,7 @@ const findOne = async (req, res) => {
       error: null
     })
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -229,7 +260,7 @@ const update = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -247,11 +278,37 @@ const totalTransactions = async (req, res) => {
 
     const timeList = utils.createTimeListForTotalTransactions(ticker, month)
 
-    if (startAt) where.createdAt = { [Op.gte]: startAt }
-    if (endAt) where.createdAt = { [Op.lte]: endAt }
+    let newWhere
+    const timeWhere = []
+    if (startAt && endAt)
+      timeWhere.push(
+        {
+          createdAt: { [Op.gte]: startAt }
+        },
+        {
+          createdAt: { [Op.lte]: endAt }
+        }
+      )
+    else if (startAt) timeWhere.push({ createdAt: { [Op.gte]: startAt } })
+    else if (endAt)
+      timeWhere.push({
+        createdAt: { [Op.lte]: endAt }
+      })
+    else
+      newWhere = {
+        ...where,
+        description: { [Op.not]: 'increase_for_order' }
+      }
+
+    if (_.isEmpty(newWhere))
+      newWhere = [
+        { [Op.and]: timeWhere },
+        { [Op.and]: where || [] },
+        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } }
+      ]
 
     const transactions = await sequelize.models.transactions.findAll({
-      where
+      where: newWhere
     })
 
     for (const transaction of transactions) {
@@ -265,9 +322,14 @@ const totalTransactions = async (req, res) => {
         )
 
         if (findedCreatedAt) {
-          if (transaction?.change === 'decrease')
-            findedCreatedAt.debtor += transaction?.amount
-          else findedCreatedAt.creditor += transaction?.amount
+          const transactionInfo = await users.getTransactionTypeAndAmount(
+            transaction
+          )
+
+          if (transactionInfo?.type === 'بدهکار')
+            findedCreatedAt.debtor += transactionInfo?.amount
+          else if (transactionInfo?.type === 'بستانکار')
+            findedCreatedAt.creditor += transactionInfo?.amount
         }
       } else if (ticker === 'yearly') {
         const transactionCreatedAt = utils.dateFormat(createdAt.getMonth())
@@ -275,27 +337,37 @@ const totalTransactions = async (req, res) => {
           (item) => item.time === String(transactionCreatedAt)
         )
         if (findedCreatedAt) {
-          if (transaction?.change === 'decrease')
-            findedCreatedAt.debtor += transaction?.amount
-          else findedCreatedAt.creditor += transaction?.amount
+          const transactionInfo = await users.getTransactionTypeAndAmount(
+            transaction
+          )
+
+          if (transactionInfo?.type === 'بدهکار')
+            findedCreatedAt.debtor += transactionInfo?.amount
+          else if (transactionInfo?.type === 'بستانکار')
+            findedCreatedAt.creditor += transactionInfo?.amount
         }
       }
     }
 
-    let incoming = 0
-    let outgoing = 0
+    let totalDebtor = 0
+    let totalCreditor = 0
 
     for (const transaction of transactions) {
-      if (transaction?.change === 'increase')
-        incoming += parseInt(transaction?.amount)
-      else outgoing += parseInt(transaction?.amount)
+      const transactionInfo = await users.getTransactionTypeAndAmount(
+        transaction
+      )
+
+      if (transactionInfo?.type === 'بدهکار')
+        totalDebtor += parseInt(transaction?.amount)
+      else if (transactionInfo?.type === 'بستانکار')
+        totalCreditor += parseInt(transaction?.amount)
     }
 
     res.status(200).send({
       statusCode: 200,
       data: {
-        totalDebtor: outgoing,
-        totalCreditor: incoming,
+        totalDebtor,
+        totalCreditor,
         chart: timeList
       },
       error: null
@@ -362,7 +434,7 @@ const create = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
@@ -417,7 +489,7 @@ const softDelete = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
-    httpError(e, res)
+    return httpError(e, res)
   }
 }
 
