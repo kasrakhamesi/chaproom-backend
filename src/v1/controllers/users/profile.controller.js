@@ -46,10 +46,10 @@ const update = (req, res) => {
     })
 }
 
-const findOne = (req, res) => {
-  const userId = req?.user[0]?.id
-  return sequelize.models.users
-    .findOne({
+const findOne = async (req, res) => {
+  try {
+    const userId = req?.user[0]?.id
+    const user = await sequelize.models.users.findOne({
       where: {
         id: userId
       },
@@ -57,20 +57,40 @@ const findOne = (req, res) => {
         exclude: ['password']
       }
     })
-    .then((r) => {
+
+    const withdrawal = await sequelize.models.withdrawals.findOne({
+      where: {
+        userId,
+        status: 'pending'
+      }
+    })
+
+    if (withdrawal) {
       return res.status(200).send({
         statusCode: 200,
         data: {
-          ...r.dataValues,
-          walletBalance: r?.balance - r?.marketingBalance,
+          ...user.dataValues,
+          balance: 0,
+          marketingBalance: 0,
+          walletBalance: 0,
           avatar: null
         },
         error: null
       })
+    }
+
+    return res.status(200).send({
+      statusCode: 200,
+      data: {
+        ...user.dataValues,
+        walletBalance: Math.max(0, user?.balance - user?.marketingBalance),
+        avatar: null
+      },
+      error: null
     })
-    .catch((e) => {
-      return httpError(e, res)
-    })
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 module.exports = { findOne, update }

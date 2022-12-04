@@ -17,6 +17,8 @@ const create = async (req, res) => {
       userId,
       expireAt
     } = req.body
+    const adminId = req?.user[0]?.id
+
     const data = {
       type,
       value,
@@ -31,7 +33,8 @@ const create = async (req, res) => {
       benefit: 0,
       totalSale: 0,
       expireAt: expireAt ? expireAt : null,
-      userMarketing: false
+      userMarketing: false,
+      adminId
     }
 
     const checkExistDiscountCode = await sequelize.models.discounts.findOne({

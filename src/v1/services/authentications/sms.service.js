@@ -84,9 +84,22 @@ const send = async ({
             expireAt: utils.timestampToIso(Date.now() + 1000 * 60 * 2)
           }
 
-    registerData && registerData !== null
-      ? (body.registerData = JSON.stringify(registerData))
-      : null
+    if (registerData && registerData !== null) {
+      const verify = await sequelize.models.verifies.findOne({
+        where: {
+          phoneNumber
+        },
+        order: [['id', 'DESC']]
+      })
+      console.log(verify)
+      if (verify) body.registerData = JSON.parse(verify?.registerData)
+      else
+        registerData && registerData !== null
+          ? (body.registerData = JSON.stringify(registerData))
+          : null
+    }
+
+    console.log()
 
     const resCreateCode = await sequelize.models.verifies.create(body)
 

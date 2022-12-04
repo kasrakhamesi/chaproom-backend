@@ -212,6 +212,22 @@ const Types = {
   FILTER_NOT_EXIST: {
     statusCode: 400,
     message: 'فیلتر انتخابی شما وجود ندارد'
+  },
+  WITHDRAWAL_NOT_FOUND: {
+    statusCode: 400,
+    message: 'درخواست برداشت یافت نشد'
+  },
+  DISCOUNT_CODE_NOT_FOR_YOU: {
+    statusCode: 400,
+    message: 'این کد تخفیف مختص شما نیست'
+  },
+  MARKETING_DISCOUNT_CODE_NOT_FOR_YOU: {
+    statusCode: 400,
+    message: 'شما مجاز به استفاده از کد تخفیف بازاریابی خود نیستید'
+  },
+  USER_USED_DISCOUNT_CODE: {
+    statusCode: 400,
+    message: 'شما این کد تخفیف را یکبار مصرف کرده اید'
   }
 }
 

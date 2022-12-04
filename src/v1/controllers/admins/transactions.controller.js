@@ -268,7 +268,7 @@ const totalTransactions = async (req, res) => {
   try {
     const { ticker } = req.params
     const { startAt, endAt, month } = req.query
-    const where = { [Op.or]: [{ status: 'successful' }, { status: 'pending' }] }
+    const where = { status: 'successful' }
 
     if (ticker !== 'monthly' && ticker !== 'yearly')
       return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)

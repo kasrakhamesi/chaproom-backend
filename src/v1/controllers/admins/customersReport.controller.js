@@ -1,5 +1,6 @@
 const { sequelize } = require('../../models')
 const { restful, filters, utils } = require('../../libs')
+const libs = require('../../libs')
 const { httpError, errorTypes } = require('../../configs')
 const { Op } = require('sequelize')
 const users = new restful(sequelize.models.users)
@@ -36,21 +37,48 @@ const getUsersIdByFilter = async (query) => {
   }
 }
 
-const reportStructure = async (users, req, res) => {
+const reportStructure = async (users, allUsers) => {
   try {
     const data = []
 
-    let totalOrdersCount = 0
+    const usersId = []
+    for (const user of allUsers?.data) {
+      usersId.push({
+        userId: user?.id
+      })
+    }
 
-    /*
-    await sequelize.models.orders.count({
-      where: {
-        status: { [Op.not]: 'payment_pending' }
-      }
-    })
-    */
+    const totalOrdersCount = _.isEmpty(usersId)
+      ? 0
+      : await sequelize.models.orders.count({
+          where: {
+            [Op.and]: usersId,
+            status: { [Op.not]: 'payment_pending' }
+          }
+        })
 
-    console.log(users)
+    let totalDebtor = 0
+    let totalCreditor = 0
+
+    const allUsersTransactions = _.isEmpty(usersId)
+      ? []
+      : await sequelize.models.transactions.findAll({
+          where: {
+            [Op.and]: usersId,
+            status: 'successful',
+            description: { [Op.not]: 'increase_for_order' }
+          }
+        })
+
+    for (const transaction of allUsersTransactions) {
+      const transactionInfo = await libs.users.getTransactionTypeAndAmount(
+        transaction
+      )
+      if (transactionInfo.type === 'بستانکار')
+        totalCreditor += transactionInfo?.amount
+      else if (transactionInfo.type === 'بدهکار')
+        totalDebtor += transactionInfo?.amount
+    }
 
     const usersData = _.isEmpty(users?.data?.users)
       ? users?.data
@@ -61,12 +89,7 @@ const reportStructure = async (users, req, res) => {
         const countOfOrders = await sequelize.models.orders.count({
           where: {
             userId: user?.id,
-            [Op.or]: [
-              {
-                status: 'preparing'
-              },
-              { status: 'pending' }
-            ]
+            status: { [Op.not]: 'payment_pending' }
           }
         })
 
@@ -74,7 +97,7 @@ const reportStructure = async (users, req, res) => {
           where: {
             userId: user?.id,
             status: 'successful',
-            adminId: null
+            description: { [Op.not]: 'increase_for_order' }
           }
         })
 
@@ -82,12 +105,7 @@ const reportStructure = async (users, req, res) => {
           limit: 1,
           where: {
             userId: user?.id,
-            [Op.or]: [
-              {
-                status: 'preparing'
-              },
-              { status: 'pending' }
-            ]
+            status: { [Op.not]: 'payment_pending' }
           },
           order: [['createdAt', 'ASC']]
         })
@@ -96,12 +114,7 @@ const reportStructure = async (users, req, res) => {
           limit: 1,
           where: {
             userId: user?.id,
-            [Op.or]: [
-              {
-                status: 'preparing'
-              },
-              { status: 'pending' }
-            ]
+            status: { [Op.not]: 'payment_pending' }
           },
           order: [['createdAt', 'DESC']]
         })
@@ -109,8 +122,11 @@ const reportStructure = async (users, req, res) => {
         let incoming = 0
 
         for (const transaction of userTransactions) {
-          if (transaction?.change === 'increase')
-            incoming += parseInt(transaction?.amount)
+          const transactionInfo = await libs.users.getTransactionTypeAndAmount(
+            transaction
+          )
+          if (transactionInfo.type === 'بستانکار')
+            incoming += transactionInfo?.amount
         }
 
         const newStyleUser = _.isEmpty({ ...user.dataValues })
@@ -142,7 +158,7 @@ const reportStructure = async (users, req, res) => {
       for (const entity of data) {
         newData.push({
           ...entity,
-          walletBalance: entity.balance - entity.marketingBalance
+          walletBalance: Math.max(0, entity.balance - entity.marketingBalance)
         })
       }
     }
@@ -157,10 +173,10 @@ const reportStructure = async (users, req, res) => {
           totalCount: users?.data?.totalCount || users?.data?.length || 0,
           totalPageLeft: users?.data?.totalPageLeft || 0,
           totalCountLeft: users?.data?.totalCountLeft || 0,
-          totalUsersCount: users.data?.users?.length || users?.data?.length,
+          totalUsersCount: allUsers?.data?.length || 0,
           totalOrdersCount,
-          totalDebtor: 5000,
-          totalCreditor: 6000,
+          totalDebtor,
+          totalCreditor,
           customersReport: _.isEmpty(newData) ? data : newData
         },
         error: null
@@ -177,13 +193,7 @@ const reportStructure = async (users, req, res) => {
   }
 }
 
-const createSortOrder = async (
-  query,
-  inputUsersId,
-  paginateActive = true,
-  res,
-  req
-) => {
+const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
   try {
     if (_.isEmpty(inputUsersId))
       return {
@@ -228,19 +238,32 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 0 },
+        order: [['id', 'desc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'one_order') {
       let r = await users.Get({
@@ -261,19 +284,32 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 1 },
+        order: [['id', 'desc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'two_order') {
       let r = await users.Get({
@@ -294,19 +330,32 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 2 },
+        order: [['id', 'desc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'three_and_more_order') {
       let r = await users.Get({
@@ -331,19 +380,36 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: {
+          ...where,
+          [Op.and]: inputUsersId,
+          countOfOrders: { [Op.gte]: 3 }
+        },
+        order: [['id', 'desc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'most_to_lowest_order') {
       let r = await users.Get({
@@ -367,19 +433,35 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: {
+          ...where,
+          [Op.and]: inputUsersId
+        },
+        order: [['countOfOrders', 'desc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'lowest_to_most_order') {
       let r = await users.Get({
@@ -403,19 +485,35 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: {
+          ...where,
+          [Op.and]: inputUsersId
+        },
+        order: [['countOfOrders', 'asc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'most_to_lowest_balance') {
       let r = await users.Get({
@@ -436,19 +534,35 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: {
+          ...where,
+          [Op.and]: inputUsersId
+        },
+        order: [['balance', 'asc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'lowest_to_most_balance') {
       let r = await users.Get({
@@ -469,19 +583,35 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: {
+          ...where,
+          [Op.and]: inputUsersId
+        },
+        order: [['balance', 'asc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'most_to_lowest_payment') {
       let r = await users.Get({
@@ -505,19 +635,35 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: {
+          ...where,
+          [Op.and]: inputUsersId
+        },
+        order: [['incomingPayment', 'desc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     } else if (sortOrder === 'lowest_to_most_payment') {
       let r = await users.Get({
@@ -541,19 +687,35 @@ const createSortOrder = async (
         }
       })
 
+      const allUsers = await users.Get({
+        attributes: [
+          'id',
+          'name',
+          'phoneNumber',
+          'balance',
+          'marketingBalance',
+          'createdAt'
+        ],
+        where: {
+          ...where,
+          [Op.and]: inputUsersId
+        },
+        order: [['incomingPayment', 'asc']]
+      })
+
       if (r?.statusCode !== 200) return res.status(r?.statusCode).send(r)
 
       if (r?.data?.users !== [] && !_.isEmpty(r?.data?.users)) {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
         r.data.users = await Promise.all(r.data.users)
       }
-      const reportData = await reportStructure(r, req, res)
+      const reportData = await reportStructure(r, allUsers)
       return reportData
     }
     return null
@@ -569,9 +731,7 @@ const getAll = async (req, res, paginateActive = true) => {
     const filteredSortOrder = await createSortOrder(
       req.query,
       filteredUsers,
-      paginateActive,
-      res,
-      req
+      paginateActive
     )
 
     return filteredSortOrder
@@ -615,7 +775,7 @@ const createExcel = (req, res) => {
             createdAt: new utils.PersianDate(
               entity.createdAt
             ).getPartsWithBackSlash(),
-            walletBalance: entity?.walletBalance,
+            walletBalance: Math.max(0, entity?.walletBalance),
             countOfOrders: entity?.countOfOrders,
             totalPaidAmount: entity?.totalPaidAmount,
             firstOrderAt: new utils.PersianDate(

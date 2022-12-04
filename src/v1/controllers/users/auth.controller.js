@@ -126,25 +126,30 @@ const registerConfirm = async (req, res) => {
       { transaction: t }
     )
 
+    await t.commit()
+
     const userDiscount = await sequelize.models.discounts.findAll({
       where: { phoneNumber: data?.phoneNumber }
     })
 
-    await userDiscount.update(
-      {
-        userId: r?.id
-      },
-      { transaction: t }
-    )
-
-    await t.commit()
+    if (!_.isEmpty(userDiscount))
+      await sequelize.models.discounts.update(
+        {
+          userId: r?.id
+        },
+        {
+          where: {
+            phoneNumber: data?.phoneNumber
+          }
+        }
+      )
 
     const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
     return res.status(200).send({
       statusCode: 200,
       data: {
         ...r?.dataValues,
-        walletBalance: r?.balance - r?.marketingBalance,
+        walletBalance: Math.max(0, r?.balance - r?.marketingBalance),
         avatar: null,
         token: {
           access: accessToken,
@@ -161,10 +166,10 @@ const registerConfirm = async (req, res) => {
   }
 }
 
-const login = (req, res) => {
-  const { phoneNumber, password } = req.body
-  return sequelize.models.users
-    .findOne({
+const login = async (req, res) => {
+  try {
+    const { phoneNumber, password } = req.body
+    const user = await sequelize.models.users.findOne({
       where: {
         phoneNumber,
         password
@@ -173,14 +178,25 @@ const login = (req, res) => {
         exclude: ['password']
       }
     })
-    .then((r) => {
-      if (!r) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
-      const accessToken = authorize.generateUserJwt(r?.id, r?.phoneNumber)
+
+    if (!user) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
+    const accessToken = authorize.generateUserJwt(user?.id, user?.phoneNumber)
+
+    const withdrawal = await sequelize.models.withdrawals.findOne({
+      where: {
+        userId: user?.id,
+        status: 'pending'
+      }
+    })
+
+    if (withdrawal) {
       return res.status(200).send({
         statusCode: 200,
         data: {
-          ...r?.dataValues,
-          walletBalance: r?.balance - r?.marketingBalance,
+          ...user?.dataValues,
+          balance: 0,
+          marketingBalance: 0,
+          walletBalance: 0,
           avatar: null,
           token: {
             access: accessToken,
@@ -191,10 +207,26 @@ const login = (req, res) => {
         },
         error: null
       })
+    }
+
+    return res.status(200).send({
+      statusCode: 200,
+      data: {
+        ...user?.dataValues,
+        walletBalance: Math.max(0, user?.balance - user?.marketingBalance),
+        avatar: null,
+        token: {
+          access: accessToken,
+          expireAt: utils.timestampToIso(
+            authorize.decodeJwt(accessToken, false).exp
+          )
+        }
+      },
+      error: null
     })
-    .catch((e) => {
-      return httpError(e, res)
-    })
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 const passwordReset = async (req, res) => {

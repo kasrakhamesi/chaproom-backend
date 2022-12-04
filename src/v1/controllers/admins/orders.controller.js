@@ -230,6 +230,7 @@ const findAll = async (req, res) => {
           : r?.data?.orders.map((item) => {
               return {
                 ...item.dataValues,
+                amount: item.walletPaidAmount + item.gatewayPaidAmount,
                 trackingUrl: null
               }
             })
@@ -331,13 +332,13 @@ const findOne = (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const { status, sendMethod, trackingNumber, cancelReason } = req.body
+    const { status, postageMethod, trackingNumber, cancelReason } = req.body
 
     const data = {
       status,
       trackingNumber,
       cancelReason,
-      sendMethod
+      postageMethod: 'پست پیشتاز'
     }
 
     if (status !== 'preparing' && status !== 'sent' && status !== 'canceled')
@@ -377,23 +378,28 @@ const update = async (req, res) => {
           change: 'increase',
           balance: userWallet?.data?.balance,
           balanceAfter:
-            userWallet?.data?.balance + order?.amount + order?.postageFee,
+            userWallet?.data?.balance +
+            order?.gatewayPaidAmount +
+            order?.walletPaidAmount,
           status: 'successful',
-          amount: order?.amount + order?.postageFee,
+          amount: order?.gatewayPaidAmount + order?.walletPaidAmount,
           description: 'بازگشت وجه به کیف پول بابت لغو سفارش'
         },
         { transaction: t }
       )
 
-      const user = await sequelize.models.users.findOne({
+      const findedUser = await sequelize.models.users.findOne({
         where: {
           id: user?.id
         }
       })
 
-      await user.update(
+      await findedUser.update(
         {
-          balance: userWallet?.data?.balance + order?.amount + order?.postageFee
+          balance:
+            userWallet?.data?.balance +
+            order?.gatewayPaidAmount +
+            order?.walletPaidAmount
         },
         { transaction: t }
       )
@@ -412,52 +418,62 @@ const update = async (req, res) => {
           }
         })
 
-        await discount.update(
-          {
-            timesUsed: discount?.timesUsed + 1,
-            totalSale: order?.amount + discount?.totalSale,
-            benefit: discount?.benefit + order?.discountBenefit
-          },
-          { transaction: t }
-        )
+        if (discount?.userMarketing) {
+          await discount.update(
+            {
+              timesUsed: discount?.timesUsed + 1,
+              totalSale: order?.amount + discount?.totalSale,
+              benefit: discount?.benefit + order?.discountBenefit
+            },
+            { transaction: t }
+          )
 
-        const ownerOfDiscount = await sequelize.models.users.findOne({
-          where: {
-            id: discount?.userId
-          }
-        })
+          const ownerOfDiscount = await sequelize.models.users.findOne({
+            where: {
+              id: discount?.userId
+            }
+          })
 
-        const ownerOfDiscountWallet = await users.getBalance(
-          ownerOfDiscount?.id
-        )
+          const ownerOfDiscountWallet = await users.getBalance(
+            ownerOfDiscount?.id
+          )
 
-        if (!ownerOfDiscountWallet?.isSuccess)
-          return httpError(ownerOfDiscountWallet?.message, res)
+          if (!ownerOfDiscountWallet?.isSuccess)
+            return httpError(ownerOfDiscountWallet?.message, res)
 
-        await sequelize.models.transactions.create(
-          {
-            userId: ownerOfDiscount?.id,
-            type: 'marketing_discount',
-            change: 'increase',
-            balance: ownerOfDiscountWallet?.data?.balance,
-            balanceAfter:
-              ownerOfDiscountWallet?.data?.balance + order?.discountBenefit,
-            status: 'successful',
-            amount: order?.discountBenefit,
-            description: 'افزایش موجودی بابت بازاریابی کد تخفیف'
-          },
-          { transaction: t }
-        )
-        await ownerOfDiscount.update(
-          {
-            marketingBalance:
-              ownerOfDiscountWallet?.data?.marketingBalance +
-              order?.discountBenefit
-          },
-          {
-            transaction: t
-          }
-        )
+          await sequelize.models.transactions.create(
+            {
+              userId: ownerOfDiscount?.id,
+              type: 'marketing_discount',
+              change: 'increase',
+              balance: ownerOfDiscountWallet?.data?.balance,
+              balanceAfter:
+                ownerOfDiscountWallet?.data?.balance + order?.discountBenefit,
+              status: 'successful',
+              amount: order?.discountBenefit,
+              description: 'افزایش موجودی بابت بازاریابی کد تخفیف'
+            },
+            { transaction: t }
+          )
+          await ownerOfDiscount.update(
+            {
+              marketingBalance:
+                ownerOfDiscountWallet?.data?.marketingBalance +
+                order?.discountBenefit
+            },
+            {
+              transaction: t
+            }
+          )
+        } else {
+          await discount.update(
+            {
+              timesUsed: discount?.timesUsed + 1,
+              totalSale: order?.amount + discount?.totalSale
+            },
+            { transaction: t }
+          )
+        }
       }
 
       if (order?.referralId && typeof order?.referralId === 'number') {
@@ -520,6 +536,7 @@ const update = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

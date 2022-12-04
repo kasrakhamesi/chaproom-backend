@@ -61,7 +61,7 @@ const upload = async (req, res) => {
       String(extensionName).toLowerCase().includes('docx') ||
       String(extensionName).toLowerCase().includes('doc')
     ) {
-      rCounter = await pageCounter.docx(filePath)
+      rCounter = null //await pageCounter.docx(filePath)
     }
 
     const r = await sequelize.models.files.create({

@@ -274,7 +274,7 @@ const getTransactionTypeAndAmount = async (transaction) => {
     else if (order?.gatewayPaidAmount === 0) type = 'خرج کیف پول'
     else if (order?.gatewayPaidAmount !== 0) {
       type = 'بستانکار'
-      amount = order?.gatewayPaidAmount + order?.postageFee
+      amount = order?.gatewayPaidAmount + order?.walletPaidAmount
     }
 
     return { type, amount }

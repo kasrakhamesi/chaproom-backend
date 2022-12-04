@@ -53,6 +53,16 @@ module.exports = {
           defaultValue: 0,
           allowNull: false
         },
+        totalDebtor: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
+        totalCreditor: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
         createdAt: {
           allowNull: true,
           type: Sequelize.DATE

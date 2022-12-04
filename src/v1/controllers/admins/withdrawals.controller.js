@@ -1,5 +1,5 @@
 const { sequelize } = require('../../models')
-const { restful, filters } = require('../../libs')
+const { restful, filters, users } = require('../../libs')
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const withdrawals = new restful(sequelize.models.withdrawals)
 
@@ -64,41 +64,60 @@ const update = async (req, res) => {
   try {
     const { id } = req.params
     const { status, trackingNumber, description } = req.body
+    const adminId = req?.user[0]?.id
 
     const data = {
       status,
       trackingNumber,
-      description
+      description,
+      adminId
     }
 
     if (status !== 'rejected' && status !== 'done')
       return httpError(errorTypes.STATUS_NOT_ALLOWED, res)
 
+    const withdrawal = await sequelize.models.withdrawals.findOne({
+      where: {
+        id
+      }
+    })
+
+    if (!withdrawal) return httpError(errorTypes.WITHDRAWAL_NOT_FOUND, res)
+
     const t = await sequelize.transaction()
 
-    await sequelize.models.withdrawals.update(
-      data,
-      {
-        where: {
-          id
-        }
-      },
-      {
-        transaction: t
-      }
-    )
+    await withdrawal.update(data, { transaction: t })
 
-    await sequelize.models.transactions.update(
+    const user = await sequelize.models.users.findOne({
+      where: {
+        id: withdrawal?.userId
+      }
+    })
+
+    const transaction = await sequelize.models.transactions.findOne({
+      where: {
+        withdrawalId: id
+      }
+    })
+
+    await transaction.update(
       {
         type: 'withdrawal',
-        status: status,
-        description
-      },
-      {
-        where: { withdrawalId: id }
+        status: status === 'rejected' ? 'unsuccessful' : 'successful',
+        description: `برداشت موجودی با کد پیگیری : ${trackingNumber}`
       },
       { transaction: t }
     )
+
+    if (status === 'done')
+      await user.update(
+        {
+          balance: 0,
+          marketingBalance: 0,
+          totalDebtor: user?.totalDebtor + user?.balance
+        },
+        { transaction: t }
+      )
 
     await t.commit()
 

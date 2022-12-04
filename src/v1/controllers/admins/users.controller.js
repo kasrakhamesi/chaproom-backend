@@ -31,7 +31,7 @@ const findAll = async (req, res) => {
       r.data.users = r?.data?.users.map((item) => {
         return {
           ...item.dataValues,
-          walletBalance: item.balance - item.marketingBalance
+          walletBalance: Math.max(0, item.balance - item.marketingBalance)
         }
       })
 
@@ -90,7 +90,7 @@ const findOne = (req, res) => {
           id: r.id,
           name: r.name,
           phoneNumber: r.phoneNumber,
-          walletBalance: r?.balance - r?.marketingBalance
+          walletBalance: Math.max(0, r?.balance - r?.marketingBalance)
         },
         error: null
       })
@@ -125,8 +125,6 @@ const create = async (req, res) => {
     if (!r) return httpError(errorTypes.USER_EXIST_ERROR)
 
     const discountCodes = await uniqueGenerates.discountCode(2)
-
-    console.log(discountCodes)
 
     await sequelize.models.discounts.create(
       {
@@ -179,13 +177,10 @@ const create = async (req, res) => {
 
     await t.commit()
 
-    console.log('y')
-
     return res
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }
@@ -227,7 +222,10 @@ const update = async (req, res) => {
 
     data.balance = walletBalance + user?.marketingBalance
 
-    const currentWalletBalance = user?.balance - user?.marketingBalance
+    const currentWalletBalance = Math.max(
+      0,
+      user?.balance - user?.marketingBalance
+    )
 
     if (walletBalance && walletBalance !== currentWalletBalance) {
       await sequelize.models.transactions.create(
@@ -316,22 +314,18 @@ const marketing = async (req, res) => {
       where: {
         userId: id,
         userMarketing: true
-      },
-      attributes: {
-        exclude: [
-          'id',
-          'userId',
-          'adminId',
-          'usageLimit',
-          'expireAt',
-          'timesUsed',
-          'phoneNumber',
-          'userMarketing',
-          'pageLimit',
-          'description'
-        ]
       }
     })
+
+    let totalSales = 0
+    let benefit = 0
+    let timesUsed = 0
+
+    for (const entity of discounts) {
+      timesUsed += entity?.timesUsed
+      totalSales += entity?.totalSale
+      benefit += entity?.benefit
+    }
 
     const referral = await sequelize.models.referrals.findOne({
       where: {
@@ -344,7 +338,7 @@ const marketing = async (req, res) => {
 
     const r = {
       user,
-      discount: { totalSales: 0, benefit: 0, timesUsed: 0, data: discounts },
+      discount: { totalSales, benefit, timesUsed, data: discounts },
       referral
     }
 

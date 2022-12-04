@@ -99,7 +99,7 @@ const create = async (req, res) => {
     }
 
     let discount = null
-    if (discountCode) discount = await discounts.check(discountCode)
+    if (discountCode) discount = await discounts.check(discountCode, userId)
 
     if (discount !== null && discount?.statusCode !== 200)
       return httpError(discount, res)
@@ -125,7 +125,11 @@ const create = async (req, res) => {
         }
       })
 
-      const balance = user?.balance
+      const userWallet = await users.getBalance(userId)
+
+      if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+
+      const balance = userWallet?.data?.balance
 
       if (balance >= totalPrice + postageFee - discountAmount) {
         data.walletPaidAmount = totalPrice + postageFee - discountAmount
@@ -169,10 +173,6 @@ const create = async (req, res) => {
             { transaction: t }
           )
         }
-
-        const userWallet = await users.getBalance(userId)
-
-        if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
         await sequelize.models.transactions.create(
           {
@@ -228,7 +228,6 @@ const create = async (req, res) => {
       res
     )
   } catch (e) {
-    console.log(e)
     return httpError(e || String(e) || e?.message, res)
   }
 }
@@ -240,7 +239,7 @@ const priceCalculator = async (req, res) => {
     let discount = null
     if (discountCode === '')
       return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND, res)
-    if (discountCode) discount = await discounts.check(discountCode)
+    if (discountCode) discount = await discounts.check(discountCode, userId)
     if (discount !== null && discount?.statusCode !== 200)
       return httpError(discount, res)
 
@@ -252,11 +251,6 @@ const priceCalculator = async (req, res) => {
       attributes: ['id', 'amount']
     })
 
-    const user = await sequelize.models.users.findOne({
-      where: { id: userId },
-      attributes: ['balance']
-    })
-
     const amounts = []
     let amount = 0
     for (const entity of folders) {
@@ -264,12 +258,16 @@ const priceCalculator = async (req, res) => {
       amount += entity?.amount
     }
 
+    const userWallet = await users.getBalance(userId)
+
+    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+
     const data = {
       discountAmount:
         discount !== null
           ? await discounts.calculator(discount?.data, amount)
           : null,
-      userBalance: user?.balance,
+      userBalance: userWallet?.data?.balance,
       foldersAmount: amounts,
       postageFee: 20000
     }
@@ -308,9 +306,13 @@ const findAll = async (req, res) => {
         'status',
         'cancelReason',
         'amount',
+        'postageFee',
+        'discountAmount',
         'createdAt',
         'updatedAt',
         'trackingNumber',
+        'walletPaidAmount',
+        'gatewayPaidAmount',
         'recipientName'
       ],
       pagination: {
@@ -330,10 +332,11 @@ const findAll = async (req, res) => {
         totalPageLeft: r?.data?.totalPageLeft,
         totalCountLeft: r?.data?.totalCountLeft,
         orders: _.isEmpty(r?.data?.orders)
-          ? null
+          ? []
           : r?.data?.orders.map((item) => {
               return {
                 ...item.dataValues,
+                amount: item.walletPaidAmount + item.gatewayPaidAmount,
                 trackingUrl: null
               }
             })
@@ -459,9 +462,11 @@ const update = async (req, res) => {
         change: 'increase',
         balance: userWallet?.data?.balance,
         balanceAfter:
-          userWallet?.data?.balance + order?.amount + order?.postageFee,
+          userWallet?.data?.balance +
+          order?.walletPaidAmount +
+          order?.gatewayPaidAmount,
         status: 'successful',
-        amount: order?.amount + order?.postageFee,
+        amount: order?.walletPaidAmount + order?.gatewayPaidAmount,
         description: 'بازگشت وجه به کیف پول بابت لغو سفارش'
       },
       { transaction: t }
@@ -475,7 +480,10 @@ const update = async (req, res) => {
 
     await user.update(
       {
-        balance: userWallet?.data?.balance + order?.amount + order?.postageFee
+        balance:
+          userWallet?.data?.balance +
+          order?.walletPaidAmount +
+          order?.gatewayPaidAmount
       },
       { transaction: t }
     )

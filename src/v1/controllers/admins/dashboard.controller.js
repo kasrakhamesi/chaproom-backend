@@ -249,6 +249,10 @@ const getSales = async () => {
     const ticker = 'daily'
 
     const transactions = await sequelize.models.transactions.findAndCountAll({
+      where: {
+        status: 'successful',
+        description: { [Op.not]: 'increase_for_order' }
+      },
       attributes: [
         'id',
         'amount',
@@ -256,12 +260,11 @@ const getSales = async () => {
         'createdAt',
         'type',
         'adminId',
-        'orderId'
+        'orderId',
+        'description'
       ],
       order: [['id', 'desc']]
     })
-
-    let totalSales = 0
 
     const timeList = utils.createTimeList(ticker, true)
 
@@ -281,12 +284,20 @@ const getSales = async () => {
 
           if (transactionInfo?.type === 'بدهکار')
             findedCreatedAt.debtor += transactionInfo?.amount
-          else if (transactionInfo?.type === 'بستانکار') {
+          else if (transactionInfo?.type === 'بستانکار')
             findedCreatedAt.creditor += transactionInfo?.amount
-            totalSales += transaction?.amount
-          }
         }
       }
+    }
+
+    let totalSales = 0
+
+    for (const transaction of transactions.rows) {
+      const transactionInfo = await users.getTransactionTypeAndAmount(
+        transaction
+      )
+      if (transactionInfo?.type === 'بستانکار')
+        totalSales += parseInt(transaction?.amount)
     }
 
     return { totalSales, chart: timeList }
@@ -305,6 +316,10 @@ const findSales = async (req, res) => {
       return httpError(errorTypes.TIMEFRAME_NOT_EXIST, res)
 
     const transactions = await sequelize.models.transactions.findAndCountAll({
+      where: {
+        status: 'successful',
+        description: { [Op.not]: 'increase_for_order' }
+      },
       attributes: [
         'id',
         'amount',
@@ -316,8 +331,6 @@ const findSales = async (req, res) => {
       ],
       order: [['id', 'desc']]
     })
-
-    let totalSales = 0
 
     const timeList = utils.createTimeList(ticker, true)
 
@@ -338,10 +351,8 @@ const findSales = async (req, res) => {
 
           if (transactionInfo?.type === 'بدهکار')
             findedCreatedAt.debtor += transactionInfo?.amount
-          else if (transactionInfo?.type === 'بستانکار') {
+          else if (transactionInfo?.type === 'بستانکار')
             findedCreatedAt.creditor += transactionInfo?.amount
-            totalSales += transaction?.amount
-          }
         }
       } else if (ticker === 'weekly') {
         const newStyleCreatedAt =
@@ -373,10 +384,8 @@ const findSales = async (req, res) => {
 
             if (transactionInfo?.type === 'بدهکار')
               timeList[k].debtor += transactionInfo?.amount
-            else if (transactionInfo?.type === 'بستانکار') {
+            else if (transactionInfo?.type === 'بستانکار')
               timeList[k].creditor += transactionInfo?.amount
-              totalSales += transaction?.amount
-            }
 
             break
           }
@@ -393,12 +402,20 @@ const findSales = async (req, res) => {
 
           if (transactionInfo?.type === 'بدهکار')
             findedCreatedAt.debtor += transactionInfo?.amount
-          else if (transactionInfo?.type === 'بستانکار') {
+          else if (transactionInfo?.type === 'بستانکار')
             findedCreatedAt.creditor += transactionInfo?.amount
-            totalSales += transaction?.amount
-          }
         }
       }
+    }
+
+    let totalSales = 0
+
+    for (const transaction of transactions.rows) {
+      const transactionInfo = await users.getTransactionTypeAndAmount(
+        transaction
+      )
+      if (transactionInfo?.type === 'بستانکار')
+        totalSales += parseInt(transaction?.amount)
     }
 
     res.status(200).send({
@@ -541,7 +558,13 @@ const getOrdersOfProvinces = async () => {
     const data = {}
     for (const province of provinces) {
       const orders = await sequelize.models.orders.findAndCountAll({
-        attributes: ['id', 'recipientDeliveryProvince', 'amount'],
+        attributes: [
+          'id',
+          'recipientDeliveryProvince',
+          'amount',
+          'walletPaidAmount',
+          'gatewayPaidAmount'
+        ],
         where: {
           recipientDeliveryProvince: province,
           [Op.or]: [
@@ -552,10 +575,11 @@ const getOrdersOfProvinces = async () => {
           ]
         }
       })
+
       let amount = 0
 
       for (const order of orders?.rows) {
-        amount += order?.amount
+        amount += order?.walletPaidAmount + order?.gatewayPaidAmount
       }
 
       const addresses = await sequelize.models.addresses.findAll({

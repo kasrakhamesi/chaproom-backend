@@ -9,20 +9,6 @@ const findOne = async (req, res) => {
       where: {
         userId,
         userMarketing: true
-      },
-      attributes: {
-        exclude: [
-          'id',
-          'userId',
-          'adminId',
-          'usageLimit',
-          'expireAt',
-          'timesUsed',
-          'userMarketing',
-          'phoneNumber',
-          'pageLimit',
-          'description'
-        ]
       }
     })
 

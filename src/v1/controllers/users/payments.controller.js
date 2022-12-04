@@ -87,19 +87,17 @@ const callback = async (req, res) => {
       { transaction: t }
     )
 
-    const user = await sequelize.models.users.findOne(
-      {
-        where: {
-          id: payment?.userId
-        }
-      },
-      { transaction: t }
-    )
+    const user = await sequelize.models.users.findOne({
+      where: {
+        id: payment?.userId
+      }
+    })
 
     await user.update(
       {
         balance: user?.balance + payment?.amount,
-        incomingPayment: user?.incomingPayment + parseInt(payment?.amount)
+        incomingPayment: user?.incomingPayment + parseInt(payment?.amount),
+        totalCreditor: user?.totalCreditor + payment?.amount
       },
       { transaction: t }
     )

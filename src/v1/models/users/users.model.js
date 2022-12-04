@@ -56,6 +56,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT.UNSIGNED,
         defaultValue: 0,
         allowNull: false
+      },
+      totalDebtor: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
+      },
+      totalCreditor: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
       }
     },
     {

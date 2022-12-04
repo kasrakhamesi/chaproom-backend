@@ -64,7 +64,6 @@ const withdrawal = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
       .send(messageTypes.SUCCESSFUL_CREATED)
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }

@@ -3,14 +3,30 @@ const { httpError, errorTypes } = require('../configs')
 const { sequelize } = require('../models')
 const _ = require('lodash')
 
-const check = async (discountCode) => {
+const check = async (discountCode, userId) => {
   try {
-    console.log('areeeeeeeeeeeeeeeeeeeeeeeeeeee')
     const discount = await sequelize.models.discounts.findOne({
       where: {
         code: discountCode
       }
     })
+
+    if (typeof userId === 'number') {
+      if (discount?.userId !== userId && !discount?.userMarketing)
+        return httpError(errorTypes.DISCOUNT_CODE_NOT_FOR_YOU)
+      else if (discount?.userId === userId && discount?.userMarketing)
+        return httpError(errorTypes.MARKETING_DISCOUNT_CODE_NOT_FOR_YOU)
+
+      const order = await sequelize.models.orders.findOne({
+        where: {
+          discountId: discount?.id,
+          userId
+        }
+      })
+
+      if (!_.isEmpty(order))
+        return httpError(errorTypes.USER_USED_DISCOUNT_CODE)
+    }
 
     if (!discount) return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND)
 
