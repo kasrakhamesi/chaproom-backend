@@ -1,9 +1,33 @@
 const { sequelize } = require('../models')
-const _ = require('lodash')
 const fs = require('fs')
 const zip = require('adm-zip')
 const { utils } = require('.')
 require('dotenv').config()
+
+const extractBinding = (binding) => {
+  if (binding === null) return null
+
+  let { type, method, countOfFiles, coverColor } = binding
+
+  if (!type && !method && !countOfFiles && !coverColor) return null
+
+  if (type !== 'spring_normal' && type !== 'spring_papco' && type !== 'stapler')
+    type = null
+  if (
+    method !== 'each_file_separated' &&
+    method !== 'all_files_together' &&
+    method !== 'count_of_files'
+  )
+    method = null
+  if (coverColor !== 'black_and_white' && coverColor !== 'colorful')
+    coverColor = null
+  return JSON.stringify({
+    type,
+    method,
+    countOfFiles: parseInt(countOfFiles) || null,
+    coverColor
+  })
+}
 
 const priceCalculator = async (
   color,
@@ -13,7 +37,8 @@ const priceCalculator = async (
   countOfUploadedFiles,
   countOfPages,
   countOfCopies,
-  filesInfo
+  filesInfo,
+  filesManuallySent
 ) => {
   try {
     const bindingBreakpoint = {
@@ -24,9 +49,17 @@ const priceCalculator = async (
 
     const printTariffs = await getPrintTariffs()
 
-    const tariff = printTariffs[size][utils.camelCase(color)]
-    let shipmentPrice = tariff[utils.camelCase(side)]
+    const otherColor =
+      color === 'fullColor'
+        ? 'blackAndWhite'
+        : color === 'normalColor'
+        ? 'fullColor'
+        : 'fullColor'
 
+    const tariff = printTariffs[size][utils.camelCase(color)]
+    const otherTariff = printTariffs[size][utils.camelCase(otherColor)]
+    let shipmentPrice = tariff[utils.camelCase(side)]
+    let otherShipmentPrice = otherTariff[utils.camelCase(side)]
     for (let k = 0; k < tariff.breakpoints.length; k++)
       if (countOfPages >= tariff.breakpoints[k].at)
         shipmentPrice = tariff.breakpoints[k][utils.camelCase(side)]
@@ -39,22 +72,68 @@ const priceCalculator = async (
     let bindingPrice = 0
     if (extractedBinding !== null) {
       const bindingData = JSON.parse(extractedBinding)
-      const { method, countOfFiles, type } = bindingData
-      console.log(bindingBreakpoint[utils.camelCase(type)])
-      if (method === 'each_file_separated') {
-        for (const entity of filesInfo) {
-          bindingValue +=
-            parseInt(
-              entity.countOfPages / bindingBreakpoint[utils.camelCase(type)]
-            ) + 1
+      const { method, countOfFiles, type, coverColor } = bindingData
+
+      if (color === 'black_and_white') {
+        if (coverColor === 'black_and_white') {
+          const newCountOfPages = countOfPages
+          amount = shipmentPrice * newCountOfPages
+          amount = countOfCopies * amount
+        } else {
+          const newCountOfPages = parseInt(countOfPages - 1)
+          amount = shipmentPrice * newCountOfPages
+          amount = countOfCopies * amount
+          amount = amount + otherShipmentPrice
         }
+      } else if (color === 'normal_color') {
+        if (coverColor === 'black_and_white') {
+          const newCountOfPages = parseInt(countOfPages - 1)
+          amount = shipmentPrice * newCountOfPages
+          amount = countOfCopies * amount
+          amount = amount + otherShipmentPrice
+        } else {
+          const newCountOfPages = countOfPages
+          amount = shipmentPrice * newCountOfPages
+          amount = countOfCopies * amount
+        }
+      } else if (color === 'full_color') {
+        if (coverColor === 'black_and_white') {
+          const newCountOfPages = parseInt(countOfPages - 1)
+          amount = shipmentPrice * newCountOfPages
+          amount = countOfCopies * amount
+          amount = amount + otherShipmentPrice
+        } else {
+          const newCountOfPages = countOfPages
+          amount = shipmentPrice * newCountOfPages
+          amount = countOfCopies * amount
+        }
+      }
+      console.log(filesManuallySent)
+      if (method === 'each_file_separated') {
+        if (filesManuallySent) {
+          bindingValue += 1
+        } else
+          for (const entity of filesInfo) {
+            console.log(entity)
+            bindingValue +=
+              parseInt(
+                entity.countOfPages / bindingBreakpoint[utils.camelCase(type)]
+              ) + 1
+          }
+
+        console.log(filesInfo)
+
+        console.log(bindingValue)
 
         bindingValue = bindingValue * countOfUploadedFiles || 1
       } else if (method === 'all_files_together') {
-        bindingValue +=
-          parseInt(
-            parseInt(countOfPages) / bindingBreakpoint[utils.camelCase(type)]
-          ) + 1
+        if (filesManuallySent) {
+          bindingValue += 1
+        } else
+          bindingValue +=
+            parseInt(
+              parseInt(countOfPages) / bindingBreakpoint[utils.camelCase(type)]
+            ) + 1
       } else if (method === 'count_of_files') {
         bindingValue += parseInt(countOfFiles)
       }
@@ -73,7 +152,6 @@ const priceCalculator = async (
       shipmentPrice
     }
   } catch (e) {
-    console.log(e)
     return null
   }
 }
@@ -99,7 +177,6 @@ const archiveFiles = (filesPath, userId, folderId, orderId) => {
     zipper.writeZip(`${filePath}.zip`)
     return `${process.env.BACKEND_DOMAIN}/v1/users/prints${returnedPath}.zip`
   } catch (e) {
-    console.log(e)
     return false
   }
 }
@@ -151,30 +228,6 @@ const getPrintTariffs = () => {
 
       return data
     })
-}
-const extractBinding = (binding) => {
-  if (binding === null) return null
-
-  let { type, method, countOfFiles, coverColor } = binding
-
-  if (!type && !method && !countOfFiles && !coverColor) return null
-
-  if (type !== 'spring_normal' && type !== 'spring_papco' && type !== 'stapler')
-    type = null
-  if (
-    method !== 'each_file_separated' &&
-    method !== 'all_files_together' &&
-    method !== 'count_of_files'
-  )
-    method = null
-  if (coverColor !== 'black_and_white' && coverColor !== 'colorful')
-    coverColor = null
-  return JSON.stringify({
-    type,
-    method,
-    countOfFiles: parseInt(countOfFiles) || null,
-    coverColor
-  })
 }
 
 module.exports = { extractBinding, archiveFiles, priceCalculator }

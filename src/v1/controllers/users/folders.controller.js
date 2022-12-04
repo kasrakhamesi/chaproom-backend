@@ -155,7 +155,8 @@ const update = (req, res) => {
     countOfCopies,
     description,
     binding,
-    files
+    files,
+    filesManuallySent
   } = req.body
 
   if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
@@ -205,7 +206,8 @@ const update = (req, res) => {
           data.countOfFiles,
           countOfPages,
           countOfCopies,
-          filesInfo
+          filesInfo,
+          filesManuallySent
         )
         .then((calculatedPrice) => {
           if (calculatedPrice === null)
@@ -420,14 +422,13 @@ const priceCalculator = async (req, res) => {
       countOfCopies,
       description,
       binding,
-      files
+      files,
+      filesManuallySent
     } = req.body
 
     const userId = req?.user[0]?.id
 
     const extractedBinding = folders.extractBinding(binding)
-
-    console.log(extractedBinding)
 
     const data = {
       color,
@@ -437,30 +438,32 @@ const priceCalculator = async (req, res) => {
       countOfCopies,
       description,
       binding: extractedBinding,
-      userId
+      userId,
+      filesManuallySent
     }
 
     //TODO Error
-
-    if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
-
-    const findedFiles = await sequelize.models.files.findAll({
-      where: {
-        userId
-      }
-    })
-
     const filesInfo = []
     const ids = []
-    for (const entity of files) {
-      const findedFile = findedFiles.find((item) => item.id === entity.id)
-      if (findedFile) {
-        ids.push(entity?.id)
-        filesInfo.push({ countOfPages: findedFile?.countOfPages })
-      }
-    }
 
-    if (ids.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+    if (!filesManuallySent || filesManuallySent === false) {
+      if (!files || files.length === 0)
+        return httpError(errorTypes.MISSING_FILE, res)
+      const findedFiles = await sequelize.models.files.findAll({
+        where: {
+          userId
+        }
+      })
+      for (const entity of files) {
+        const findedFile = findedFiles.find((item) => item.id === entity.id)
+        if (findedFile) {
+          ids.push(entity?.id)
+          filesInfo.push({ countOfPages: findedFile?.countOfPages })
+        }
+      }
+
+      if (ids.length === 0) return httpError(errorTypes.MISSING_FILE, res)
+    }
 
     data.countOfFiles = ids.length
 
@@ -472,7 +475,8 @@ const priceCalculator = async (req, res) => {
       data.countOfFiles,
       countOfPages,
       countOfCopies,
-      filesInfo
+      filesInfo,
+      filesManuallySent
     )
 
     if (calculatedPrice === null)

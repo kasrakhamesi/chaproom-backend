@@ -30,7 +30,7 @@ module.exports = {
         },
         countOfPages: {
           type: Sequelize.INTEGER.UNSIGNED,
-          allowNull: false
+          allowNull: true
         },
         createdAt: {
           allowNull: true,

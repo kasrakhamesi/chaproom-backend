@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       countOfPages: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: true
       }
     },
     {
