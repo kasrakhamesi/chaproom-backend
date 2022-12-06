@@ -3,6 +3,7 @@ const { uniqueGenerates, regex, utils } = require('../../libs')
 const _ = require('lodash')
 const Kavenegar = require('kavenegar')
 const { httpError, errorTypes } = require('../../configs')
+const { Op } = require('sequelize')
 require('dotenv').config()
 const api = Kavenegar.KavenegarApi({
   apikey: 'your apikey here'
@@ -15,6 +16,7 @@ const send = async ({
   isPasswordReset = false,
   registerData
 }) => {
+  console.log(registerData)
   try {
     if (!regex.iranPhone(phoneNumber))
       return httpError(errorTypes.INVALID_PHONE_FORMAT)
@@ -84,22 +86,23 @@ const send = async ({
             expireAt: utils.timestampToIso(Date.now() + 1000 * 60 * 2)
           }
 
-    if (registerData && registerData !== null) {
+    if (registerData !== null) {
       const verify = await sequelize.models.verifies.findOne({
         where: {
-          phoneNumber
+          phoneNumber,
+          registerData: { [Op.not]: null }
         },
         order: [['id', 'DESC']]
       })
-      console.log(verify)
-      if (verify) body.registerData = JSON.parse(verify?.registerData)
+      if (!_.isEmpty(verify))
+        body.registerData = JSON.parse(verify?.registerData)
       else
         registerData && registerData !== null
           ? (body.registerData = JSON.stringify(registerData))
           : null
     }
 
-    console.log()
+    console.log(body)
 
     const resCreateCode = await sequelize.models.verifies.create(body)
 

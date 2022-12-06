@@ -532,6 +532,14 @@ const update = async (req, res) => {
     }
     await t.commit()
 
+    const findCurrentOrder = await sequelize.models.orders.findOne({
+      where: {
+        id
+      }
+    })
+
+    await findCurrentOrder.update({ sentAt: findCurrentOrder?.updatedAt })
+
     res
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)

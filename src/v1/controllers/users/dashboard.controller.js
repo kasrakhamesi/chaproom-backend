@@ -42,7 +42,7 @@ const findOne = async (req, res) => {
   try {
     const userId = req?.user[0]?.id
     let user = await sequelize.models.users.findOne({
-      let: {
+      where: {
         id: userId
       },
       attributes: {
@@ -83,6 +83,10 @@ const findOne = async (req, res) => {
           },
           {
             status: 'preparing'
+          },
+          {
+            status: 'sent',
+            updatedAt: { [Op.gt]: Date.now() - 1000 * 60 * 60 * 24 * 3 }
           }
         ]
       },

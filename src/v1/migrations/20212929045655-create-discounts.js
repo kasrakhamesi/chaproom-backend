@@ -35,7 +35,14 @@ module.exports = {
           allowNull: true
         },
         type: {
-          type: Sequelize.ENUM('fixed', 'percentage', 'page'),
+          type: Sequelize.ENUM(
+            'fixed',
+            'percentage',
+            'page',
+            'pageBlackAndWhite',
+            'pageNormalColor',
+            'pageFullColor'
+          ),
           allowNull: false
         },
         value: {

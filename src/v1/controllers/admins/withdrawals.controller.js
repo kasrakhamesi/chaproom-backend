@@ -104,7 +104,10 @@ const update = async (req, res) => {
       {
         type: 'withdrawal',
         status: status === 'rejected' ? 'unsuccessful' : 'successful',
-        description: `برداشت موجودی با کد پیگیری : ${trackingNumber}`
+        description:
+          status === 'rejected'
+            ? description
+            : `برداشت موجودی با کد پیگیری : ${trackingNumber}`
       },
       { transaction: t }
     )

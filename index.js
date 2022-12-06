@@ -15,6 +15,7 @@ const swaggerDocuments = {
 }
 
 app.use('/v1', require('./src/v1/routes'))
+
 app.use('/v1/users/api-docs', swaggerUi.serve, (...args) =>
   swaggerUi.setup(swaggerDocuments.users)(...args)
 )

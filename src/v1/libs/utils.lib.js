@@ -59,8 +59,8 @@ class PersianDate extends Date {
   getDate = () => {
     const now = parseInt(this.getParts()[2])
     const daysOfMonth = getNumberOfDaysFromMonth(this.getParts()[1])
-    if (now + 1 > daysOfMonth) return 1
-    return now + 1
+    if (now > daysOfMonth) return 1
+    return now
   }
   getMonth = () => this.getParts()[1]
   getYear = () => this.getParts()[0]

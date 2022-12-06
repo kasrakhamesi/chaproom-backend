@@ -1,11 +1,11 @@
 const { sequelize } = require('../../models')
 const { restful, filters, utils } = require('../../libs')
-const libs = require('../../libs')
-const { httpError, errorTypes } = require('../../configs')
+const { httpError } = require('../../configs')
 const { Op } = require('sequelize')
-const users = new restful(sequelize.models.users)
 const _ = require('lodash')
 const jexcel = require('json2excel')
+const users = new restful(sequelize.models.users)
+const libs = require('../../libs')
 
 const getUsersIdByFilter = async (query) => {
   try {
@@ -772,18 +772,22 @@ const createExcel = (req, res) => {
             phoneNumber: entity?.phoneNumber,
             balance: entity?.balance,
             marketingBalance: entity?.marketingBalance,
-            createdAt: new utils.PersianDate(
-              entity.createdAt
-            ).getPartsWithBackSlash(),
+            createdAt: _.isEmpty(entity.createdAt)
+              ? 'ندارد'
+              : new utils.PersianDate(entity.createdAt).getPartsWithBackSlash(),
             walletBalance: Math.max(0, entity?.walletBalance),
             countOfOrders: entity?.countOfOrders,
             totalPaidAmount: entity?.totalPaidAmount,
-            firstOrderAt: new utils.PersianDate(
-              entity.firstOrderAt
-            ).getPartsWithBackSlash(),
-            lastOrderAt: new utils.PersianDate(
-              entity.lastOrderAt
-            ).getPartsWithBackSlash()
+            firstOrderAt: _.isEmpty(entity.firstOrderAt)
+              ? 'ندارد'
+              : new utils.PersianDate(
+                  entity.firstOrderAt
+                ).getPartsWithBackSlash(),
+            lastOrderAt: _.isEmpty(entity.lastOrderAt)
+              ? 'ندارد'
+              : new utils.PersianDate(
+                  entity.lastOrderAt
+                ).getPartsWithBackSlash()
           })
         }
         const exc = {
