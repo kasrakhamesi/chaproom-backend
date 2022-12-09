@@ -191,8 +191,6 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
         orderId: order?.id,
         type: 'order',
         change: 'decrease',
-        balance: userWallet?.data?.balance,
-        balanceAfter: userWallet?.data?.balance - paymentAmount,
         status: 'successful',
         amount: paymentAmount,
         description: 'ثبت سفارش'
@@ -210,7 +208,7 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
     )
 
     await user.update(
-      { balance: user?.balance - paymentAmount },
+      { balance: userWallet?.data?.balance - paymentAmount },
       { transaction: t }
     )
 

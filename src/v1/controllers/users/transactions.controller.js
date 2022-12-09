@@ -30,9 +30,7 @@ const findAll = async (req, res) => {
           'userId',
           'withdrawalId',
           'adminId',
-          'paymentId',
-          'balance',
-          'balanceAfter'
+          'paymentId'
         ]
       },
       pagination: {
@@ -102,9 +100,7 @@ const findOne = (req, res) => {
           'userId',
           'withdrawalId',
           'adminId',
-          'paymentId',
-          'balance',
-          'balanceAfter'
+          'paymentId'
         ]
       }
     })

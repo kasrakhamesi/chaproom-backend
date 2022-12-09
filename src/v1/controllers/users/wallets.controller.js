@@ -49,8 +49,6 @@ const withdrawal = async (req, res) => {
         withdrawalId: r?.id,
         type: 'withdrawal',
         change: 'decrease',
-        balance: userWallet.data.balance,
-        balanceAfter: userWallet.data.balance - userWallet.data.balance,
         status: 'pending',
         amount: userWallet.data.balance,
         description: 'برداشت وجه'

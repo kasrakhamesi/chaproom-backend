@@ -165,8 +165,6 @@ const create = async (req, res) => {
           adminId: req?.user[0]?.id,
           type: 'deposit',
           change: 'increase',
-          balance: 0,
-          balanceAfter: walletBalance,
           status: 'successful',
           amount: walletBalance,
           description: 'افزایش موجودی کیف پول توسط ادمین'
@@ -235,8 +233,6 @@ const update = async (req, res) => {
           type: walletBalance > currentWalletBalance ? 'deposit' : 'withdrawal',
           change:
             walletBalance > currentWalletBalance ? 'increase' : 'decrease',
-          balance: user?.balance,
-          balanceAfter: walletBalance + user?.marketingBalance,
           status: 'successful',
           amount: Math.abs(walletBalance - currentWalletBalance),
           description:

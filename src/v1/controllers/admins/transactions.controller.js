@@ -33,14 +33,16 @@ const findAll = async (req, res) => {
     else
       newWhere = {
         ...where,
-        description: { [Op.not]: 'increase_for_order' }
+        description: { [Op.not]: 'increase_for_order' },
+        status: { [Op.not]: 'pending' }
       }
 
     if (_.isEmpty(newWhere))
       newWhere = [
         { [Op.and]: timeWhere },
         { [Op.and]: where || [] },
-        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } }
+        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } },
+        { [Op.and]: { status: { [Op.not]: 'pending' } } }
       ]
 
     const r = await transactions.Get({
@@ -55,14 +57,7 @@ const findAll = async (req, res) => {
         }
       ],
       attributes: {
-        exclude: [
-          'userId',
-          'withdrawalId',
-          'adminId',
-          'paymentId',
-          'balance',
-          'balanceAfter'
-        ]
+        exclude: ['userId', 'withdrawalId', 'adminId', 'paymentId']
       },
       where: newWhere,
       order: [['id', 'desc']],
@@ -128,15 +123,7 @@ const findOne = async (req, res) => {
         }
       ],
       attributes: {
-        exclude: [
-          'userId',
-          'withdrawalId',
-          'adminId',
-          'paymentId',
-          'balance',
-          'balanceAfter',
-          'type'
-        ]
+        exclude: ['userId', 'withdrawalId', 'adminId', 'paymentId', 'type']
       },
       where: {
         id,
@@ -406,11 +393,6 @@ const create = async (req, res) => {
         userId,
         type: 'admin',
         change,
-        balance: userWallet?.data?.balance,
-        balanceAfter:
-          change === 'decrease'
-            ? balanceAfter
-            : userWallet?.data?.balance + amount,
         status: 'successful',
         amount,
         description

@@ -180,8 +180,6 @@ const create = async (req, res) => {
             orderId: r?.id,
             type: 'order',
             change: 'decrease',
-            balance: userWallet?.data?.balance,
-            balanceAfter: userWallet?.data?.balance - data.walletPaidAmount,
             status: 'successful',
             amount: data.walletPaidAmount,
             description: 'ثبت سفارش'
@@ -460,11 +458,6 @@ const update = async (req, res) => {
         orderId: id,
         type: 'deposit',
         change: 'increase',
-        balance: userWallet?.data?.balance,
-        balanceAfter:
-          userWallet?.data?.balance +
-          order?.walletPaidAmount +
-          order?.gatewayPaidAmount,
         status: 'successful',
         amount: order?.walletPaidAmount + order?.gatewayPaidAmount,
         description: 'بازگشت وجه به کیف پول بابت لغو سفارش'

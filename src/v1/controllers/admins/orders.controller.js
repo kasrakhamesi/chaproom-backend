@@ -376,11 +376,6 @@ const update = async (req, res) => {
           orderId: id,
           type: 'deposit',
           change: 'increase',
-          balance: userWallet?.data?.balance,
-          balanceAfter:
-            userWallet?.data?.balance +
-            order?.gatewayPaidAmount +
-            order?.walletPaidAmount,
           status: 'successful',
           amount: order?.gatewayPaidAmount + order?.walletPaidAmount,
           description: 'بازگشت وجه به کیف پول بابت لغو سفارش'
@@ -446,9 +441,6 @@ const update = async (req, res) => {
               userId: ownerOfDiscount?.id,
               type: 'marketing_discount',
               change: 'increase',
-              balance: ownerOfDiscountWallet?.data?.balance,
-              balanceAfter:
-                ownerOfDiscountWallet?.data?.balance + order?.discountBenefit,
               status: 'successful',
               amount: order?.discountBenefit,
               description: 'افزایش موجودی بابت بازاریابی کد تخفیف'
@@ -509,9 +501,6 @@ const update = async (req, res) => {
             userId: ownerOfReferral?.id,
             type: 'marketing_referral',
             change: 'increase',
-            balance: ownerOfReferralWallet?.data?.balance,
-            balanceAfter:
-              ownerOfReferralWallet?.data?.balance + order?.referralBenefit,
             status: 'successful',
             amount: order?.referralBenefit,
             description: 'افزایش موجودی بابت بازاریابی لینک'

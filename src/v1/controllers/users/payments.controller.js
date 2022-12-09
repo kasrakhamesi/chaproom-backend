@@ -78,8 +78,6 @@ const callback = async (req, res) => {
         paymentId: payment?.id,
         type: 'deposit',
         change: 'increase',
-        balance: userWallet?.data?.balance,
-        balanceAfter: userWallet?.data?.balance + payment?.amount,
         status: 'successful',
         amount: payment?.amount,
         description: order ? 'increase_for_order' : 'افزایش موجودی کیف پول'
@@ -95,7 +93,7 @@ const callback = async (req, res) => {
 
     await user.update(
       {
-        balance: user?.balance + payment?.amount,
+        balance: userWallet?.data?.balance + payment?.amount,
         incomingPayment: user?.incomingPayment + parseInt(payment?.amount),
         totalCreditor: user?.totalCreditor + payment?.amount
       },

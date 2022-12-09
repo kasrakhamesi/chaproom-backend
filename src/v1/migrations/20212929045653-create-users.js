@@ -34,7 +34,7 @@ module.exports = {
           allowNull: false
         },
         balance: {
-          type: Sequelize.BIGINT.UNSIGNED,
+          type: Sequelize.BIGINT,
           defaultValue: 0,
           allowNull: false
         },
