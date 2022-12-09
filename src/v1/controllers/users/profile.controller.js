@@ -83,7 +83,7 @@ const findOne = async (req, res) => {
       statusCode: 200,
       data: {
         ...user.dataValues,
-        walletBalance: Math.max(0, user?.balance - user?.marketingBalance),
+        walletBalance: user?.balance - user?.marketingBalance,
         avatar: null
       },
       error: null

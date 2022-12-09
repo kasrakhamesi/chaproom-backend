@@ -70,7 +70,7 @@ const findOne = async (req, res) => {
     } else {
       user = {
         ...user.dataValues,
-        walletBalance: Math.max(0, user?.balance - user?.marketingBalance)
+        walletBalance: user?.balance - user?.marketingBalance
       }
     }
 

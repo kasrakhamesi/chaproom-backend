@@ -149,7 +149,7 @@ const registerConfirm = async (req, res) => {
       statusCode: 200,
       data: {
         ...r?.dataValues,
-        walletBalance: Math.max(0, r?.balance - r?.marketingBalance),
+        walletBalance: r?.balance - r?.marketingBalance,
         avatar: null,
         token: {
           access: accessToken,
@@ -213,7 +213,7 @@ const login = async (req, res) => {
       statusCode: 200,
       data: {
         ...user?.dataValues,
-        walletBalance: Math.max(0, user?.balance - user?.marketingBalance),
+        walletBalance: user?.balance - user?.marketingBalance,
         avatar: null,
         token: {
           access: accessToken,

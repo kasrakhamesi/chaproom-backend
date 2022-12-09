@@ -31,7 +31,7 @@ const findAll = async (req, res) => {
       r.data.users = r?.data?.users.map((item) => {
         return {
           ...item.dataValues,
-          walletBalance: Math.max(0, item.balance - item.marketingBalance)
+          walletBalance: item.balance - item.marketingBalance
         }
       })
 
@@ -90,7 +90,7 @@ const findOne = (req, res) => {
           id: r.id,
           name: r.name,
           phoneNumber: r.phoneNumber,
-          walletBalance: Math.max(0, r?.balance - r?.marketingBalance)
+          walletBalance: r?.balance - r?.marketingBalance
         },
         error: null
       })
@@ -220,10 +220,7 @@ const update = async (req, res) => {
 
     data.balance = walletBalance + user?.marketingBalance
 
-    const currentWalletBalance = Math.max(
-      0,
-      user?.balance - user?.marketingBalance
-    )
+    const currentWalletBalance = user?.balance - user?.marketingBalance
 
     if (walletBalance && walletBalance !== currentWalletBalance) {
       await sequelize.models.transactions.create(
