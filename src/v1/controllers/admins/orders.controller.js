@@ -332,7 +332,7 @@ const findOne = (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const { status, postageMethod, trackingNumber, cancelReason } = req.body
+    const { status, trackingNumber, cancelReason } = req.body
 
     const data = {
       status,
