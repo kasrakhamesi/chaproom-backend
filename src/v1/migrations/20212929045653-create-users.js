@@ -63,6 +63,16 @@ module.exports = {
           defaultValue: 0,
           allowNull: false
         },
+        activeWithdrawalBalance: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
+        activeWithdrawalMarketingBalance: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
         createdAt: {
           allowNull: true,
           type: Sequelize.DATE

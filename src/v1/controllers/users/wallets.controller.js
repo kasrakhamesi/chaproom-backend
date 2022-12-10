@@ -43,6 +43,12 @@ const withdrawal = async (req, res) => {
       transaction: t
     })
 
+    const user = await sequelize.models.users.findOne({
+      where: {
+        id: userId
+      }
+    })
+
     await sequelize.models.transactions.create(
       {
         userId,
@@ -50,8 +56,18 @@ const withdrawal = async (req, res) => {
         type: 'withdrawal',
         change: 'decrease',
         status: 'pending',
-        amount: userWallet.data.balance,
+        amount: userWallet?.data?.balance,
         description: 'برداشت وجه'
+      },
+      { transaction: t }
+    )
+
+    await user.update(
+      {
+        marketingBalance: 0,
+        balance: 0,
+        activeWithdrawalBalance: user?.balance,
+        activeWithdrawalMarketingBalance: user?.marketingBalance
       },
       { transaction: t }
     )

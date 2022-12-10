@@ -68,7 +68,10 @@ const callback = async (req, res) => {
       )
     const userWallet = await users.getBalance(payment?.userId)
 
-    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
+    if (!userWallet?.isSuccess)
+      return res.redirect(
+        `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
+      )
 
     const t = await sequelize.transaction()
 

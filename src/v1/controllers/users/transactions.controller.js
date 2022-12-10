@@ -26,12 +26,7 @@ const findAll = async (req, res) => {
       where: newWhere,
       order: [['id', 'desc']],
       attributes: {
-        exclude: [
-          'userId',
-          'withdrawalId',
-          'adminId',
-          'paymentId'
-        ]
+        exclude: ['userId', 'withdrawalId', 'adminId', 'paymentId']
       },
       pagination: {
         active: true,
@@ -96,12 +91,7 @@ const findOne = (req, res) => {
         userId
       },
       attributes: {
-        exclude: [
-          'userId',
-          'withdrawalId',
-          'adminId',
-          'paymentId'
-        ]
+        exclude: ['userId', 'withdrawalId', 'adminId', 'paymentId']
       }
     })
     .then((r) => {

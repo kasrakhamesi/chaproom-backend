@@ -52,28 +52,6 @@ const findOne = async (req, res) => {
 
     if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
 
-    const withdrawal = await sequelize.models.withdrawals.findOne({
-      where: {
-        userId,
-        status: 'pending'
-      }
-    })
-
-    if (withdrawal) {
-      user = {
-        ...user.dataValues,
-        balance: 0,
-        marketingBalance: 0,
-        walletBalance: 0,
-        avatar: null
-      }
-    } else {
-      user = {
-        ...user.dataValues,
-        walletBalance: user?.balance - user?.marketingBalance
-      }
-    }
-
     const orders = await sequelize.models.orders.findAll({
       where: {
         userId,
@@ -116,10 +94,9 @@ const findOne = async (req, res) => {
 
     const print = _.isEmpty(promises[1]) ? null : promises[1]
 
-    const userData = _.isEmpty(user?.dataValues) ? user : user?.dataValues
-
     const r = {
-      ...userData,
+      ...user?.dataValues,
+      walletBalance: Math.abs(user?.balance - user?.marketingBalance),
       avatar: null,
       inProgressOrders: orders,
       tariffs: {
