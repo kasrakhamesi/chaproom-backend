@@ -96,7 +96,7 @@ const findOne = async (req, res) => {
 
     const r = {
       ...user?.dataValues,
-      walletBalance: Math.abs(user?.balance - user?.marketingBalance),
+      walletBalance: user?.balance - user?.marketingBalance,
       avatar: null,
       inProgressOrders: orders,
       tariffs: {
