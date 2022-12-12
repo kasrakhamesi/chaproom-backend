@@ -67,8 +67,7 @@ const findOne = async (req, res) => {
             updatedAt: { [Op.gt]: Date.now() - 1000 * 60 * 60 * 24 * 3 }
           }
         ]
-      },
-      attributes: ['id', 'status', 'amount', 'createdAt', 'updatedAt']
+      }
     })
 
     const promises = await Promise.all([
@@ -98,7 +97,15 @@ const findOne = async (req, res) => {
       ...user?.dataValues,
       walletBalance: user?.balance - user?.marketingBalance,
       avatar: null,
-      inProgressOrders: orders,
+      inProgressOrders: _.isEmpty(orders)
+        ? []
+        : orders.map((item) => {
+            return {
+              ...item.dataValues,
+              amount: item.walletPaidAmount + item.gatewayPaidAmount,
+              trackingUrl: null
+            }
+          }),
       tariffs: {
         binding,
         print

@@ -50,24 +50,24 @@ const priceCalculator = async (
     const printTariffs = await getPrintTariffs()
 
     const otherColor =
-      color === 'fullColor'
+      color === 'full_color' || color === 'normal_color'
         ? 'blackAndWhite'
-        : color === 'normalColor'
+        : color === 'blackAndWhite'
         ? 'fullColor'
         : 'fullColor'
 
     const tariff = printTariffs[size][utils.camelCase(color)]
     const otherTariff = printTariffs[size][utils.camelCase(otherColor)]
+
     let shipmentPrice = tariff[utils.camelCase(side)]
     let otherShipmentPrice = otherTariff[utils.camelCase(side)]
+
     for (let k = 0; k < tariff.breakpoints.length; k++)
       if (countOfPages >= tariff.breakpoints[k].at)
         shipmentPrice = tariff.breakpoints[k][utils.camelCase(side)]
 
     countOfCopies = countOfCopies === null ? 1 : countOfCopies
     let amount = shipmentPrice * countOfPages
-    amount = countOfCopies * amount
-
     let bindingValue = 0
     let bindingPrice = 0
     if (extractedBinding !== null) {
@@ -78,54 +78,42 @@ const priceCalculator = async (
         if (coverColor === 'black_and_white') {
           const newCountOfPages = countOfPages
           amount = shipmentPrice * newCountOfPages
-          amount = countOfCopies * amount
         } else {
           const newCountOfPages = parseInt(countOfPages - 1)
           amount = shipmentPrice * newCountOfPages
-          amount = countOfCopies * amount
           amount = amount + otherShipmentPrice
         }
       } else if (color === 'normal_color') {
         if (coverColor === 'black_and_white') {
           const newCountOfPages = parseInt(countOfPages - 1)
           amount = shipmentPrice * newCountOfPages
-          amount = countOfCopies * amount
           amount = amount + otherShipmentPrice
         } else {
           const newCountOfPages = countOfPages
           amount = shipmentPrice * newCountOfPages
-          amount = countOfCopies * amount
         }
       } else if (color === 'full_color') {
         if (coverColor === 'black_and_white') {
           const newCountOfPages = parseInt(countOfPages - 1)
           amount = shipmentPrice * newCountOfPages
-          amount = countOfCopies * amount
           amount = amount + otherShipmentPrice
         } else {
           const newCountOfPages = countOfPages
           amount = shipmentPrice * newCountOfPages
-          amount = countOfCopies * amount
         }
       }
-      console.log(filesManuallySent)
+
       if (method === 'each_file_separated') {
         if (filesManuallySent) {
           bindingValue += 1
-        } else
+        } else {
           for (const entity of filesInfo) {
-            console.log(entity)
             bindingValue +=
               parseInt(
                 entity.countOfPages / bindingBreakpoint[utils.camelCase(type)]
               ) + 1
           }
-
-        console.log(filesInfo)
-
-        console.log(bindingValue)
-
-        bindingValue = bindingValue * countOfUploadedFiles || 1
+        }
       } else if (method === 'all_files_together') {
         if (filesManuallySent) {
           bindingValue += 1
@@ -138,14 +126,14 @@ const priceCalculator = async (
         bindingValue += parseInt(countOfFiles)
       }
 
-      bindingValue = bindingValue * countOfCopies || 1
-
       const bindingTariffs = await getBindingPriceses()
 
       bindingPrice = bindingTariffs[utils.camelCase(type)][size]
 
       amount = amount + bindingValue * bindingPrice
     }
+
+    amount = amount * countOfCopies || 1
 
     return {
       amount,

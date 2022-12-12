@@ -94,7 +94,7 @@ const send = async ({
         },
         order: [['id', 'DESC']]
       })
-      if (!_.isEmpty(verify))
+      if (!_.isEmpty(verify) && !isAdmin)
         body.registerData = JSON.parse(verify?.registerData)
       else
         registerData && registerData !== null
