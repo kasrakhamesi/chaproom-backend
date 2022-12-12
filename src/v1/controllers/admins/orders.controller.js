@@ -130,7 +130,8 @@ const findAllByUserId = async (req, res) => {
           'referralId',
           'marketerBenefit',
           'referralBenefit',
-          'referralCommission'
+          'referralCommission',
+          'amount'
         ]
       },
       include: {
@@ -161,6 +162,7 @@ const findAllByUserId = async (req, res) => {
           : r?.data?.orders.map((item) => {
               return {
                 ...item.dataValues,
+                amount: item.walletPaidAmount + item.gatewayPaidAmount,
                 trackingUrl: null
               }
             })
