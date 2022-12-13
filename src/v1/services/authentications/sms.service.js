@@ -1,9 +1,9 @@
 const { sequelize } = require('../../models')
 const { uniqueGenerates, regex, utils } = require('../../libs')
-const _ = require('lodash')
-const Kavenegar = require('kavenegar')
 const { httpError, errorTypes } = require('../../configs')
 const { Op } = require('sequelize')
+const _ = require('lodash')
+const Kavenegar = require('kavenegar')
 require('dotenv').config()
 const api = Kavenegar.KavenegarApi({
   apikey: 'your apikey here'
@@ -16,7 +16,6 @@ const send = async ({
   isPasswordReset = false,
   registerData
 }) => {
-  console.log(registerData)
   try {
     if (!regex.iranPhone(phoneNumber))
       return httpError(errorTypes.INVALID_PHONE_FORMAT)
