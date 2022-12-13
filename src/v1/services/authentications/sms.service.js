@@ -38,7 +38,7 @@ const send = async ({
           }
 
     const verifyData = await sequelize.models.verifies.findOne({
-      where: where,
+      where,
       order: [['id', 'DESC']]
     })
 
@@ -94,11 +94,17 @@ const send = async ({
         },
         order: [['id', 'DESC']]
       })
-      if (!_.isEmpty(verify) && !isAdmin)
-        body.registerData = JSON.parse(verify?.registerData)
+      if (!_.isEmpty(verify) && isAdmin === false)
+        body.registerData =
+          process.env.RUN_ENVIRONMENT === 'local'
+            ? JSON.parse(verify?.registerData)
+            : verify?.registerData
       else
         registerData && registerData !== null
-          ? (body.registerData = JSON.stringify(registerData))
+          ? (body.registerData =
+              process.env.RUN_ENVIRONMENT === 'local'
+                ? JSON.stringify(registerData)
+                : registerData)
           : null
     }
 
@@ -182,7 +188,7 @@ const check = async ({
           registerData:
             process.env.RUN_ENVIRONMENT === 'local'
               ? JSON.parse(JSON.parse(verifyData?.registerData))
-              : JSON.parse(verifyData?.registerData),
+              : verifyData?.registerData,
           isSuccess: true,
           message: 'کد با موفقعیت تایید شد'
         }
