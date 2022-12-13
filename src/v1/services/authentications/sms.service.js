@@ -89,16 +89,17 @@ const send = async ({
       const verify = await sequelize.models.verifies.findOne({
         where: {
           phoneNumber,
+          used: false,
           registerData: { [Op.not]: null }
         },
         order: [['id', 'DESC']]
       })
-      if (!_.isEmpty(verify) && isAdmin === false)
+      if (!_.isEmpty(verify) && isAdmin === false) {
         body.registerData =
           process.env.RUN_ENVIRONMENT === 'local'
             ? JSON.parse(verify?.registerData)
             : verify?.registerData
-      else
+      } else
         registerData && registerData !== null
           ? (body.registerData =
               process.env.RUN_ENVIRONMENT === 'local'

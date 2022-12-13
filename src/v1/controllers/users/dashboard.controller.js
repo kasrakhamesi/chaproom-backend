@@ -65,6 +65,10 @@ const findOne = async (req, res) => {
           {
             status: 'sent',
             updatedAt: { [Op.gt]: Date.now() - 1000 * 60 * 60 * 24 * 3 }
+          },
+          {
+            status: 'canceled',
+            updatedAt: { [Op.gt]: Date.now() - 1000 * 60 * 60 * 24 * 3 }
           }
         ]
       }
