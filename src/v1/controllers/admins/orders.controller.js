@@ -549,7 +549,6 @@ const update = async (req, res) => {
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }
