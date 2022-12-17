@@ -71,7 +71,8 @@ const findOne = async (req, res) => {
             updatedAt: { [Op.gt]: Date.now() - 1000 * 60 * 60 * 24 * 3 }
           }
         ]
-      }
+      },
+      order: [['id', 'desc']]
     })
 
     const promises = await Promise.all([

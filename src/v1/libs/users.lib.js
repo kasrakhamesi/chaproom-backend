@@ -275,7 +275,15 @@ const getTransactionTypeAndAmount = async (transaction) => {
       amount = order?.gatewayPaidAmount + order?.walletPaidAmount
     }
 
-    return { type, amount }
+    if (transaction?.description === 'ثبت سفارش') type = 'بستانکار'
+
+    return {
+      type:
+        order?.status === 'canceled' && type !== 'بستانکار'
+          ? `بازگشت وجه به کیف پول \n ${type}`
+          : type,
+      amount
+    }
   } catch {
     return { type: transaction?.type, amount: transaction?.amount }
   }

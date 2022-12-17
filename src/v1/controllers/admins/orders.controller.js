@@ -334,12 +334,13 @@ const findOne = (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const { status, trackingNumber, cancelReason } = req.body
+    const { status, trackingCode, postageMethod, cancelReason } = req.body
 
     const data = {
       status,
-      trackingNumber,
-      cancelReason: cancelReason + 'بازگشت وجه به کیف پول '
+      trackingNumber: trackingCode,
+      cancelReason,
+      postageMethod
     }
 
     if (status !== 'preparing' && status !== 'sent' && status !== 'canceled')
@@ -406,8 +407,6 @@ const update = async (req, res) => {
         },
         { transaction: t }
       )
-
-      await order.update({ postageMethod: 'پست پیشتاز', transaction: t })
 
       if (order?.discountId && typeof order?.discountId === 'number') {
         const discount = await sequelize.models.discounts.findOne({
@@ -533,6 +532,18 @@ const update = async (req, res) => {
       }
     }
     await t.commit()
+
+    if (status === 'sent') {
+      const updatedOrder = await sequelize.models.orders.findOne({
+        where: {
+          id: order?.id
+        }
+      })
+
+      await order.update({
+        sentAt: updatedOrder?.updatedAt
+      })
+    }
 
     res
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
