@@ -54,14 +54,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('increase', 'decrease'),
         allowNull: false
       },
-      balance: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
-      },
-      balanceAfter: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
-      },
       amount: {
         type: DataTypes.BIGINT.UNSIGNED,
         allowNull: false

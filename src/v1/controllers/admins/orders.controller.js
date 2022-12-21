@@ -130,7 +130,8 @@ const findAllByUserId = async (req, res) => {
           'referralId',
           'marketerBenefit',
           'referralBenefit',
-          'referralCommission'
+          'referralCommission',
+          'amount'
         ]
       },
       include: {
@@ -161,6 +162,7 @@ const findAllByUserId = async (req, res) => {
           : r?.data?.orders.map((item) => {
               return {
                 ...item.dataValues,
+                amount: item.walletPaidAmount + item.gatewayPaidAmount,
                 trackingUrl: null
               }
             })
@@ -332,13 +334,13 @@ const findOne = (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params
-    const { status, postageMethod, trackingNumber, cancelReason } = req.body
+    const { status, trackingCode, postageMethod, cancelReason } = req.body
 
     const data = {
       status,
-      trackingNumber,
+      trackingNumber: trackingCode,
       cancelReason,
-      postageMethod: 'پست پیشتاز'
+      postageMethod
     }
 
     if (status !== 'preparing' && status !== 'sent' && status !== 'canceled')
@@ -376,11 +378,6 @@ const update = async (req, res) => {
           orderId: id,
           type: 'deposit',
           change: 'increase',
-          balance: userWallet?.data?.balance,
-          balanceAfter:
-            userWallet?.data?.balance +
-            order?.gatewayPaidAmount +
-            order?.walletPaidAmount,
           status: 'successful',
           amount: order?.gatewayPaidAmount + order?.walletPaidAmount,
           description: 'بازگشت وجه به کیف پول بابت لغو سفارش'
@@ -446,9 +443,6 @@ const update = async (req, res) => {
               userId: ownerOfDiscount?.id,
               type: 'marketing_discount',
               change: 'increase',
-              balance: ownerOfDiscountWallet?.data?.balance,
-              balanceAfter:
-                ownerOfDiscountWallet?.data?.balance + order?.discountBenefit,
               status: 'successful',
               amount: order?.discountBenefit,
               description: 'افزایش موجودی بابت بازاریابی کد تخفیف'
@@ -474,6 +468,16 @@ const update = async (req, res) => {
             { transaction: t }
           )
         }
+        const findCurrentOrder = await sequelize.models.orders.findOne({
+          where: {
+            id
+          }
+        })
+
+        await findCurrentOrder.update(
+          { sentAt: findCurrentOrder?.updatedAt },
+          { transaction: t }
+        )
       }
 
       if (order?.referralId && typeof order?.referralId === 'number') {
@@ -509,9 +513,6 @@ const update = async (req, res) => {
             userId: ownerOfReferral?.id,
             type: 'marketing_referral',
             change: 'increase',
-            balance: ownerOfReferralWallet?.data?.balance,
-            balanceAfter:
-              ownerOfReferralWallet?.data?.balance + order?.referralBenefit,
             status: 'successful',
             amount: order?.referralBenefit,
             description: 'افزایش موجودی بابت بازاریابی لینک'
@@ -532,19 +533,22 @@ const update = async (req, res) => {
     }
     await t.commit()
 
-    const findCurrentOrder = await sequelize.models.orders.findOne({
-      where: {
-        id
-      }
-    })
+    if (status === 'sent') {
+      const updatedOrder = await sequelize.models.orders.findOne({
+        where: {
+          id: order?.id
+        }
+      })
 
-    await findCurrentOrder.update({ sentAt: findCurrentOrder?.updatedAt })
+      await order.update({
+        sentAt: updatedOrder?.updatedAt
+      })
+    }
 
     res
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
       .send(messageTypes.SUCCESSFUL_UPDATE)
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }

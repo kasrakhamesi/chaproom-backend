@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       balance: {
-        type: DataTypes.BIGINT.UNSIGNED,
+        type: DataTypes.BIGINT,
         defaultValue: 0,
         allowNull: false
       },
@@ -53,6 +53,16 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       incomingPayment: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
+      },
+      activeWithdrawalBalance: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+        allowNull: false
+      },
+      activeWithdrawalMarketingBalance: {
         type: DataTypes.BIGINT.UNSIGNED,
         defaultValue: 0,
         allowNull: false

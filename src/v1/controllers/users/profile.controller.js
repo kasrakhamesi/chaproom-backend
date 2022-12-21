@@ -58,32 +58,11 @@ const findOne = async (req, res) => {
       }
     })
 
-    const withdrawal = await sequelize.models.withdrawals.findOne({
-      where: {
-        userId,
-        status: 'pending'
-      }
-    })
-
-    if (withdrawal) {
-      return res.status(200).send({
-        statusCode: 200,
-        data: {
-          ...user.dataValues,
-          balance: 0,
-          marketingBalance: 0,
-          walletBalance: 0,
-          avatar: null
-        },
-        error: null
-      })
-    }
-
     return res.status(200).send({
       statusCode: 200,
       data: {
         ...user.dataValues,
-        walletBalance: Math.max(0, user?.balance - user?.marketingBalance),
+        walletBalance: user?.balance - user?.marketingBalance,
         avatar: null
       },
       error: null

@@ -34,7 +34,7 @@ module.exports = {
           allowNull: false
         },
         balance: {
-          type: Sequelize.BIGINT.UNSIGNED,
+          type: Sequelize.BIGINT,
           defaultValue: 0,
           allowNull: false
         },
@@ -59,6 +59,16 @@ module.exports = {
           allowNull: false
         },
         totalCreditor: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
+        activeWithdrawalBalance: {
+          type: Sequelize.BIGINT.UNSIGNED,
+          defaultValue: 0,
+          allowNull: false
+        },
+        activeWithdrawalMarketingBalance: {
           type: Sequelize.BIGINT.UNSIGNED,
           defaultValue: 0,
           allowNull: false

@@ -159,8 +159,6 @@ const update = (req, res) => {
     filesManuallySent
   } = req.body
 
-  if (files.length === 0) return httpError(errorTypes.MISSING_FILE, res)
-
   const extractedBinding = folders.extractBinding(binding)
 
   const data = {

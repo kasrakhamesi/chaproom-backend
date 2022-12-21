@@ -63,14 +63,6 @@ module.exports = {
           type: Sequelize.ENUM('increase', 'decrease'),
           allowNull: false
         },
-        balance: {
-          type: Sequelize.BIGINT.UNSIGNED,
-          allowNull: false
-        },
-        balanceAfter: {
-          type: Sequelize.BIGINT.UNSIGNED,
-          allowNull: false
-        },
         amount: {
           type: Sequelize.BIGINT.UNSIGNED,
           allowNull: false
