@@ -112,28 +112,24 @@ const update = async (req, res) => {
       { transaction: t }
     )
 
-    if (status === 'done')
+    if (status === 'done') {
       await user.update(
         {
-          balance: Math.abs(user?.balance - user?.activeWithdrawalBalance),
-          marketingBalance: Math.abs(
-            user?.marketingBalance - user?.activeWithdrawalMarketingBalance
-          ),
-
           activeWithdrawalBalance: 0,
           activeWithdrawalMarketingBalance: 0,
           totalDebtor: user?.totalDebtor + user?.balance
         },
         { transaction: t }
       )
-    else {
+    } else {
       const userWallet = await users.getBalance(withdrawal?.userId)
 
       if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
       await user.update(
         {
           balance: userWallet?.data?.balance + user?.activeWithdrawalBalance,
-          marketingBalance: user?.activeWithdrawalMarketingBalance,
+          marketingBalance:
+            user?.activeWithdrawalMarketingBalance + user?.marketingBalance,
           activeWithdrawalBalance: 0,
           activeWithdrawalMarketingBalance: 0
         },

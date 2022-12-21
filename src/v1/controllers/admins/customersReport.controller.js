@@ -53,7 +53,12 @@ const reportStructure = async (users, allUsers) => {
       : await sequelize.models.orders.count({
           where: {
             [Op.and]: usersId,
-            status: { [Op.not]: 'payment_pending' }
+            [Op.or]: [
+              {
+                status: 'preparing'
+              },
+              { status: 'sent' }
+            ]
           }
         })
 
@@ -89,7 +94,12 @@ const reportStructure = async (users, allUsers) => {
         const countOfOrders = await sequelize.models.orders.count({
           where: {
             userId: user?.id,
-            status: { [Op.not]: 'payment_pending' }
+            [Op.or]: [
+              {
+                status: 'preparing'
+              },
+              { status: 'sent' }
+            ]
           }
         })
 
@@ -105,7 +115,12 @@ const reportStructure = async (users, allUsers) => {
           limit: 1,
           where: {
             userId: user?.id,
-            status: { [Op.not]: 'payment_pending' }
+            [Op.or]: [
+              {
+                status: 'preparing'
+              },
+              { status: 'sent' }
+            ]
           },
           order: [['createdAt', 'ASC']]
         })
@@ -114,7 +129,12 @@ const reportStructure = async (users, allUsers) => {
           limit: 1,
           where: {
             userId: user?.id,
-            status: { [Op.not]: 'payment_pending' }
+            [Op.or]: [
+              {
+                status: 'preparing'
+              },
+              { status: 'sent' }
+            ]
           },
           order: [['createdAt', 'DESC']]
         })
@@ -229,7 +249,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 0 },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: 0 },
+          ...where
+        },
         order: [['id', 'desc']],
         pagination: {
           active: paginateActive,
@@ -247,7 +271,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 0 },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: 0 },
+          ...where
+        },
         order: [['id', 'desc']]
       })
 
@@ -275,7 +303,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 1 },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: 1 },
+          ...where
+        },
         order: [['id', 'desc']],
         pagination: {
           active: paginateActive,
@@ -293,7 +325,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 1 },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: 1 },
+          ...where
+        },
         order: [['id', 'desc']]
       })
 
@@ -321,7 +357,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 2 },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: 2 },
+          ...where
+        },
         order: [['id', 'desc']],
         pagination: {
           active: paginateActive,
@@ -339,7 +379,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where, [Op.and]: inputUsersId, countOfOrders: 2 },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: 2 },
+          ...where
+        },
         order: [['id', 'desc']]
       })
 
@@ -368,9 +412,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
           [Op.and]: inputUsersId,
-          countOfOrders: { [Op.gte]: 3 }
+          [Op.and]: { countOfOrders: { [Op.gte]: 3 } },
+          ...where
         },
         order: [['id', 'desc']],
         pagination: {
@@ -390,9 +434,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
           [Op.and]: inputUsersId,
-          countOfOrders: { [Op.gte]: 3 }
+          [Op.and]: { countOfOrders: { [Op.gte]: 3 } },
+          ...where
         },
         order: [['id', 'desc']]
       })
@@ -422,8 +466,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['countOfOrders', 'desc']],
         pagination: {
@@ -443,8 +488,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['countOfOrders', 'desc']]
       })
@@ -474,8 +520,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['countOfOrders', 'asc']],
         pagination: {
@@ -495,8 +542,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['countOfOrders', 'asc']]
       })
@@ -525,7 +573,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
+        },
         order: [['balance', 'desc']],
         pagination: {
           active: paginateActive,
@@ -544,8 +596,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['balance', 'asc']]
       })
@@ -574,7 +627,11 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'marketingBalance',
           'createdAt'
         ],
-        where: { ...where },
+        where: {
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
+        },
         order: [['balance', 'asc']],
         pagination: {
           active: paginateActive,
@@ -593,8 +650,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['balance', 'asc']]
       })
@@ -624,8 +682,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['incomingPayment', 'desc']],
         pagination: {
@@ -645,8 +704,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['incomingPayment', 'desc']]
       })
@@ -676,8 +736,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['incomingPayment', 'asc']],
         pagination: {
@@ -697,8 +758,9 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
           'createdAt'
         ],
         where: {
-          ...where,
-          [Op.and]: inputUsersId
+          [Op.and]: inputUsersId,
+          [Op.and]: { countOfOrders: { [Op.gte]: 0 } },
+          ...where
         },
         order: [['incomingPayment', 'asc']]
       })

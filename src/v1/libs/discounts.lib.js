@@ -42,6 +42,7 @@ const check = async (discountCode, userId, folders) => {
       return httpError(errorTypes.DISCOUNT_CODE_USAGE_LIMIT)
 
     for (const folder of folders) {
+      if (discount?.type === 'percentage' || discount?.type === 'fixed') break
       if (discount?.type === 'page') break
       if (
         folder?.color === 'black_and_white' &&

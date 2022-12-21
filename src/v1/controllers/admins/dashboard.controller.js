@@ -464,10 +464,10 @@ const findUserOrder = async (req, res) => {
     })
 
     for (const entity in ordersCount) {
-      if (ordersCount[entity] >= 1) {
+      if (ordersCount[entity] === 1) {
         totalUsersWithOneOrder++
         if (orders === 'one') ordersData.push({ id: entity })
-      } else if (ordersCount[entity] >= 2) {
+      } else if (ordersCount[entity] === 2) {
         totalUsersWithTwoOrder++
         if (orders === 'two') ordersData.push({ id: entity })
       } else if (ordersCount[entity] >= 3) {
@@ -647,10 +647,10 @@ const getUsersOrders = async () => {
     })
 
     for (const entity in ordersCount) {
-      if (ordersCount[entity] >= 1) {
+      if (ordersCount[entity] === 1) {
         totalUsersWithOneOrder++
         if (orders === 'one') ordersData.push({ id: entity })
-      } else if (ordersCount[entity] >= 2) {
+      } else if (ordersCount[entity] === 2) {
         totalUsersWithTwoOrder++
         if (orders === 'two') ordersData.push({ id: entity })
       } else if (ordersCount[entity] >= 3) {

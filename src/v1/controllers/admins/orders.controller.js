@@ -18,18 +18,11 @@ const globalFindAll = async (req, res) => {
     )
       where.push({ id: { [Op.like]: `${search}%` } })
     else
-      where.push(
-        {
-          '$user.name$': {
-            [Op.like]: `%${search}%`
-          }
-        },
-        {
-          '$user.phoneNumber$': {
-            [Op.like]: `%${search}%`
-          }
+      where.push({
+        $recipientName$: {
+          [Op.like]: `%${search}%`
         }
-      )
+      })
 
     const newWhere = {
       [Op.or]: where,
@@ -88,6 +81,7 @@ const globalFindAll = async (req, res) => {
       error: null
     })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }
