@@ -12,7 +12,11 @@ const check = async (discountCode, userId, folders) => {
     })
 
     if (typeof userId === 'number') {
-      if (discount?.userId !== userId && !discount?.userMarketing)
+      if (
+        discount?.userId !== null &&
+        discount?.userId !== userId &&
+        !discount?.userMarketing
+      )
         return httpError(errorTypes.DISCOUNT_CODE_NOT_FOR_YOU)
       else if (discount?.userId === userId && discount?.userMarketing)
         return httpError(errorTypes.MARKETING_DISCOUNT_CODE_NOT_FOR_YOU)
@@ -74,7 +78,7 @@ const check = async (discountCode, userId, folders) => {
 const calculator = (discountData, price, folders) => {
   const { type, value } = discountData
   if (type === 'percentage') {
-    const payableAmount = parseFloat((price * parseInt(value)) / 100)
+    const payableAmount = parseInt((price * parseInt(value)) / 100)
     return payableAmount
   } else if (type === 'fixed') {
     const payableAmount = value //parseFloat(price - value)
