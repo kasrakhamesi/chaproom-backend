@@ -15,7 +15,7 @@ module.exports = {
     const data = JSON.stringify({
       blackAndWhite: {
         singleSided: 480,
-        doubleSided: 520,
+        doubleSided: 620,
         singleSidedGlossy: 0,
         doubleSidedGlossy: 0,
         breakpoints: [
@@ -36,44 +36,44 @@ module.exports = {
         ]
       },
       normalColor: {
-        singleSided: 580,
+        singleSided: 480,
         doubleSided: 620,
         singleSidedGlossy: 0,
         doubleSidedGlossy: 0,
         breakpoints: [
           {
             at: 501,
-            singleSided: 760,
-            doubleSided: 880,
+            singleSided: 460,
+            doubleSided: 580,
             singleSidedGlossy: 0,
             doubleSidedGlossy: 0
           },
           {
             at: 1001,
-            singleSided: 930,
-            doubleSided: 1060,
+            singleSided: 430,
+            doubleSided: 560,
             singleSidedGlossy: 0,
             doubleSidedGlossy: 0
           }
         ]
       },
       fullColor: {
-        singleSided: 1180,
-        doubleSided: 1220,
+        singleSided: 480,
+        doubleSided: 620,
         singleSidedGlossy: 0,
         doubleSidedGlossy: 0,
         breakpoints: [
           {
             at: 501,
-            singleSided: 1360,
-            doubleSided: 1480,
+            singleSided: 460,
+            doubleSided: 580,
             singleSidedGlossy: 0,
             doubleSidedGlossy: 0
           },
           {
             at: 1001,
-            singleSided: 1530,
-            doubleSided: 1660,
+            singleSided: 430,
+            doubleSided: 560,
             singleSidedGlossy: 0,
             doubleSidedGlossy: 0
           }

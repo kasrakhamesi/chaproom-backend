@@ -1,9 +1,9 @@
 const { sequelize } = require('../../models')
 const { uniqueGenerates, regex, utils } = require('../../libs')
-const { httpError, errorTypes } = require('../../configs')
-const { Op } = require('sequelize')
 const _ = require('lodash')
 const Kavenegar = require('kavenegar')
+const { httpError, errorTypes } = require('../../configs')
+const { Op } = require('sequelize')
 require('dotenv').config()
 const api = Kavenegar.KavenegarApi({
   apikey: 'your apikey here'
@@ -16,6 +16,7 @@ const send = async ({
   isPasswordReset = false,
   registerData
 }) => {
+  console.log(registerData)
   try {
     if (!regex.iranPhone(phoneNumber))
       return httpError(errorTypes.INVALID_PHONE_FORMAT)
@@ -37,7 +38,7 @@ const send = async ({
           }
 
     const verifyData = await sequelize.models.verifies.findOne({
-      where,
+      where: where,
       order: [['id', 'DESC']]
     })
 
@@ -89,26 +90,17 @@ const send = async ({
       const verify = await sequelize.models.verifies.findOne({
         where: {
           phoneNumber,
-          used: false,
           registerData: { [Op.not]: null }
         },
         order: [['id', 'DESC']]
       })
-      if (!_.isEmpty(verify) && isAdmin === false) {
-        body.registerData =
-          process.env.RUN_ENVIRONMENT === 'local'
-            ? JSON.parse(verify?.registerData)
-            : verify?.registerData
-      } else
+      if (!_.isEmpty(verify))
+        body.registerData = JSON.parse(verify?.registerData)
+      else
         registerData && registerData !== null
-          ? (body.registerData =
-              process.env.RUN_ENVIRONMENT === 'local'
-                ? JSON.stringify(registerData)
-                : registerData)
+          ? (body.registerData = JSON.stringify(registerData))
           : null
     }
-
-    console.log(body)
 
     const resCreateCode = await sequelize.models.verifies.create(body)
 
@@ -188,7 +180,7 @@ const check = async ({
           registerData:
             process.env.RUN_ENVIRONMENT === 'local'
               ? JSON.parse(JSON.parse(verifyData?.registerData))
-              : verifyData?.registerData,
+              : JSON.parse(verifyData?.registerData),
           isSuccess: true,
           message: 'کد با موفقعیت تایید شد'
         }

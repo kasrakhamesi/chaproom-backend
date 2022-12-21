@@ -31,7 +31,7 @@ const findAll = async (req, res) => {
       r.data.users = r?.data?.users.map((item) => {
         return {
           ...item.dataValues,
-          walletBalance: item.balance - item.marketingBalance
+          walletBalance: Math.max(0, item.balance - item.marketingBalance)
         }
       })
 
@@ -90,7 +90,7 @@ const findOne = (req, res) => {
           id: r.id,
           name: r.name,
           phoneNumber: r.phoneNumber,
-          walletBalance: r?.balance - r?.marketingBalance
+          walletBalance: Math.max(0, r?.balance - r?.marketingBalance)
         },
         error: null
       })
@@ -165,6 +165,8 @@ const create = async (req, res) => {
           adminId: req?.user[0]?.id,
           type: 'deposit',
           change: 'increase',
+          balance: 0,
+          balanceAfter: walletBalance,
           status: 'successful',
           amount: walletBalance,
           description: 'افزایش موجودی کیف پول توسط ادمین'
@@ -220,7 +222,10 @@ const update = async (req, res) => {
 
     data.balance = walletBalance + user?.marketingBalance
 
-    const currentWalletBalance = user?.balance - user?.marketingBalance
+    const currentWalletBalance = Math.max(
+      0,
+      user?.balance - user?.marketingBalance
+    )
 
     if (walletBalance && walletBalance !== currentWalletBalance) {
       await sequelize.models.transactions.create(
@@ -230,6 +235,8 @@ const update = async (req, res) => {
           type: walletBalance > currentWalletBalance ? 'deposit' : 'withdrawal',
           change:
             walletBalance > currentWalletBalance ? 'increase' : 'decrease',
+          balance: user?.balance,
+          balanceAfter: walletBalance + user?.marketingBalance,
           status: 'successful',
           amount: Math.abs(walletBalance - currentWalletBalance),
           description:

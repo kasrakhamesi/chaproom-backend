@@ -228,10 +228,6 @@ const Types = {
   USER_USED_DISCOUNT_CODE: {
     statusCode: 400,
     message: 'شما این کد تخفیف را یکبار مصرف کرده اید'
-  },
-  DISCOUNT_CODE_IS_NOT_ACTIVE_FOR_YOUR_FOLDER_PRINT_COLOR: {
-    statusCode: 400,
-    message: 'کد تخفیف ساخته شده برای رنگ پرینت شما فعال نمیباشد'
   }
 }
 

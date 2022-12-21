@@ -99,15 +99,14 @@ const create = async (req, res) => {
     }
 
     let discount = null
-    if (discountCode)
-      discount = await discounts.check(discountCode, userId, folders)
+    if (discountCode) discount = await discounts.check(discountCode, userId)
 
     if (discount !== null && discount?.statusCode !== 200)
       return httpError(discount, res)
 
     const discountAmount =
       discount !== null
-        ? await discounts.calculator(discount?.data, totalPrice, folders)
+        ? await discounts.calculator(discount?.data, totalPrice)
         : 0
 
     if (discountAmount !== 0) {
@@ -181,6 +180,8 @@ const create = async (req, res) => {
             orderId: r?.id,
             type: 'order',
             change: 'decrease',
+            balance: userWallet?.data?.balance,
+            balanceAfter: userWallet?.data?.balance - data.walletPaidAmount,
             status: 'successful',
             amount: data.walletPaidAmount,
             description: 'ثبت سفارش'
@@ -238,18 +239,17 @@ const priceCalculator = async (req, res) => {
     let discount = null
     if (discountCode === '')
       return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND, res)
+    if (discountCode) discount = await discounts.check(discountCode, userId)
+    if (discount !== null && discount?.statusCode !== 200)
+      return httpError(discount, res)
 
     const folders = await sequelize.models.folders.findAll({
       where: {
         userId,
         used: false
-      }
+      },
+      attributes: ['id', 'amount']
     })
-
-    if (discountCode)
-      discount = await discounts.check(discountCode, userId, folders)
-    if (discount !== null && discount?.statusCode !== 200)
-      return httpError(discount, res)
 
     const amounts = []
     let amount = 0
@@ -265,7 +265,7 @@ const priceCalculator = async (req, res) => {
     const data = {
       discountAmount:
         discount !== null
-          ? await discounts.calculator(discount?.data, amount, folders)
+          ? await discounts.calculator(discount?.data, amount)
           : null,
       userBalance: userWallet?.data?.balance,
       foldersAmount: amounts,
@@ -460,6 +460,11 @@ const update = async (req, res) => {
         orderId: id,
         type: 'deposit',
         change: 'increase',
+        balance: userWallet?.data?.balance,
+        balanceAfter:
+          userWallet?.data?.balance +
+          order?.walletPaidAmount +
+          order?.gatewayPaidAmount,
         status: 'successful',
         amount: order?.walletPaidAmount + order?.gatewayPaidAmount,
         description: 'بازگشت وجه به کیف پول بابت لغو سفارش'

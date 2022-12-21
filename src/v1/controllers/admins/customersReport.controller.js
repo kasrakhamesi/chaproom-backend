@@ -158,7 +158,7 @@ const reportStructure = async (users, allUsers) => {
       for (const entity of data) {
         newData.push({
           ...entity,
-          walletBalance: entity.balance - entity.marketingBalance
+          walletBalance: Math.max(0, entity.balance - entity.marketingBalance)
         })
       }
     }
@@ -257,7 +257,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -303,7 +303,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -349,7 +349,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -403,7 +403,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -455,7 +455,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -507,7 +507,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -556,7 +556,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -605,7 +605,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -657,7 +657,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -709,7 +709,7 @@ const createSortOrder = async (query, inputUsersId, paginateActive = true) => {
         r.data.users = r?.data?.users.map((item) => {
           return {
             ...item.dataValues,
-            walletBalance: item.balance - item.marketingBalance
+            walletBalance: Math.max(0, item.balance - item.marketingBalance)
           }
         })
 
@@ -775,7 +775,7 @@ const createExcel = (req, res) => {
             createdAt: _.isEmpty(entity.createdAt)
               ? 'ندارد'
               : new utils.PersianDate(entity.createdAt).getPartsWithBackSlash(),
-            walletBalance: entity?.walletBalance,
+            walletBalance: Math.max(0, entity?.walletBalance),
             countOfOrders: entity?.countOfOrders,
             totalPaidAmount: entity?.totalPaidAmount,
             firstOrderAt: _.isEmpty(entity.firstOrderAt)

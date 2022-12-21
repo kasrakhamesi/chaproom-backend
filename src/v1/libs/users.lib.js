@@ -191,6 +191,8 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
         orderId: order?.id,
         type: 'order',
         change: 'decrease',
+        balance: userWallet?.data?.balance,
+        balanceAfter: userWallet?.data?.balance - paymentAmount,
         status: 'successful',
         amount: paymentAmount,
         description: 'ثبت سفارش'
@@ -208,7 +210,7 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
     )
 
     await user.update(
-      { balance: userWallet?.data?.balance - paymentAmount },
+      { balance: user?.balance - paymentAmount },
       { transaction: t }
     )
 
@@ -275,15 +277,7 @@ const getTransactionTypeAndAmount = async (transaction) => {
       amount = order?.gatewayPaidAmount + order?.walletPaidAmount
     }
 
-    if (transaction?.description === 'ثبت سفارش') type = 'بستانکار'
-
-    return {
-      type:
-        order?.status === 'canceled' && type !== 'بستانکار'
-          ? `بازگشت وجه به کیف پول \n ${type}`
-          : type,
-      amount
-    }
+    return { type, amount }
   } catch {
     return { type: transaction?.type, amount: transaction?.amount }
   }

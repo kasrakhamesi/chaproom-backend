@@ -52,6 +52,28 @@ const findOne = async (req, res) => {
 
     if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
 
+    const withdrawal = await sequelize.models.withdrawals.findOne({
+      where: {
+        userId,
+        status: 'pending'
+      }
+    })
+
+    if (withdrawal) {
+      user = {
+        ...user.dataValues,
+        balance: 0,
+        marketingBalance: 0,
+        walletBalance: 0,
+        avatar: null
+      }
+    } else {
+      user = {
+        ...user.dataValues,
+        walletBalance: Math.max(0, user?.balance - user?.marketingBalance)
+      }
+    }
+
     const orders = await sequelize.models.orders.findAll({
       where: {
         userId,
@@ -65,14 +87,10 @@ const findOne = async (req, res) => {
           {
             status: 'sent',
             updatedAt: { [Op.gt]: Date.now() - 1000 * 60 * 60 * 24 * 3 }
-          },
-          {
-            status: 'canceled',
-            updatedAt: { [Op.gt]: Date.now() - 1000 * 60 * 60 * 24 * 3 }
           }
         ]
       },
-      order: [['id', 'desc']]
+      attributes: ['id', 'status', 'amount', 'createdAt', 'updatedAt']
     })
 
     const promises = await Promise.all([
@@ -98,19 +116,12 @@ const findOne = async (req, res) => {
 
     const print = _.isEmpty(promises[1]) ? null : promises[1]
 
+    const userData = _.isEmpty(user?.dataValues) ? user : user?.dataValues
+
     const r = {
-      ...user?.dataValues,
-      walletBalance: user?.balance - user?.marketingBalance,
+      ...userData,
       avatar: null,
-      inProgressOrders: _.isEmpty(orders)
-        ? []
-        : orders.map((item) => {
-            return {
-              ...item.dataValues,
-              amount: item.walletPaidAmount + item.gatewayPaidAmount,
-              trackingUrl: null
-            }
-          }),
+      inProgressOrders: orders,
       tariffs: {
         binding,
         print
@@ -123,6 +134,7 @@ const findOne = async (req, res) => {
       error: null
     })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

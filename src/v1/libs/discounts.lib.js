@@ -3,7 +3,7 @@ const { httpError, errorTypes } = require('../configs')
 const { sequelize } = require('../models')
 const _ = require('lodash')
 
-const check = async (discountCode, userId, folders) => {
+const check = async (discountCode, userId) => {
   try {
     const discount = await sequelize.models.discounts.findOne({
       where: {
@@ -41,25 +41,6 @@ const check = async (discountCode, userId, folders) => {
     if (parseInt(discount?.timesUsed) >= parseInt(discount?.usageLimit))
       return httpError(errorTypes.DISCOUNT_CODE_USAGE_LIMIT)
 
-    for (const folder of folders) {
-      if (discount?.type === 'page') break
-      if (
-        folder?.color === 'black_and_white' &&
-        discount?.type === 'pageBlackAndWhite'
-      )
-        break
-      if (
-        folder?.color === 'normal_color' &&
-        discount?.type === 'pageNormalColor'
-      )
-        break
-      if (folder?.color === 'full_color' && discount?.type === 'pageFullColor')
-        break
-      return httpError(
-        errorTypes.DISCOUNT_CODE_IS_NOT_ACTIVE_FOR_YOUR_FOLDER_PRINT_COLOR
-      )
-    }
-
     return {
       statusCode: 200,
       data: discount,
@@ -70,7 +51,7 @@ const check = async (discountCode, userId, folders) => {
   }
 }
 
-const calculator = (discountData, price, folders) => {
+const calculator = (discountData, price) => {
   const { type, value } = discountData
   if (type === 'percentage') {
     const payableAmount = parseFloat((price * parseInt(value)) / 100)
@@ -79,55 +60,10 @@ const calculator = (discountData, price, folders) => {
     const payableAmount = value //parseFloat(price - value)
     return payableAmount
   } else if (type === 'page') {
-    if (folders?.length > 0) return value * folders[0]?.shipmentPrice
-    return price
-  } else if (type === 'pageBlackAndWhite') {
-    let countOfAllPages = 0
-    let haveBlackAndWhite = false
-    let shipmentPrice = 0
-    for (const folder of folders) {
-      if (folder?.color === 'black_and_white') {
-        countOfAllPages += folder?.countOfPages
-        haveBlackAndWhite = true
-        shipmentPrice = folder?.shipmentPrice
-      }
-    }
-    if (haveBlackAndWhite) {
-      if (countOfAllPages >= value) return value * shipmentPrice
-      return countOfAllPages * shipmentPrice
-    }
-  } else if (type === 'pageNormalColor') {
-    let countOfAllPages = 0
-    let haveNormalColor = false
-    let shipmentPrice = 0
-    for (const folder of folders) {
-      if (folder?.color === 'normal_color') {
-        countOfAllPages += folder?.countOfPages
-        haveNormalColor = true
-        shipmentPrice = folder?.shipmentPrice
-      }
-    }
-    if (haveNormalColor) {
-      if (countOfAllPages >= value) return value * shipmentPrice
-      return countOfAllPages * shipmentPrice
-    }
-  } else if (type === 'pageFullColor') {
-    let countOfAllPages = 0
-    let haveFullColor = false
-    let shipmentPrice = 0
-    for (const folder of folders) {
-      if (folder?.color === 'full_color') {
-        countOfAllPages += folder?.countOfPages
-        haveFullColor = true
-        shipmentPrice = folder?.shipmentPrice
-      }
-    }
-    if (haveFullColor) {
-      if (countOfAllPages >= value) return value * shipmentPrice
-      return countOfAllPages * shipmentPrice
-    }
+    const payableAmount = value //parseFloat(price - value)
+    return payableAmount
   }
-  return null
+  return price
 }
 
 module.exports = { check, calculator }

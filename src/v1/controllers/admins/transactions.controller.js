@@ -33,16 +33,14 @@ const findAll = async (req, res) => {
     else
       newWhere = {
         ...where,
-        description: { [Op.not]: 'increase_for_order' },
-        status: { [Op.not]: 'pending' }
+        description: { [Op.not]: 'increase_for_order' }
       }
 
     if (_.isEmpty(newWhere))
       newWhere = [
         { [Op.and]: timeWhere },
         { [Op.and]: where || [] },
-        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } },
-        { [Op.and]: { status: { [Op.not]: 'pending' } } }
+        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } }
       ]
 
     const r = await transactions.Get({
@@ -57,7 +55,14 @@ const findAll = async (req, res) => {
         }
       ],
       attributes: {
-        exclude: ['userId', 'withdrawalId', 'adminId', 'paymentId']
+        exclude: [
+          'userId',
+          'withdrawalId',
+          'adminId',
+          'paymentId',
+          'balance',
+          'balanceAfter'
+        ]
       },
       where: newWhere,
       order: [['id', 'desc']],
@@ -103,6 +108,7 @@ const findAll = async (req, res) => {
       error: null
     })
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }
@@ -122,7 +128,15 @@ const findOne = async (req, res) => {
         }
       ],
       attributes: {
-        exclude: ['userId', 'withdrawalId', 'adminId', 'paymentId', 'type']
+        exclude: [
+          'userId',
+          'withdrawalId',
+          'adminId',
+          'paymentId',
+          'balance',
+          'balanceAfter',
+          'type'
+        ]
       },
       where: {
         id,
@@ -171,43 +185,76 @@ const update = async (req, res) => {
       where: { id, adminId: { [Op.not]: null } }
     })
 
-    const previousUserId = transaction?.userId
-
     if (!transaction)
       return httpError(errorTypes.TRANSACTION_NOT_CREATED_BY_ADMIN, res)
-
-    await transaction.update({
-      adminId,
-      userId,
-      type: 'admin',
-      change,
-      status: 'successful',
-      amount,
-      description
-    })
-
-    if (userId !== transaction?.userId) {
-      const previusUserWallet = await users.getBalance(previousUserId)
-
-      if (!previusUserWallet?.isSuccess)
-        return httpError(previusUserWallet?.message, res)
-
-      const previousUser = await sequelize.models.users.findOne({
-        where: { id: previousUserId }
-      })
-
-      await previousUser.update({
-        balance: previusUserWallet?.data?.balance
-      })
-    }
 
     const userWallet = await users.getBalance(userId)
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
-    await user.update({
-      balance: userWallet?.data?.balance
-    })
+    const balanceAfter =
+      change === 'decrease' && userWallet?.data?.balance >= amount
+        ? userWallet?.data?.balance - amount
+        : amount - userWallet?.data?.balance
+
+    const t = await sequelize.transaction()
+
+    await transaction.update(
+      {
+        adminId,
+        userId,
+        type: 'admin',
+        change,
+        balance: userWallet?.data?.balance,
+        balanceAfter:
+          change === 'decrease'
+            ? balanceAfter
+            : userWallet?.data?.balance + amount,
+        status: 'successful',
+        amount,
+        description
+      },
+      { transaction: t }
+    )
+
+    if (userId !== transaction?.userId) {
+      const oldUser = await sequelize.models.users.findOne({
+        where: { id: transaction?.id }
+      })
+
+      const oldUserNewBalance =
+        change === 'decrease' && oldUser.balance >= amount
+          ? oldUser - amount
+          : amount - oldUser
+
+      await oldUser.update(
+        {
+          balance:
+            change === 'decrease'
+              ? oldUserNewBalance
+              : oldUser?.balance + transaction?.amount
+        },
+        {
+          where: {
+            id: transaction?.userId
+          }
+        },
+        {
+          transaction: t
+        }
+      )
+    }
+    await user.update(
+      {
+        balance:
+          change === 'decrease'
+            ? balanceAfter
+            : userWallet?.data?.balance + amount
+      },
+      { transaction: t }
+    )
+
+    await t.commit()
 
     return res
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)
@@ -250,16 +297,14 @@ const totalTransactions = async (req, res) => {
     else
       newWhere = {
         ...where,
-        description: { [Op.not]: 'increase_for_order' },
-        status: 'successful'
+        description: { [Op.not]: 'increase_for_order' }
       }
 
     if (_.isEmpty(newWhere))
       newWhere = [
         { [Op.and]: timeWhere },
         { [Op.and]: where || [] },
-        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } },
-        { [Op.and]: { status: 'successful' } }
+        { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } }
       ]
 
     const transactions = await sequelize.models.transactions.findAll({
@@ -344,23 +389,46 @@ const create = async (req, res) => {
 
     if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
 
-    await sequelize.models.transactions.create({
-      adminId,
-      userId,
-      type: 'admin',
-      change,
-      status: 'successful',
-      amount,
-      description
-    })
-
     const userWallet = await users.getBalance(userId)
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
-    await user.update({
-      balance: userWallet?.data?.balance
-    })
+    const balanceAfter =
+      change === 'decrease' && userWallet?.data?.balance >= amount
+        ? userWallet?.data?.balance - amount
+        : amount - userWallet?.data?.balance
+
+    const t = await sequelize.transaction()
+
+    await sequelize.models.transactions.create(
+      {
+        adminId,
+        userId,
+        type: 'admin',
+        change,
+        balance: userWallet?.data?.balance,
+        balanceAfter:
+          change === 'decrease'
+            ? balanceAfter
+            : userWallet?.data?.balance + amount,
+        status: 'successful',
+        amount,
+        description
+      },
+      { transaction: t }
+    )
+
+    await user.update(
+      {
+        balance:
+          change === 'decrease'
+            ? balanceAfter
+            : userWallet?.data?.balance + amount
+      },
+      { transaction: t }
+    )
+
+    await t.commit()
 
     res
       .status(messageTypes.SUCCESSFUL_CREATED.statusCode)
@@ -392,15 +460,30 @@ const softDelete = async (req, res) => {
 
     if (!user) return httpError(errorTypes.USER_NOT_FOUND, res)
 
-    await transaction.destroy()
+    const t = await sequelize.transaction()
+
+    await transaction.destroy({
+      transaction: t
+    })
 
     const userWallet = await users.getBalance(user?.id)
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
+    const balanceAfter =
+      transaction?.change === 'decrease' &&
+      userWallet?.data?.balance >= transaction?.amount
+        ? userWallet?.data?.balance - transaction?.amount
+        : transaction?.amount - userWallet?.data?.balance
+
     await user.update({
-      balance: userWallet?.data?.balance
+      balance:
+        change === 'decrease'
+          ? balanceAfter
+          : userWallet?.data?.balance + transaction?.amount
     })
+
+    await t.commit()
 
     res
       .status(messageTypes.SUCCESSFUL_UPDATE.statusCode)

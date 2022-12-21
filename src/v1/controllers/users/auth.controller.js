@@ -149,7 +149,7 @@ const registerConfirm = async (req, res) => {
       statusCode: 200,
       data: {
         ...r?.dataValues,
-        walletBalance: r?.balance - r?.marketingBalance,
+        walletBalance: Math.max(0, r?.balance - r?.marketingBalance),
         avatar: null,
         token: {
           access: accessToken,
@@ -182,11 +182,38 @@ const login = async (req, res) => {
     if (!user) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
     const accessToken = authorize.generateUserJwt(user?.id, user?.phoneNumber)
 
+    const withdrawal = await sequelize.models.withdrawals.findOne({
+      where: {
+        userId: user?.id,
+        status: 'pending'
+      }
+    })
+
+    if (withdrawal) {
+      return res.status(200).send({
+        statusCode: 200,
+        data: {
+          ...user?.dataValues,
+          balance: 0,
+          marketingBalance: 0,
+          walletBalance: 0,
+          avatar: null,
+          token: {
+            access: accessToken,
+            expireAt: utils.timestampToIso(
+              authorize.decodeJwt(accessToken, false).exp
+            )
+          }
+        },
+        error: null
+      })
+    }
+
     return res.status(200).send({
       statusCode: 200,
       data: {
         ...user?.dataValues,
-        walletBalance: user?.balance - user?.marketingBalance,
+        walletBalance: Math.max(0, user?.balance - user?.marketingBalance),
         avatar: null,
         token: {
           access: accessToken,

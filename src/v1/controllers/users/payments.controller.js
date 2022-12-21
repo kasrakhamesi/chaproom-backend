@@ -68,10 +68,7 @@ const callback = async (req, res) => {
       )
     const userWallet = await users.getBalance(payment?.userId)
 
-    if (!userWallet?.isSuccess)
-      return res.redirect(
-        `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
-      )
+    if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
     const t = await sequelize.transaction()
 
@@ -81,6 +78,8 @@ const callback = async (req, res) => {
         paymentId: payment?.id,
         type: 'deposit',
         change: 'increase',
+        balance: userWallet?.data?.balance,
+        balanceAfter: userWallet?.data?.balance + payment?.amount,
         status: 'successful',
         amount: payment?.amount,
         description: order ? 'increase_for_order' : 'افزایش موجودی کیف پول'
@@ -96,7 +95,7 @@ const callback = async (req, res) => {
 
     await user.update(
       {
-        balance: userWallet?.data?.balance + payment?.amount,
+        balance: user?.balance + payment?.amount,
         incomingPayment: user?.incomingPayment + parseInt(payment?.amount),
         totalCreditor: user?.totalCreditor + payment?.amount
       },
