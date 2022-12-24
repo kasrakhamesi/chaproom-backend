@@ -2,12 +2,9 @@ const { sequelize } = require('../../models')
 const { uniqueGenerates, regex, utils } = require('../../libs')
 const { httpError, errorTypes } = require('../../configs')
 const { Op } = require('sequelize')
+const soap = require('soap')
 const _ = require('lodash')
-const Kavenegar = require('kavenegar')
 require('dotenv').config()
-const api = Kavenegar.KavenegarApi({
-  apikey: 'your apikey here'
-})
 
 const send = async ({
   phoneNumber,
@@ -61,14 +58,26 @@ const send = async ({
         error: null
       }
 
-    const oneTimeCode = '787878' //uniqueGenerates.randomNumber()
-    /*
-    const r = await api.VerifyLookup({
-      receptor: 'your receptor mobile number',
-      token: 'your token',
-      template: 'your template'
-    })
-*/
+    const oneTimeCode = uniqueGenerates.randomNumber()
+
+    const args = {
+      username: process.env.SMS98_USERNAME,
+      password: process.env.SMS98_PASSWORD,
+      pnlno: process.env.SMS98_FROM_NUMBER,
+      mobileno: phoneNumber,
+      text: `کد : ${oneTimeCode} \n چاپروم`,
+      isflash: false
+    }
+
+    const client = await soap.createClientAsync(process.env.SMS98_URL)
+
+    if (!client) return httpError(errorTypes.CONTACT_TO_ADMIN)
+
+    const r = await client.SendSMSAsync(args)
+
+    if (parseInt(r[0]?.SendSMSResult) !== 2)
+      return httpError(errorTypes.CONTACT_TO_ADMIN)
+
     const body =
       creatorId === null
         ? {
@@ -108,12 +117,9 @@ const send = async ({
           : null
     }
 
-    console.log(body)
-
     const resCreateCode = await sequelize.models.verifies.create(body)
 
-    if (!resCreateCode?.id)
-      throw new Error("Can't Send Sms,Please Call Administrator")
+    if (!resCreateCode?.id) return httpError(errorTypes.CONTACT_TO_ADMIN)
 
     return {
       statusCode: 200,
@@ -126,7 +132,7 @@ const send = async ({
       error: null
     }
   } catch (e) {
-    return httpError(e)
+    return httpError(e.message || String(e))
   }
 }
 

@@ -20,7 +20,6 @@
     "express-fileupload": "^1.4.0",
     "json2excel": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
-    "kavenegar": "^1.1.4",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
@@ -30,6 +29,7 @@
     "pdf-page-counter": "^1.0.3",
     "request-promise": "^4.2.6",
     "sequelize": "^6.21.4",
+    "soap": "^1.0.0",
     "swagger-jsdoc": "^6.2.5",
     "swagger-ui-express": "^4.5.0"
   },

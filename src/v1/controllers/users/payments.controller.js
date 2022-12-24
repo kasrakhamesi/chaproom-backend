@@ -47,7 +47,7 @@ const callback = async (req, res) => {
 
     const zarinpal = gateways.zarinpal.create(
       process.env.ZARINPAL_MERCHANT,
-      true
+      Boolean(parseInt(process.env.ZARINPAL_SANDBOX))
     )
     const paymentVerification = await zarinpal.PaymentVerification({
       Amount: payment?.amount,
