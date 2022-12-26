@@ -9,8 +9,6 @@ app.use(cors())
 app.use(logger('dev'))
 
 const swaggerUi = require('swagger-ui-express')
-const { sequelize } = require('./src/v1/models')
-const { Op } = require('sequelize')
 const swaggerDocuments = {
   users: require('./docs/users.swagger.json'),
   admins: require('./docs/admins.swagger.json')
