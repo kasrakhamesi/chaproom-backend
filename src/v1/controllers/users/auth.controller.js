@@ -190,6 +190,42 @@ const login = async (req, res) => {
     if (!bcrypt.compareSync(password, user?.password.replace('$2y$', '$2a$')))
       return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
 
+    const discounts = await sequelize.models.discounts.findOne({
+      userId: user?.id,
+      userMarketing: true
+    })
+
+    if (_.isEmpty(discounts)) {
+      const t = await sequelize.transaction()
+
+      const discountCodes = await uniqueGenerates.discountCode(2)
+
+      await sequelize.models.discounts.create(
+        {
+          userId: user?.id,
+          value: '5',
+          type: 'percentage',
+          code: discountCodes[0],
+          usageLimit: null,
+          userMarketing: true
+        },
+        { transaction: t }
+      )
+      await sequelize.models.discounts.create(
+        {
+          userId: user?.id,
+          value: '10',
+          type: 'percentage',
+          code: discountCodes[1],
+          usageLimit: null,
+          userMarketing: true
+        },
+        { transaction: t }
+      )
+
+      await t.commit()
+    }
+
     const accessToken = authorize.generateUserJwt(user?.id, user?.phoneNumber)
 
     delete user?.password

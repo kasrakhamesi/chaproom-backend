@@ -1,8 +1,8 @@
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
-const bcrypt = require('bcrypt')
 const { utils } = require('../../libs')
+const bcrypt = require('bcrypt')
 
 const update = (req, res) => {
   const { name, password } = req.body
@@ -13,7 +13,7 @@ const update = (req, res) => {
           name
         }
       : {
-          password,
+          password: bcrypt.hashSync(password, 12),
           name
         }
   return sequelize.models.users

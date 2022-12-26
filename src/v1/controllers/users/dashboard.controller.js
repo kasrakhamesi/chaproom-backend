@@ -3,7 +3,6 @@ const { sequelize } = require('../../models')
 const { Op } = require('sequelize')
 const _ = require('lodash')
 require('dotenv').config()
-const bcrypt = require('bcrypt')
 
 const getBindingPriceses = () => {
   return sequelize.models.binding_tariffs
