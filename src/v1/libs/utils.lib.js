@@ -143,6 +143,9 @@ const createTimeList = (type, transactions = false) => {
           String(parseInt(dateNow.getDate()) - k).length === 1
             ? `0${parseInt(dateNow.getDate()) - k}`
             : parseInt(dateNow.getDate()) - k
+
+        if (typeOfDay === '00') continue
+
         !transactions
           ? data.push({
               time: `${typeOfMonth}/${typeOfDay}`,

@@ -14,21 +14,10 @@ module.exports = {
     await queryInterface.bulkInsert('admins', [
       {
         roleId: 1,
-        name: 'کسری',
-        password: 'superadmin',
+        name: 'هادی توسلی',
+        password:
+          '$2b$12$qiOGjLyUh.vCZOy7HYLYvOnTrU6c4YxpzB1wFc6YwFQ84MFF2YcTW',
         phoneNumber: '09385667274'
-      },
-      {
-        roleId: 2,
-        name: 'کسری',
-        password: 'adminadmin',
-        phoneNumber: '09385667272'
-      },
-      {
-        roleId: 3,
-        name: 'کسری',
-        password: 'agentagent',
-        phoneNumber: '09385667270'
       }
     ])
   },
