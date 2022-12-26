@@ -11,17 +11,14 @@ const restoreOldUsersBalance = async () => {
 
     for (const user of users) {
       sequelize.models.transactions
-        .create(
-          {
-            userId: user?.id,
-            type: 'deposit',
-            change: 'increase',
-            status: 'successful',
-            amount: user?.balance,
-            description: 'افزایش موجودی کیف پول'
-          },
-          { transaction: t }
-        )
+        .create({
+          userId: user?.id,
+          type: 'deposit',
+          change: 'increase',
+          status: 'successful',
+          amount: user?.balance,
+          description: 'افزایش موجودی کیف پول'
+        })
         .then(() => null)
         .catch(console.log)
     }

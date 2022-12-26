@@ -342,6 +342,15 @@ const marketing = async (req, res) => {
         { transaction: t }
       )
 
+      await sequelize.models.referrals.create(
+        {
+          userId: user?.id,
+          referralUserId: null,
+          slug: `ref=${user?.id}`
+        },
+        { transaction: t }
+      )
+
       await t.commit()
     }
 
