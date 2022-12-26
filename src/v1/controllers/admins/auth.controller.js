@@ -14,18 +14,20 @@ const login = async (req, res) => {
         phoneNumber
       },
       attributes: {
-        exclude: ['password', 'roleId']
+        exclude: ['roleId']
       }
     })
 
     if (!admin) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
-    const r = await authentications.sms.send({ phoneNumber, isAdmin: true })
 
     if (!bcrypt.compareSync(password, admin?.password.replace('$2y$', '$2a$')))
       return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
 
+    const r = await authentications.sms.send({ phoneNumber, isAdmin: true })
+
     return res.status(r?.statusCode).send(r)
   } catch (e) {
+    console.log(e)
     return httpError(e, res)
   }
 }

@@ -314,6 +314,37 @@ const marketing = async (req, res) => {
     let benefit = 0
     let timesUsed = 0
 
+    if (_.isEmpty(discounts)) {
+      const t = await sequelize.transaction()
+
+      const discountCodes = await uniqueGenerates.discountCode(2)
+
+      await sequelize.models.discounts.create(
+        {
+          userId: user?.id,
+          value: '5',
+          type: 'percentage',
+          code: discountCodes[0],
+          usageLimit: null,
+          userMarketing: true
+        },
+        { transaction: t }
+      )
+      await sequelize.models.discounts.create(
+        {
+          userId: user?.id,
+          value: '10',
+          type: 'percentage',
+          code: discountCodes[1],
+          usageLimit: null,
+          userMarketing: true
+        },
+        { transaction: t }
+      )
+
+      await t.commit()
+    }
+
     for (const entity of discounts) {
       timesUsed += entity?.timesUsed
       totalSales += entity?.totalSale

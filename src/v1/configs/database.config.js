@@ -11,7 +11,7 @@ module.exports = {
   development: {
     username: DATABASE_USERNAME || 'root',
     password: DATABASE_PASSWORD || '',
-    database: DATABASE_NAME || 'chap_old',
+    database: DATABASE_NAME || 'chaproom',
     host: DATABASE_HOST || '127.0.0.1',
     port: DATABASE_PORT || 3306,
     dialect: DATABASE_DIALECT || 'mysql',

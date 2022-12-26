@@ -179,9 +179,6 @@ const login = async (req, res) => {
     const user = await sequelize.models.users.findOne({
       where: {
         phoneNumber
-      },
-      attributes: {
-        exclude
       }
     })
 
@@ -191,8 +188,10 @@ const login = async (req, res) => {
       return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
 
     const discounts = await sequelize.models.discounts.findOne({
-      userId: user?.id,
-      userMarketing: true
+      where: {
+        userId: user?.id,
+        userMarketing: true
+      }
     })
 
     if (_.isEmpty(discounts)) {
