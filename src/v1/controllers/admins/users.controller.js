@@ -106,7 +106,7 @@ const create = async (req, res) => {
     const data = {
       name,
       phoneNumber,
-      password,
+      password: bcrypt.hashSync(password, 12),
       balance: walletBalance
     }
 
@@ -198,7 +198,7 @@ const update = async (req, res) => {
       password !== '' &&
       password !== undefined
     )
-      data.password = password
+      data.password = bcrypt.hashSync(password, 12)
 
     const user = await sequelize.models.users.findOne({
       where: {

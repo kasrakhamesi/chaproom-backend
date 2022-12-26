@@ -43,7 +43,12 @@ const createAdminFromUser = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { phoneNumber, name, password } = req.body
-    const data = { phoneNumber, roleId: 2, name, password }
+    const data = {
+      phoneNumber,
+      roleId: 2,
+      name,
+      password: bcrypt.hashSync(password, 12)
+    }
 
     const admin = await sequelize.models.admins.findOne({
       where: {
@@ -66,7 +71,12 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const { id } = req.params
   const { phoneNumber, name, password } = req.body
-  const data = { phoneNumber, roleId: 2, name, password }
+  const data = {
+    phoneNumber,
+    roleId: 2,
+    name,
+    password: bcrypt.hashSync(password, 12)
+  }
 
   return sequelize.models.admins
     .update(data, {

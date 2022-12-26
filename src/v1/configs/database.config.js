@@ -1,13 +1,20 @@
 require('dotenv').config()
 
+const DATABASE_USERNAME = process.env.DATABASE_USERNAME
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD
+const DATABASE_NAME = process.env.DATABASE_NAME
+const DATABASE_HOST = process.env.DATABASE_HOST
+const DATABASE_PORT = parseInt(process.env.DATABASE_PORT)
+const DATABASE_DIALECT = process.env.DATABASE_DIALECT
+
 module.exports = {
   development: {
-    username: process.env.DATABASE_USERNAME || 'root',
-    password: process.env.DATABASE_PASSWORD || '',
-    database: process.env.DATABASE_NAME || 'chaproom',
-    host: process.env.DATABASE_HOST || '127.0.0.1',
-    port: parseInt(process.env.DATABASE_PORT) || 3306,
-    dialect: process.env.DATABASE_DIALECT || 'mysql',
+    username: DATABASE_USERNAME || 'root',
+    password: DATABASE_PASSWORD || '',
+    database: DATABASE_NAME || 'chaproom',
+    host: DATABASE_HOST || '127.0.0.1',
+    port: DATABASE_PORT || 3306,
+    dialect: DATABASE_DIALECT || 'mysql',
     dialectOptions: {
       requestTimeout: 25000
     },

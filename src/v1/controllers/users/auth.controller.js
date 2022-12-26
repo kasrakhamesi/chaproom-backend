@@ -5,10 +5,17 @@ const { authentications } = require('../../services')
 const { uniqueGenerates, utils } = require('../../libs')
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
+
 const register = async (req, res) => {
   try {
     const { phoneNumber, name, password, referralSlug } = req.body
-    const data = { phoneNumber, name, password, referralSlug }
+
+    const data = {
+      phoneNumber,
+      name,
+      password: bcrypt.hashSync(password, 12),
+      referralSlug
+    }
 
     const user = await sequelize.models.users.findOne({
       where: {
@@ -161,7 +168,6 @@ const registerConfirm = async (req, res) => {
       error: null
     })
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }
@@ -169,18 +175,24 @@ const registerConfirm = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { phoneNumber, password } = req.body
+
     const user = await sequelize.models.users.findOne({
       where: {
-        phoneNumber,
-        password
+        phoneNumber
       },
       attributes: {
-        exclude: ['password']
+        exclude
       }
     })
 
     if (!user) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
+
+    if (!bcrypt.compareSync(password, user?.password.replace('$2y$', '$2a$')))
+      return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
+
     const accessToken = authorize.generateUserJwt(user?.id, user?.phoneNumber)
+
+    delete user?.password
 
     return res.status(200).send({
       statusCode: 200,
@@ -257,7 +269,7 @@ const passwordResetSubmit = async (req, res) => {
 
     await sequelize.models.users.update(
       {
-        password: newPassword
+        password: bcrypt.hashSync(newPassword, 12)
       },
       {
         where: {

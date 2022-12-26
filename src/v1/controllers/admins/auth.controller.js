@@ -2,32 +2,32 @@ const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
 const { authentications } = require('../../services')
-const _ = require('lodash')
 const { utils } = require('../../libs')
+const bcrypt = require('bcrypt')
+const _ = require('lodash')
 
-const login = (req, res) => {
-  const { phoneNumber, password } = req.body
-  return sequelize.models.admins
-    .findOne({
+const login = async (req, res) => {
+  try {
+    const { phoneNumber, password } = req.body
+    const admin = await sequelize.models.admins.findOne({
       where: {
-        phoneNumber,
-        password
+        phoneNumber
       },
       attributes: {
         exclude: ['password', 'roleId']
       }
     })
-    .then((r) => {
-      if (!r) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
-      return authentications.sms
-        .send({ phoneNumber, isAdmin: true })
-        .then((r) => {
-          return res.status(r?.statusCode).send(r)
-        })
-    })
-    .catch((e) => {
-      return httpError(e, res)
-    })
+
+    if (!admin) return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
+    const r = await authentications.sms.send({ phoneNumber, isAdmin: true })
+
+    if (!bcrypt.compareSync(password, admin?.password.replace('$2y$', '$2a$')))
+      return httpError(errorTypes.INVALID_PHONE_PASSWORD, res)
+
+    return res.status(r?.statusCode).send(r)
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 const loginConfirm = async (req, res) => {
@@ -78,7 +78,6 @@ const loginConfirm = async (req, res) => {
       error: null
     })
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }
@@ -162,7 +161,7 @@ const passwordResetSubmit = async (req, res) => {
 
     await sequelize.models.admins.update(
       {
-        password: newPassword
+        password: bcrypt.hashSync(newPassword, 12)
       },
       {
         where: {
