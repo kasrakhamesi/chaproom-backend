@@ -52,7 +52,7 @@ const reportStructure = async (users, allUsers) => {
       ? 0
       : await sequelize.models.orders.count({
           where: {
-            [Op.and]: usersId,
+            [Op.or]: usersId,
             [Op.or]: [
               {
                 status: 'preparing'
@@ -69,7 +69,7 @@ const reportStructure = async (users, allUsers) => {
       ? []
       : await sequelize.models.transactions.findAll({
           where: {
-            [Op.and]: usersId,
+            [Op.or]: usersId,
             status: 'successful',
             description: { [Op.not]: 'increase_for_order' }
           }
