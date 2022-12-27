@@ -27,7 +27,6 @@ const login = async (req, res) => {
 
     return res.status(r?.statusCode).send(r)
   } catch (e) {
-    console.log(e)
     return httpError(e, res)
   }
 }
