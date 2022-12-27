@@ -8,7 +8,11 @@ const update = (req, res) => {
   const { name, password } = req.body
   const userId = req?.user[0]?.id
   const data =
-    password === '' || password === null
+    password === '' ||
+    password === null ||
+    password === undefined ||
+    password == null ||
+    String(password).length < 8
       ? {
           name
         }

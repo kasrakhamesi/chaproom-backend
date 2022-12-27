@@ -104,6 +104,16 @@ const findOne = (req, res) => {
 const create = async (req, res) => {
   try {
     const { name, phoneNumber, password, walletBalance } = req.body
+
+    if (
+      password === '' ||
+      password === null ||
+      password === undefined ||
+      password == null ||
+      String(password).length < 8
+    )
+      return httpError(errorTypes.INVALID_PASSWORD, res)
+
     const data = {
       name,
       phoneNumber,
@@ -197,7 +207,8 @@ const update = async (req, res) => {
       password &&
       password !== null &&
       password !== '' &&
-      password !== undefined
+      password !== undefined &&
+      String(password).length >= 8
     )
       data.password = bcrypt.hashSync(password, 12)
 

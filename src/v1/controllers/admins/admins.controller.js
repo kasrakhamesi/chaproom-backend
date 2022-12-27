@@ -72,12 +72,24 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const { id } = req.params
   const { phoneNumber, name, password } = req.body
-  const data = {
-    phoneNumber,
-    roleId: 2,
-    name,
-    password: bcrypt.hashSync(password, 12)
-  }
+
+  const data =
+    password === '' ||
+    password === null ||
+    password === undefined ||
+    password == null ||
+    String(password).length < 8
+      ? {
+          phoneNumber,
+          roleId: 2,
+          name
+        }
+      : {
+          phoneNumber,
+          roleId: 2,
+          name,
+          password: bcrypt.hashSync(password, 12)
+        }
 
   return sequelize.models.admins
     .update(data, {
