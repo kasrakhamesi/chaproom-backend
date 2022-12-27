@@ -2,6 +2,7 @@ const { httpError, messageTypes } = require('../../configs')
 const { utils } = require('../../libs')
 const { authorize } = require('../../middlewares')
 const { sequelize } = require('../../models')
+const bcrypt = require('bcrypt')
 
 const update = (req, res) => {
   const { name, password, phoneNumber } = req.body

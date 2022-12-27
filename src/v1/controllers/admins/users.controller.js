@@ -5,6 +5,7 @@ const users = new restful(sequelize.models.users)
 const _ = require('lodash')
 const { authorize } = require('../../middlewares')
 const { Op } = require('sequelize')
+const bcrypt = require('bcrypt')
 
 const findAll = async (req, res) => {
   try {

@@ -2,6 +2,7 @@ const { sequelize } = require('../../models')
 const { restful, filters } = require('../../libs')
 const { httpError, errorTypes, messageTypes } = require('../../configs')
 const admins = new restful(sequelize.models.admins)
+const bcrypt = require('bcrypt')
 
 const createAdminFromUser = async (req, res) => {
   try {
