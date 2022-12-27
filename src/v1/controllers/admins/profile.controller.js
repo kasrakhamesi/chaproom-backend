@@ -13,7 +13,7 @@ const update = (req, res) => {
           phoneNumber
         }
       : {
-          password,
+          password: bcrypt.hashSync(password, 12),
           phoneNumber,
           name
         }
