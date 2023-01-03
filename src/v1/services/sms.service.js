@@ -1,5 +1,5 @@
-const { regex } = require('../../libs')
-const { httpError, errorTypes } = require('../../configs')
+const { regex } = require('../libs')
+const { httpError, errorTypes } = require('../configs')
 const soap = require('soap')
 const _ = require('lodash')
 require('dotenv').config()

@@ -1,5 +1,6 @@
 const { utils } = require('.')
 const { httpError, errorTypes } = require('../configs')
+const { Op } = require('sequelize')
 const { sequelize } = require('../models')
 const _ = require('lodash')
 
@@ -24,7 +25,8 @@ const check = async (discountCode, userId, folders) => {
       const order = await sequelize.models.orders.findOne({
         where: {
           discountId: discount?.id,
-          userId
+          userId,
+          status: { [Op.not]: 'payment_pending' }
         }
       })
 

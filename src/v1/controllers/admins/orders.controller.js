@@ -452,7 +452,8 @@ const update = async (req, res) => {
             {
               marketingBalance:
                 ownerOfDiscountWallet?.data?.marketingBalance +
-                order?.discountBenefit
+                order?.discountBenefit,
+              balance: ownerOfDiscount?.balance + order?.discountBenefit
             },
             {
               transaction: t
@@ -522,7 +523,8 @@ const update = async (req, res) => {
           {
             marketingBalance:
               ownerOfReferralWallet?.data?.marketingBalance +
-              order?.referralBenefit
+              order?.referralBenefit,
+            balance: ownerOfReferral?.balance + order?.referralBenefit
           },
           {
             transaction: t

@@ -87,6 +87,12 @@ const deposit = async (req, res) => {
     const { amount } = req.body
     const userId = req?.user[0]?.id
 
+    const user = await sequelize.models.users.findOne({
+      where: {
+        id: userId
+      }
+    })
+
     if (typeof amount !== 'number')
       return httpError(errorTypes.INVALID_AMOUNT_TYPE, res)
 
@@ -97,7 +103,7 @@ const deposit = async (req, res) => {
     const payment = await zarinpal.PaymentRequest({
       Amount: parseInt(amount),
       CallbackURL: process.env.PAYMENT_CALLBACK,
-      Description: 'افزایش موجودی کیف پول'
+      Description: `افزایش موجودی کیف پول کاربر ${user?.name} به شماره تماس  ${user?.phoneNumber}`
     })
 
     if (payment?.status !== 100) return httpError(errorTypes.GATEWAY_ERROR, res)

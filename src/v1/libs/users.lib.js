@@ -99,10 +99,16 @@ const createOrder = async (
       Boolean(parseInt(process.env.ZARINPAL_SANDBOX))
     )
 
+    const user = await sequelize.models.users.findOne({
+      where: {
+        id: userId
+      }
+    })
+
     const payment = await zarinpal.PaymentRequest({
       Amount: parseInt(gatewayPayAmount),
       CallbackURL: process.env.PAYMENT_CALLBACK,
-      Description: 'افزایش موجودی کیف پول'
+      Description: `ثبت سفارش کاربر ${user?.name} به شماره تماس ${user?.phoneNumber} در استان ${data?.recipientDeliveryProvince} و شهر ${data?.recipientDeliveryCity} با تعداد ${folders?.length} پوشه`
     })
 
     if (payment?.status !== 100) return httpError(errorTypes.GATEWAY_ERROR, res)

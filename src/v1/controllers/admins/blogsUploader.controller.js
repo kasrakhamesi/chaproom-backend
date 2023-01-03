@@ -5,7 +5,6 @@ const path = require('path')
 
 const upload = async (req, res) => {
   try {
-    console.log('yes')
     const adminId = req?.user[0]?.id
 
     const { attachment } = req.files

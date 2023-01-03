@@ -38,6 +38,7 @@ const findAllDiscounts = async (req, res) => {
       where: {
         [Op.or]: where,
         discountId: { [Op.not]: null },
+        '$discount.userMarketing$': true,
         status: { [Op.or]: ['sent', 'preparing'] }
       },
       attributes: [
@@ -73,24 +74,24 @@ const findAllDiscounts = async (req, res) => {
           .map((item) => {
             return {
               user: {
-                id: item.discount.user.id,
-                name: item.discount.user.name,
-                phoneNumber: item.discount.user.phoneNumber
+                id: item?.discount?.user?.id,
+                name: item?.discount?.user?.name,
+                phoneNumber: item?.discount?.user?.phoneNumber
               },
               buyer: {
-                id: item.user.id,
-                name: item.user.name,
-                phoneNumber: item.user.phoneNumber
+                id: item?.user?.id,
+                name: item?.user?.name,
+                phoneNumber: item?.user?.phoneNumber
               },
-              orderId: item.id,
-              discountCode: item.discountCode,
-              discountType: item.discountType,
-              discountValue: item.discountValue,
-              discountAmount: item.discountAmount,
-              discountBenefit: item.discountBenefit,
-              discountBenefitPercentage: item.discountValue,
-              createdAt: item.createdAt,
-              amount: item.amount
+              orderId: item?.id,
+              discountCode: item?.discountCode,
+              discountType: item?.discountType,
+              discountValue: item?.discountValue,
+              discountAmount: item?.discountAmount,
+              discountBenefit: item?.discountBenefit,
+              discountBenefitPercentage: item?.discountValue,
+              createdAt: item?.createdAt,
+              amount: item?.amount
             }
           })
       },
