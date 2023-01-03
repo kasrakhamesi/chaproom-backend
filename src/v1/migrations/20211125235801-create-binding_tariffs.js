@@ -14,10 +14,12 @@ module.exports = {
       },
       a5_springNormal: {
         type: Sequelize.INTEGER.UNSIGNED,
+        defaultValue: 1,
         allowNull: false
       },
       a3_springNormal: {
         type: Sequelize.INTEGER.UNSIGNED,
+        defaultValue: 1,
         allowNull: false
       },
       a5_springPapco: {

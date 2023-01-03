@@ -5,8 +5,6 @@ const _ = require('lodash')
 const checkValidate = (data) => {
   const {
     a4_springNormal,
-    a5_springNormal,
-    a3_springNormal,
     a5_springPapco,
     a4_springPapco,
     a3_springPapco,
@@ -15,8 +13,6 @@ const checkValidate = (data) => {
 
   if (
     !_.isInteger(a4_springNormal) ||
-    !_.isInteger(a5_springNormal) ||
-    !_.isInteger(a3_springNormal) ||
     !_.isInteger(a5_springPapco) ||
     !_.isInteger(a4_springPapco) ||
     !_.isInteger(a3_springPapco) ||
@@ -24,7 +20,7 @@ const checkValidate = (data) => {
   )
     return {
       isSuccess: false,
-      message: 'لطفا تمام ورودی هارا بصورت معتبر وارد کنید'
+      message: 'لطفا تمام ورودی ها را بصورت معتبر وارد کنید'
     }
 
   return {
@@ -38,8 +34,6 @@ const update = (req, res) => {
 
   const data = {
     a4_springNormal: springNormal.a4,
-    a5_springNormal: springNormal.a5,
-    a3_springNormal: springNormal.a3,
     a5_springPapco: springPapco.a5,
     a4_springPapco: springPapco.a4,
     a3_springPapco: springPapco.a3,

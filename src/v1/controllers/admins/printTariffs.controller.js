@@ -101,7 +101,7 @@ const update = (req, res) => {
       statusCode: 400,
       data: null,
       error: {
-        message: 'لطفا تمام ورودی هارا بصورت معتبر وارد کنید',
+        message: 'لطفا تمام ورودی ها را بصورت معتبر وارد کنید',
         details: []
       }
     })

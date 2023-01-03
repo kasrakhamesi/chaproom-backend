@@ -4,6 +4,7 @@ const { httpError, errorTypes, messageTypes } = require('../../configs')
 const { Op } = require('sequelize')
 const orders = new restful(sequelize.models.orders)
 const _ = require('lodash')
+const { sms } = require('../../services')
 
 const globalFindAll = async (req, res) => {
   try {
@@ -394,6 +395,10 @@ const update = async (req, res) => {
         },
         { transaction: t }
       )
+      await sms.send(
+        user?.phoneNumber,
+        `چاپ رومی عزیز\nسفارش شما با شماره ${id} لغو شد.علت لغو را میتوانید در پنل خود مشاهده کنید`
+      )
     } else if (status === 'sent') {
       await user.update(
         {
@@ -537,6 +542,16 @@ const update = async (req, res) => {
       await order.update({
         sentAt: updatedOrder?.updatedAt
       })
+
+      await sms.send(
+        user?.phoneNumber,
+        `چاپ رومی عزیز\nسفارش شما با شماره ${id} ارسال شد`
+      )
+    } else if (status === 'preparing') {
+      await sms.send(
+        user?.phoneNumber,
+        `چاپ رومی عزیز\nسفارش شما با شماره ${id} در حال آماده سازی میباشد`
+      )
     }
 
     res

@@ -16,66 +16,66 @@ module.exports = {
       blackAndWhite: {
         singleSided: 480,
         doubleSided: 520,
-        singleSidedGlossy: 0,
-        doubleSidedGlossy: 0,
+        singleSidedGlossy: 10,
+        doubleSidedGlossy: 10,
         breakpoints: [
           {
             at: 501,
             singleSided: 460,
             doubleSided: 580,
-            singleSidedGlossy: 0,
-            doubleSidedGlossy: 0
+            singleSidedGlossy: 10,
+            doubleSidedGlossy: 10
           },
           {
             at: 1001,
             singleSided: 430,
             doubleSided: 560,
-            singleSidedGlossy: 0,
-            doubleSidedGlossy: 0
+            singleSidedGlossy: 10,
+            doubleSidedGlossy: 10
           }
         ]
       },
       normalColor: {
         singleSided: 580,
         doubleSided: 620,
-        singleSidedGlossy: 0,
-        doubleSidedGlossy: 0,
+        singleSidedGlossy: 10,
+        doubleSidedGlossy: 10,
         breakpoints: [
           {
             at: 501,
             singleSided: 760,
             doubleSided: 880,
-            singleSidedGlossy: 0,
-            doubleSidedGlossy: 0
+            singleSidedGlossy: 10,
+            doubleSidedGlossy: 10
           },
           {
             at: 1001,
             singleSided: 930,
             doubleSided: 1060,
-            singleSidedGlossy: 0,
-            doubleSidedGlossy: 0
+            singleSidedGlossy: 10,
+            doubleSidedGlossy: 10
           }
         ]
       },
       fullColor: {
         singleSided: 1180,
         doubleSided: 1220,
-        singleSidedGlossy: 0,
-        doubleSidedGlossy: 0,
+        singleSidedGlossy: 10,
+        doubleSidedGlossy: 10,
         breakpoints: [
           {
             at: 501,
             singleSided: 1360,
             doubleSided: 1480,
-            singleSidedGlossy: 0,
-            doubleSidedGlossy: 0
+            singleSidedGlossy: 10,
+            doubleSidedGlossy: 10
           },
           {
             at: 1001,
             singleSided: 1530,
             doubleSided: 1660,
-            singleSidedGlossy: 0,
-            doubleSidedGlossy: 0
+            singleSidedGlossy: 10,
+            doubleSidedGlossy: 10
           }
         ]
       }

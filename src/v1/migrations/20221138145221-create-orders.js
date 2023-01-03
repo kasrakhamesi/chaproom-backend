@@ -57,7 +57,7 @@ module.exports = {
         },
         postageFee: {
           type: Sequelize.BIGINT.UNSIGNED,
-          defaultValue: 20000,
+          defaultValue: 32000,
           allowNull: true
         },
         recipientName: {

@@ -71,7 +71,10 @@ const create = async (req, res) => {
 
     if (_.isEmpty(folders)) return httpError(errorTypes.DONT_HAVE_FOLDERS, res)
 
-    let postageFee = 20000
+    const postageFee =
+      _.isEmpty(address) || address?.recipientDeliveryProvince !== 'اصفهان'
+        ? 35000
+        : 25000
     let totalPrice = 0
     for (const entity of folders) {
       totalPrice += entity?.amount
@@ -88,7 +91,8 @@ const create = async (req, res) => {
       recipientDeliveryCity: address?.recipientDeliveryCity,
       recipientDeliveryAddress: address?.recipientDeliveryAddress,
       status: 'payment_pending',
-      amount: totalPrice
+      amount: totalPrice,
+      postageFee
     }
 
     if (referralUserId !== null) {
@@ -234,7 +238,7 @@ const create = async (req, res) => {
 const priceCalculator = async (req, res) => {
   try {
     const userId = req?.user[0]?.id
-    const { discountCode } = req.body
+    const { discountCode, addressId } = req.body
     let discount = null
     if (discountCode === '')
       return httpError(errorTypes.DISCOUNT_CODE_NOT_FOUND, res)
@@ -262,6 +266,17 @@ const priceCalculator = async (req, res) => {
 
     if (!userWallet?.isSuccess) return httpError(userWallet?.message, res)
 
+    const address = await sequelize.models.addresses.findOne({
+      where: {
+        id: addressId
+      }
+    })
+
+    const postageFee =
+      _.isEmpty(address) || address?.recipientDeliveryProvince !== 'اصفهان'
+        ? 35000
+        : 25000
+
     const data = {
       discountAmount:
         discount !== null
@@ -269,7 +284,7 @@ const priceCalculator = async (req, res) => {
           : null,
       userBalance: userWallet?.data?.balance,
       foldersAmount: amounts,
-      postageFee: 20000
+      postageFee
     }
 
     return res.status(200).send({

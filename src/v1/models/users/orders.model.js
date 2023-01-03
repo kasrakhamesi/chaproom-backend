@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       postageFee: {
         type: DataTypes.BIGINT.UNSIGNED,
-        defaultValue: 20000,
+        defaultValue: 32000,
         allowNull: true
       },
       recipientName: {
