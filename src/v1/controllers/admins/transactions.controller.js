@@ -85,8 +85,12 @@ const findAll = async (req, res) => {
         description: transaction.description,
         createdAt: transaction.createdAt,
         updatedAt: transaction.updatedAt,
-        user: transaction.user,
-        admin: transaction.admin
+        user: transaction?.user || {
+          id: 0,
+          name: 'کاربر پاک شده',
+          phoneNumber: '0000000000'
+        },
+        admin: transaction?.admin
       })
     }
 
