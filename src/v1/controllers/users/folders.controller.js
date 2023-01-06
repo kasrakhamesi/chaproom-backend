@@ -324,21 +324,21 @@ const findOne = async (req, res) => {
   try {
     const { id } = req.params
     const userId = req?.user[0]?.id
-    //TODO
 
     const folders = await sequelize.models.folders.findAll({
       where: {
         userId,
         used: false
       },
-      attributes: ['id']
+      attributes: ['id'],
+      order: [['id', 'asc']]
     })
 
     let folderCode = 0
 
     for (const folder of folders) {
-      numberOfFolder++
-      if (folderCode?.id === id) break
+      folderCode++
+      if (folder?.id === parseInt(id)) break
     }
 
     const r = await sequelize.models.folders.findOne({
