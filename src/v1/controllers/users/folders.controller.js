@@ -167,7 +167,8 @@ const update = (req, res) => {
     countOfPages,
     binding: extractedBinding,
     countOfCopies,
-    description
+    description,
+    filesManuallySent
   }
 
   return sequelize.models.files
@@ -319,12 +320,28 @@ const findAll = (req, res) => {
     })
 }
 
-const findOne = (req, res) => {
-  const { id } = req.params
-  const userId = req?.user[0]?.id
+const findOne = async (req, res) => {
+  try {
+    const { id } = req.params
+    const userId = req?.user[0]?.id
+    //TODO
 
-  return sequelize.models.folders
-    .findOne({
+    const folders = await sequelize.models.folders.findAll({
+      where: {
+        userId,
+        used: false
+      },
+      attributes: ['id']
+    })
+
+    let numberOfFolder = 0
+
+    for (const folder of folders) {
+      numberOfFolder++
+      if (folder?.id === id) break
+    }
+
+    const r = await sequelize.models.folders.findOne({
       where: {
         userId,
         id,
@@ -354,38 +371,32 @@ const findOne = (req, res) => {
         }
       ]
     })
-    .then((r) => {
-      if (r?.binding !== null)
-        r.binding =
-          process.env.RUN_ENVIRONMENT === 'local'
-            ? JSON.parse(JSON.parse(r?.binding))
-            : JSON.parse(r?.binding)
 
-      return sequelize.models.orders
-        .findOrCreate({
-          where: {
-            userId,
-            addressId: null
-          }
-        })
-        .then(([row, created]) => {
-          const orderId = !_.isEmpty(row) ? row?.id : created?.id
-          return res.status(200).send({
-            statusCode: 200,
-            data: {
-              ...r.dataValues,
-              folderCode: `${String(orderId)}-${id}`,
-              phoneNumberToSendFile: String(
-                process.env.PHONENUMBER_TO_SEND_FILE
-              )
-            },
-            error: null
-          })
-        })
+    if (r?.binding !== null)
+      r.binding =
+        process.env.RUN_ENVIRONMENT === 'local'
+          ? JSON.parse(JSON.parse(r?.binding))
+          : JSON.parse(r?.binding)
+
+    const [row, created] = await sequelize.models.orders.findOrCreate({
+      where: {
+        userId,
+        addressId: null
+      }
     })
-    .catch((e) => {
-      return httpError(e, res)
+    const orderId = !_.isEmpty(row) ? row?.id : created?.id
+    return res.status(200).send({
+      statusCode: 200,
+      data: {
+        ...r.dataValues,
+        folderCode: `${String(orderId)}-${id}`,
+        phoneNumberToSendFile: String(process.env.PHONENUMBER_TO_SEND_FILE)
+      },
+      error: null
     })
+  } catch (e) {
+    return httpError(e, res)
+  }
 }
 
 const hardDelete = (req, res) => {
