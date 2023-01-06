@@ -21,13 +21,13 @@ const findOrCreateOrder = async (req, res) => {
       }
     })
 
-    const folderId = _.isEmpty(folders) ? 1 : folders.length + 1
+    const folderCode = _.isEmpty(folders) ? 1 : folders.length + 1
     const orderId = !_.isEmpty(row) ? row?.id : created?.id
 
     res.status(200).send({
       statusCode: 200,
       data: {
-        folderCode: `${String(orderId)}-${folderId}`,
+        folderCode: `${String(orderId)}-${folderCode}`,
         phoneNumberToSendFile: String(process.env.PHONENUMBER_TO_SEND_FILE)
       },
       error: null
@@ -334,11 +334,11 @@ const findOne = async (req, res) => {
       attributes: ['id']
     })
 
-    let numberOfFolder = 0
+    let folderCode = 0
 
     for (const folder of folders) {
       numberOfFolder++
-      if (folder?.id === id) break
+      if (folderCode?.id === id) break
     }
 
     const r = await sequelize.models.folders.findOne({
@@ -389,7 +389,7 @@ const findOne = async (req, res) => {
       statusCode: 200,
       data: {
         ...r.dataValues,
-        folderCode: `${String(orderId)}-${id}`,
+        folderCode: `${String(orderId)}-${folderCode}`,
         phoneNumberToSendFile: String(process.env.PHONENUMBER_TO_SEND_FILE)
       },
       error: null
