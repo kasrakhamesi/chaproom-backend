@@ -103,16 +103,14 @@ const callback = async (req, res) => {
 
     await t.commit()
 
-    const walletBalance = _.isEmpty(order?.walletPaidAmount)
-      ? 0
-      : order?.walletPaidAmount
+    const walletPaidAmount = parseInt(order?.walletPaidAmount) || 0
 
     const submitOrderResult = await users.submitOrder(
       payment?.userId,
       payment?.id,
       payment?.amount,
       paymentVerification?.RefID,
-      walletBalance
+      walletPaidAmount
     )
 
     if (submitOrderResult !== null)
