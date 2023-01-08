@@ -1,8 +1,6 @@
 const { sequelize } = require('../../models')
 const { gateways, utils, users } = require('../../libs')
-const { httpError, errorTypes } = require('../../configs')
 const _ = require('lodash')
-const { submitOrder } = require('../../libs/users.lib')
 require('dotenv').config()
 
 const callback = async (req, res) => {
@@ -105,11 +103,16 @@ const callback = async (req, res) => {
 
     await t.commit()
 
-    const submitOrderResult = await submitOrder(
+    const walletBalance = _.isEmpty(order?.walletPaidAmount)
+      ? 0
+      : order?.walletPaidAmount
+
+    const submitOrderResult = await users.submitOrder(
       payment?.userId,
       payment?.id,
       payment?.amount,
-      paymentVerification?.RefID
+      paymentVerification?.RefID,
+      walletBalance
     )
 
     if (submitOrderResult !== null)

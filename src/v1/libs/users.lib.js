@@ -174,7 +174,13 @@ const createOrder = async (
   }
 }
 
-const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
+const submitOrder = async (
+  userId,
+  paymentId,
+  paymentAmount,
+  refId,
+  walletBalance
+) => {
   try {
     const order = await sequelize.models.orders.findOne({
       where: {
@@ -198,7 +204,7 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
         type: 'order',
         change: 'decrease',
         status: 'successful',
-        amount: paymentAmount,
+        amount: paymentAmount + walletBalance,
         description: 'ثبت سفارش'
       },
       { transaction: t }
@@ -214,7 +220,7 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
     )
 
     await user.update(
-      { balance: userWallet?.data?.balance - paymentAmount },
+      { balance: userWallet?.data?.balance - paymentAmount + walletBalance },
       { transaction: t }
     )
 
@@ -235,10 +241,10 @@ const submitOrder = async (userId, paymentId, paymentAmount, refId) => {
     return {
       statusCode: 200,
       data: {
-        id: paymentAmount,
+        id: paymentId,
         orderId: order?.id,
         message: 'پرداخت با موفقعیت انجام شد',
-        amount: paymentId,
+        amount: paymentAmount + walletBalance,
         refId
       },
       error: null
