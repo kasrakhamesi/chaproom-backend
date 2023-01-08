@@ -71,14 +71,17 @@ const create = async (req, res) => {
 
     if (_.isEmpty(folders)) return httpError(errorTypes.DONT_HAVE_FOLDERS, res)
 
-    const postageFee =
-      _.isEmpty(address) || address?.recipientDeliveryProvince !== 'اصفهان'
-        ? 35000
-        : 25000
     let totalPrice = 0
     for (const entity of folders) {
       totalPrice += entity?.amount
     }
+
+    const postageFee =
+      totalPrice >= 400000
+        ? 0
+        : _.isEmpty(address) || address?.recipientDeliveryProvince !== 'اصفهان'
+        ? 35000
+        : 25000
 
     const data = {
       addressId,
@@ -273,7 +276,9 @@ const priceCalculator = async (req, res) => {
     })
 
     const postageFee =
-      _.isEmpty(address) || address?.recipientDeliveryProvince !== 'اصفهان'
+      amount >= 400000
+        ? 0
+        : _.isEmpty(address) || address?.recipientDeliveryProvince !== 'اصفهان'
         ? 35000
         : 25000
 
