@@ -79,8 +79,7 @@ const updateFolderFiles = async (folders, userId, transaction, orderId) => {
       )
     }
     return true
-  } catch (e) {
-    console.log(e)
+  } catch {
     return false
   }
 }
