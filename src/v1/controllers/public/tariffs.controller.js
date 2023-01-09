@@ -47,7 +47,7 @@ const getBookPriceses = () => {
     .then((r) => {
       return process.env.RUN_ENVIRONMENT === 'local'
         ? JSON.parse(r?.tariffs)
-        : r
+        : r?.tariffs
     })
 }
 

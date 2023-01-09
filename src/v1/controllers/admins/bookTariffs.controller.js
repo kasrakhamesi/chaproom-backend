@@ -12,7 +12,9 @@ const checkValidate = async (data) => {
     })
 
     const oldTariffs =
-      process.env.RUN_ENVIRONMENT === 'local' ? JSON.parse(r?.tariffs) : r
+      process.env.RUN_ENVIRONMENT === 'local'
+        ? JSON.parse(r?.tariffs)
+        : r?.tariffs
 
     const { rahli, raqai, vaziri } = data
 
@@ -79,7 +81,9 @@ const findAll = (req, res) => {
       return res.status(200).send({
         statusCode: 200,
         data:
-          process.env.RUN_ENVIRONMENT === 'local' ? JSON.parse(r?.tariffs) : r,
+          process.env.RUN_ENVIRONMENT === 'local'
+            ? JSON.parse(r?.tariffs)
+            : r?.tariffs,
         error: null
       })
     })
