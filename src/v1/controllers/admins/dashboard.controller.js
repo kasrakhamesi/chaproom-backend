@@ -723,6 +723,12 @@ const findAll = async (req, res) => {
       }
     })
 
+    const contactUs = await sequelize.models.contact_us.count({
+      where: {
+        checked: false
+      }
+    })
+
     const adminId = req?.user[0]?.id
     const admin = await sequelize.models.admins.findOne({
       include: {
@@ -755,6 +761,7 @@ const findAll = async (req, res) => {
         usersOrders,
         sales,
         sidebarData: {
+          countOfPendingContactUs: contactUs,
           countOfPendingCooperations: cooperations,
           countOfInProgressOrders: orders,
           countOfPendingWithdrawals: withdrawals

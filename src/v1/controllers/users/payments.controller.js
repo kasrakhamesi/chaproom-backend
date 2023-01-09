@@ -52,18 +52,19 @@ const callback = async (req, res) => {
       Authority
     })
 
-    await payment.update({
-      status: Status,
-      refId: paymentVerification?.RefID || null,
-      verifiedStatus: paymentVerification?.status || null,
-      fullResponse: JSON.stringify(paymentVerification),
-      verifiedAt: utils.timestampToIso(Date.now())
-    })
+    if (String(paymentVerification?.status) !== '100') {
+      await payment.update({
+        status: Status,
+        refId: paymentVerification?.RefID || null,
+        verifiedStatus: paymentVerification?.status || null,
+        fullResponse: JSON.stringify(paymentVerification),
+        verifiedAt: utils.timestampToIso(Date.now())
+      })
 
-    if (String(paymentVerification?.status) !== '100')
       return res.redirect(
         `${process.env.FRONT_DOMAIN}/dashboard?isDeposit=true&isSuccessful=false`
       )
+    }
     const userWallet = await users.getBalance(payment?.userId)
 
     if (!userWallet?.isSuccess)
@@ -72,6 +73,17 @@ const callback = async (req, res) => {
       )
 
     const t = await sequelize.transaction()
+
+    await payment.update(
+      {
+        status: Status,
+        refId: paymentVerification?.RefID || null,
+        verifiedStatus: paymentVerification?.status || null,
+        fullResponse: JSON.stringify(paymentVerification),
+        verifiedAt: utils.timestampToIso(Date.now())
+      },
+      { transaction: t }
+    )
 
     await sequelize.models.transactions.create(
       {
