@@ -41,11 +41,13 @@ const getBookPriceses = () => {
     .findOne({
       where: { id: 1 },
       attributes: {
-        exclude: ['createdAt', 'updatedAt']
+        exclude: ['createdAt', 'updatedAt', 'id']
       }
     })
     .then((r) => {
-      return r
+      return process.env.RUN_ENVIRONMENT === 'local'
+        ? JSON.parse(r?.tariffs)
+        : r
     })
 }
 
@@ -75,12 +77,14 @@ const findAll = async (req, res) => {
 
     const print = _.isEmpty(promises[1]) ? null : promises[1]
 
+    const book = _.isEmpty(promises[2]) ? null : promises[2]
+
     res.status(200).send({
       statusCode: 200,
       data: {
         binding,
         print,
-        book: promises[2]
+        book
       },
       error: null
     })

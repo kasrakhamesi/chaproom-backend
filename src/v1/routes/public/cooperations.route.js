@@ -7,5 +7,6 @@ router.use(bodyParser.json())
 const { public } = require('../../controllers')
 
 router.post('/', public.cooperations.create)
+router.post('/book-publishing', public.cooperations.createBookCounselingRequest)
 
 module.exports = router

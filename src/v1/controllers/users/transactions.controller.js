@@ -19,7 +19,8 @@ const findAll = async (req, res) => {
       ...where,
       userId,
       status: { [Op.not]: 'pending' },
-      description: { [Op.not]: 'increase_for_order' }
+      description: { [Op.not]: 'increase_for_order' },
+      amount: { [Op.not]: 0 }
     }
 
     const r = await transactions.Get({

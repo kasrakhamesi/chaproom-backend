@@ -11,6 +11,20 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
+
+    await queryInterface.bulkInsert('users', [
+      {
+        name: 'kasra khamesi',
+        balance: 0,
+        password:
+          '$2y$10$lSNAIVGsyMS4hzwWcZTO8.iooRPY9QsvAFlE.9u/k3zxwgF/4iAlu',
+        phoneNumber: '09000000000',
+        incomingPayment: 0,
+        totalCreditor: 0
+      }
+    ])
+
+    /*
     await queryInterface.bulkInsert('users', [
       {
         name: 'test1',
@@ -102719,7 +102733,9 @@ module.exports = {
         incomingPayment: 0,
         totalCreditor: 0
       }
+      *
     ])
+    */
   },
 
   down: async (queryInterface, Sequelize) => {

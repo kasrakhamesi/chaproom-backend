@@ -37,12 +37,12 @@ const upload = async (req, res) => {
     if (!allowedExtension.includes(extensionName.toLowerCase()))
       return httpError(errorTypes.INVALID_PDF_DOCX_FORMAT, res)
 
-    let newFileName = `f${userId}_0${extensionName}`
+    let newFileName = `f${userId}_0_( ${fileName} )${extensionName}`
 
     let filePath = `./src/v1/storages/files/${userId}/${newFileName}`
     if (fs.existsSync(filePath)) {
       for (let k = 0; k < Number.MAX_VALUE; k++) {
-        newFileName = `f${userId}_${k}${extensionName}`
+        newFileName = `f${userId}_${k}_( ${fileName} )${extensionName}`
 
         const endPath = `./src/v1/storages/files/${userId}/${newFileName}`
 

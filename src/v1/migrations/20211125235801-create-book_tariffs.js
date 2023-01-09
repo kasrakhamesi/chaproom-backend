@@ -8,18 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
-      phoneNumber: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      checked: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-      },
-      description: {
-        type: Sequelize.STRING,
-        allowNull: false
+      tariffs: {
+        type: Sequelize.JSON,
+        allowNull: true
       },
       createdAt: {
         allowNull: true,

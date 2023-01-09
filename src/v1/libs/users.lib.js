@@ -286,7 +286,10 @@ const getTransactionTypeAndAmount = async (transaction) => {
     let amount = transaction?.amount
     if (order?.status === 'canceled') type = order?.cancelReason
     else if (order?.gatewayPaidAmount === 0) type = 'خرج کیف پول'
-    else if (order?.gatewayPaidAmount !== 0) {
+    else if (order?.walletPaidAmount !== 0 && order?.gatewayPaidAmount !== 0) {
+      type = 'بستانکار'
+      amount = order?.gatewayPaidAmount
+    } else if (order?.gatewayPaidAmount !== 0) {
       type = 'بستانکار'
       amount = order?.gatewayPaidAmount + order?.walletPaidAmount
     }

@@ -89,7 +89,11 @@ const findAllDiscounts = async (req, res) => {
               discountValue: item?.discountValue,
               discountAmount: item?.discountAmount,
               discountBenefit: item?.discountBenefit,
-              discountBenefitPercentage: item?.discountValue,
+              discountBenefitPercentage:
+                discount?.data?.type === 'percentage' &&
+                discount?.data?.value === '10'
+                  ? 0
+                  : item?.discountValue,
               createdAt: item?.createdAt,
               amount: item?.amount
             }

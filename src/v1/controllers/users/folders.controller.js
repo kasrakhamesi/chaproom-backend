@@ -28,6 +28,14 @@ const findOrCreateOrder = async (req, res) => {
       statusCode: 200,
       data: {
         folderCode: `${String(orderId)}-${folderCode}`,
+        eitaa: {
+          account: process.env.EITAA_ACCOUNT,
+          url: process.env.EITAA_ACCOUNT_URL
+        },
+        telegram: {
+          account: process.env.TELEGRAM_ACCOUNT,
+          url: process.env.TELEGRAM_ACCOUNT_URL
+        },
         phoneNumberToSendFile: String(process.env.PHONENUMBER_TO_SEND_FILE)
       },
       error: null
@@ -390,6 +398,14 @@ const findOne = async (req, res) => {
       data: {
         ...r.dataValues,
         folderCode: `${String(orderId)}-${folderCode}`,
+        eitaa: {
+          account: process.env.EITAA_ACCOUNT,
+          url: process.env.EITAA_ACCOUNT_URL
+        },
+        telegram: {
+          account: process.env.TELEGRAM_ACCOUNT,
+          url: process.env.TELEGRAM_ACCOUNT_URL
+        },
         phoneNumberToSendFile: String(process.env.PHONENUMBER_TO_SEND_FILE)
       },
       error: null

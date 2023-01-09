@@ -107,7 +107,10 @@ const findOne = async (req, res) => {
             return {
               ...item.dataValues,
               amount: item.walletPaidAmount + item.gatewayPaidAmount,
-              trackingUrl: null
+              trackingUrl:
+                String(item?.trackingNumber).length > 2
+                  ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
+                  : null
             }
           }),
       tariffs: {

@@ -5,7 +5,7 @@
     "description": "Chaproom Backend Restful-API ( Admins Panel )",
     "version": "1.0"
   },
-  "host": "78.157.34.146:3000",
+  "host": "localhost:3000",
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {
@@ -2239,7 +2239,6 @@
         }
       }
     },
-
     "/admins/cooperations/id/{id}": {
       "put": {
         "tags": ["Cooperations"],
@@ -2265,6 +2264,142 @@
             "name": "body",
             "required": true,
             "schema": { "$ref": "#/definitions/Cooperations" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/contact-us": {
+      "get": {
+        "tags": ["Contact Us"],
+        "summary": "Find All Contact Us",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "search",
+            "description": "search by phoneNumber",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "page",
+            "description": "set page number",
+            "in": "query",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "description": "set pageSize",
+            "in": "query",
+            "type": "int",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "page": 1,
+                  "pageSize": 5,
+                  "totalCount": 1,
+                  "totalPageLeft": 0,
+                  "totalCountLeft": 0,
+                  "contactUs": [
+                    {
+                      "id": 1,
+                      "name": "Programmer Kasra",
+                      "phoneNumber": "09385667274",
+                      "message": "Hi,this is a message !",
+                      "checked": false,
+                      "createdAt": "2023-01-09T20:55:14.000Z",
+                      "updatedAt": "2023-01-09T20:55:14.000Z"
+                    }
+                  ]
+                },
+                "error": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admins/contact-us/id/{id}": {
+      "put": {
+        "tags": ["Contact Us"],
+        "summary": "update or change Contact Us",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ContactUs" }
           }
         ],
         "responses": {
@@ -4907,6 +5042,125 @@
         }
       }
     },
+    "/admins/tariffs/book": {
+      "put": {
+        "tags": ["Tariffs"],
+        "summary": "Update or change Book tariffs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/BookTariffs" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "message": "با موفقعیت آپدیت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "stapler": ["stapler وارد نشده است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Tariffs"],
+        "summary": "Get Book Tariffs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "description": "Bearer Token",
+            "in": "header",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "statusCode": 200,
+                "data": {
+                  "rahli": {
+                    "writing80Grams": {
+                      "hotGlue": 12
+                    }
+                  },
+                  "raqai": {
+                    "writing80Grams": {
+                      "hotGlue": 12
+                    }
+                  },
+                  "vaziri": {
+                    "writing80Grams": {
+                      "hotGlue": 12
+                    }
+                  }
+                },
+                "error": null
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request",
+          "examples": {
+            "application/json": {
+              "statusCode": 400,
+              "data": null,
+              "error": {
+                "message": "این یک خطا است",
+                "details": []
+              }
+            }
+          }
+        }
+      }
+    },
     "/admins/addresses/user-id/{userId}": {
       "get": {
         "tags": ["Users Addresses"],
@@ -6126,6 +6380,15 @@
         "description": { "type": "string", "example": "این یک توضیح است" }
       }
     },
+    "ContactUs": {
+      "type": "object",
+      "properties": {
+        "checked": {
+          "type": "bool",
+          "example": true
+        }
+      }
+    },
     "AdminsRegisterConfirm": {
       "type": "object",
       "properties": {
@@ -6211,6 +6474,44 @@
       "type": "object",
       "properties": {
         "name": { "type": "string", "example": "این یک دسته بدی است است" }
+      }
+    },
+    "BookTariffs": {
+      "type": "object",
+      "properties": {
+        "rahli": {
+          "type": "object",
+          "properties": {
+            "writing80Grams": {
+              "type": "object",
+              "properties": {
+                "hotGlue": { "type": "int", "example": 300 }
+              }
+            }
+          }
+        },
+        "raqai": {
+          "type": "object",
+          "properties": {
+            "writing80Grams": {
+              "type": "object",
+              "properties": {
+                "hotGlue": { "type": "int", "example": 260 }
+              }
+            }
+          }
+        },
+        "vaziri": {
+          "type": "object",
+          "properties": {
+            "writing80Grams": {
+              "type": "object",
+              "properties": {
+                "hotGlue": { "type": "int", "example": 280 }
+              }
+            }
+          }
+        }
       }
     },
     "PrintTariffs": {

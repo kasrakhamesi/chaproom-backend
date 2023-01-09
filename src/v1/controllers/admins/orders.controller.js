@@ -75,7 +75,10 @@ const globalFindAll = async (req, res) => {
           : r?.data?.orders.map((item) => {
               return {
                 ...item.dataValues,
-                trackingUrl: null
+                trackingUrl:
+                  String(item?.trackingNumber).length > 2
+                    ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
+                    : null
               }
             })
       },
@@ -158,7 +161,10 @@ const findAllByUserId = async (req, res) => {
               return {
                 ...item.dataValues,
                 amount: item.walletPaidAmount + item.gatewayPaidAmount,
-                trackingUrl: null
+                trackingUrl:
+                  String(item?.trackingNumber).length > 2
+                    ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
+                    : null
               }
             })
       },
@@ -228,7 +234,10 @@ const findAll = async (req, res) => {
               return {
                 ...item.dataValues,
                 amount: item.walletPaidAmount + item.gatewayPaidAmount,
-                trackingUrl: null
+                trackingUrl:
+                  String(item?.trackingNumber).length > 2
+                    ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
+                    : null
               }
             })
       },

@@ -12,4 +12,7 @@ router.put('/binding', admins.bindingTariffs.update)
 router.get('/print', admins.printTariffs.findAll)
 router.put('/print', admins.printTariffs.update)
 
+router.get('/book', admins.bookTariffs.findAll)
+router.put('/book', admins.bookTariffs.update)
+
 module.exports = router

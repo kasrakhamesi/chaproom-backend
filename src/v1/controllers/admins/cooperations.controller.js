@@ -35,7 +35,7 @@ const update = async (req, res) => {
       description,
       status
     }
-    const r = await cooperations.Put({ body: data, req, where: { id } })
+    const r = await cooperations.Put({ body: data, where: { id } })
     return res.status(r?.statusCode).send(r)
   } catch (e) {
     return httpError(e, res)

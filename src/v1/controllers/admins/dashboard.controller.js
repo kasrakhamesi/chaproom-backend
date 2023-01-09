@@ -595,16 +595,17 @@ const getOrdersOfProvinces = async () => {
         }
         continue
       }
-
+      let numberOfUsers = 0
       for (const address of addresses) {
         const users = await sequelize.models.users.count({
           where: { id: address?.userId }
         })
-        data[province] = {
-          sale: amount,
-          totalOrders: orders.count,
-          totalUsers: users
-        }
+        if (users) numberOfUsers = users + numberOfUsers
+      }
+      data[province] = {
+        sale: amount,
+        totalOrders: orders.count,
+        totalUsers: numberOfUsers
       }
     }
     return {

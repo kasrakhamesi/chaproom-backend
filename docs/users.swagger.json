@@ -5,7 +5,7 @@
     "description": "Chaproom Backend Restful-API ( Users Panel )",
     "version": "1.0"
   },
-  "host": "78.157.34.146:3000",
+  "host": "localhost:3000",
   "basePath": "/v1",
   "schemes": ["http", "https"],
   "paths": {
@@ -2558,6 +2558,62 @@
                 "error": {
                   "message": "اینپوت پیدا نشد",
                   "details": [{ "slug": ["اسلاگ نامعتبر است"] }]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "statusCode": 400,
+                "data": null,
+                "error": {
+                  "message": "این یک خطا است",
+                  "details": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/book-publishing": {
+      "post": {
+        "tags": ["Public"],
+        "summary": "create new book publishing request",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Cooperation" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "statusCode": 201,
+                "data": {
+                  "message": "درخواست شما با موفقعیت ثبت شد"
+                },
+                "error": null
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "examples": {
+              "application/json": {
+                "statusCode": 422,
+                "data": null,
+                "error": {
+                  "message": "اینپوت پیدا نشد",
+                  "details": [{ "phoneNumber": ["شماره تلفن نامعتبر است"] }]
                 }
               }
             }

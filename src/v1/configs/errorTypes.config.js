@@ -168,6 +168,14 @@ const Types = {
     statusCode: 400,
     message: 'شما یک درخواست همکاری ثبت شده دارید'
   },
+  PENDING_BOOK_PUBLISHING_EXIST: {
+    statusCode: 400,
+    message: 'شما یک درخواست مشاوره چاپ کتاب ثبت شده دارید'
+  },
+  PENDING_CONTACT_US_EXIST: {
+    statusCode: 400,
+    message: 'شما یک درخواست تماس با ما ثبت شده دارید'
+  },
   CANT_DELETE_FOUNDER: {
     statusCode: 400,
     message: 'امکان حذف حساب مالک سایت وجود ندارد'

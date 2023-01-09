@@ -118,12 +118,17 @@ const create = async (req, res) => {
         : 0
 
     if (discountAmount !== 0) {
+      const discountBenefitAmount =
+        discount?.data?.type === 'percentage' && discount?.data?.value === '10'
+          ? 0
+          : discountAmount
+
       data.discountId = discount?.data?.id
       data.discountType = discount?.data?.type
       data.discountValue = discount?.data?.value
       data.discountCode = discount?.data?.code
       data.discountAmount = discountAmount
-      data.discountBenefit = discountAmount
+      data.discountBenefit = discountBenefitAmount
     }
 
     if (paidWithWallet) {
@@ -357,7 +362,10 @@ const findAll = async (req, res) => {
               return {
                 ...item.dataValues,
                 amount: item.walletPaidAmount + item.gatewayPaidAmount,
-                trackingUrl: null
+                trackingUrl:
+                  String(item?.trackingNumber).length > 2
+                    ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
+                    : null
               }
             })
       },

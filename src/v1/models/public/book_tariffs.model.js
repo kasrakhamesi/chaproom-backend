@@ -13,18 +13,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   book_tariffs.init(
     {
-      phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      checked: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-      },
-      description: {
-        type: DataTypes.STRING,
-        allowNull: false
+      tariffs: {
+        type: DataTypes.JSON,
+        allowNull: true
       }
     },
     {

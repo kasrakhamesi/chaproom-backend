@@ -16,9 +16,6 @@ module.exports = {
     port: DATABASE_PORT || 3306,
     dialect: DATABASE_DIALECT || 'mysql',
     logging: false,
-    dialectOptions: {
-      requestTimeout: 25000
-    },
     pool: {
       max: 100,
       min: 0,

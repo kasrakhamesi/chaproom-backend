@@ -34,7 +34,8 @@ const findAll = async (req, res) => {
       newWhere = {
         ...where,
         description: { [Op.not]: 'increase_for_order' },
-        status: { [Op.not]: 'pending' }
+        status: { [Op.not]: 'pending' },
+        amount: { [Op.not]: 0 }
       }
 
     if (_.isEmpty(newWhere))
@@ -42,7 +43,8 @@ const findAll = async (req, res) => {
         { [Op.and]: timeWhere },
         { [Op.and]: where || [] },
         { [Op.and]: { description: { [Op.not]: 'increase_for_order' } } },
-        { [Op.and]: { status: { [Op.not]: 'pending' } } }
+        { [Op.and]: { status: { [Op.not]: 'pending' } } },
+        { [Op.and]: { amount: { [Op.not]: 0 } } }
       ]
 
     const r = await transactions.Get({
