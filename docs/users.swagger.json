@@ -5,9 +5,9 @@
     "description": "Chaproom Backend Restful-API ( Users Panel )",
     "version": "1.0"
   },
-  "host": "localhost:3000",
+  "host": "https://api.chaproom.com",
   "basePath": "/v1",
-  "schemes": ["http", "https"],
+  "schemes": ["https"],
   "paths": {
     "/users/auth/password-reset": {
       "post": {
