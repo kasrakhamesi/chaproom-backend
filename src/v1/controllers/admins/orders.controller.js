@@ -76,7 +76,7 @@ const globalFindAll = async (req, res) => {
               return {
                 ...item.dataValues,
                 trackingUrl:
-                  String(item?.trackingNumber).length > 2
+                  item?.trackingNumber !== null
                     ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
                     : null
               }
@@ -162,7 +162,7 @@ const findAllByUserId = async (req, res) => {
                 ...item.dataValues,
                 amount: item.walletPaidAmount + item.gatewayPaidAmount,
                 trackingUrl:
-                  String(item?.trackingNumber).length > 2
+                  item?.trackingNumber !== null
                     ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
                     : null
               }
@@ -235,7 +235,7 @@ const findAll = async (req, res) => {
                 ...item.dataValues,
                 amount: item.walletPaidAmount + item.gatewayPaidAmount,
                 trackingUrl:
-                  String(item?.trackingNumber).length > 2
+                  item?.trackingNumber !== null
                     ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
                     : null
               }

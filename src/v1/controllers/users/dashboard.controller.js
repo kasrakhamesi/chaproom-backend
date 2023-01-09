@@ -108,7 +108,7 @@ const findOne = async (req, res) => {
               ...item.dataValues,
               amount: item.walletPaidAmount + item.gatewayPaidAmount,
               trackingUrl:
-                String(item?.trackingNumber).length > 2
+                item?.trackingNumber !== null
                   ? `https://tracking.post.ir/?id=${item?.trackingNumber}`
                   : null
             }
