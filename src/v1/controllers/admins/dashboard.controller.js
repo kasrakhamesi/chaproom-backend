@@ -327,7 +327,8 @@ const findSales = async (req, res) => {
         'createdAt',
         'type',
         'adminId',
-        'orderId'
+        'orderId',
+        'description'
       ],
       order: [['id', 'desc']]
     })
